@@ -1,4 +1,4 @@
-{% extends "comm/header.html" %}
+{% extends "comm/header_popup.html" %}
 {% block view_title %}{{ view_title }} {% endblock %}
 
 {% block script_list %}
@@ -14,10 +14,12 @@
 {% block content %}
 
     <form action="#" method="post">
-        {% csrf_token %}
-        {{ pivot_form }}
-        {{ errors }}
-        <input type="submit" value="저장">
+        <div class="form-row">
+            {% csrf_token %}
+            {{ pivot_form }}
+            {{ errors }}
+        </div>
+        <input class="btn btn-primary" type="submit" value="저장">
     </form>
 
 {% endblock %}

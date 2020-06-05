@@ -13,14 +13,15 @@
 
 {% block content %}
 
-    <div class="content">
         {% for stock in stock_items %}
-            <div class="content-detail">
-                <a href="{{ stock.code }}">[{{ stock.code }}] {{ stock.name }}</a>
-                <input type="button" value="Pivot 입력" onclick="openWindow('{{ stock.code }}/pivot', 400, 600)">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ stock.name }} ({{ stock.code }})</h5>
+                    <a class="btn btn-primary" href="{{ stock.code }}">Detail</a>
+                    <input type="button" class="btn btn-info" value="Pivot 입력" onclick="openWindow('{{ stock.code }}/pivot', 400, 600)">
+                </div>
             </div>
         {% endfor %}
-    </div>
 
     <div class="pagination">
         <span class="step-links">

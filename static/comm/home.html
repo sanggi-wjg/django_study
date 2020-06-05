@@ -1,23 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
     {% load static %}
-    <link rel="icon" href="{% static 'comm/images/favicon.ico' %}">
-    <title>{{ view_title }}</title>
-</head>
-<body>
-Hello, this page is HOME.
-{% if not is_auth %}
-    <div>
-        <a href="/login">로그인</a>
-        <a href="/signup">회원가입</a>
-    </div>
-{% endif %}
-<div class="">
-    <ul>
-        <li><a href="/stocks/item">Stock</a></li>
-    </ul>
-</div>
-</body>
-</html>
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

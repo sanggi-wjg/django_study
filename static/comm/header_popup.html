@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>{% block view_title %}Django - DEV{% endblock %}</title>
+
+    {% load static %}
+    <link rel="icon" href="{% static 'comm/images/favicon.ico' %}">
+
+    <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/dashboard.css' %}">
+
+    <script src={% static 'comm/js/jquery_3.4.1.js' %}></script>
+    <script src={% static 'comm/bootstrap-4.5.0-dist/js/bootstrap.min.js' %}></script>
+    <script src={% static 'comm/js/default.js' %}></script>
+
+    {% block script_list %} {% endblock %}
+</head>
+<body>
+
+{% block content %} {% endblock %}
+</body>
+</html>
