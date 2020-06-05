@@ -1,0 +1,23 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <form action="#" method="post">
+        {% csrf_token %}
+        {{ pivot_form }}
+        {{ errors }}
+        <input type="submit" value="저장">
+    </form>
+
+{% endblock %}

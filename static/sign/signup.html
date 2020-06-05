@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    {% load static %}
+    <link rel="icon" href="{% static 'comm/images/favicon.ico' %}">
+    <title>{{ view_title }}</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form }}
+        <input type="submit">
+    </form>
+
+    {{ error }}
+    {% for k, v in error_msg.items %}
+        {{ k }} : {{ v }}
+    {% endfor %}
+</body>
+</html>
