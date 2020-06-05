@@ -13,48 +13,67 @@
 
 {% block content %}
 
-    <div class="content-pivot">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">날짜</th>
-                    <th scope="col">전일 종가</th>
-                    <th scope="col">전일 고가</th>
-                    <th scope="col">전일 저가</th>
-                    <th scope="col">구매 적정가</th>
-                    <th scope="col">3차 저항선</th>
-                    <th scope="col">2차 저항선</th>
-                    <th scope="col">1차 저항선</th>
-                    <th scope="col">1차 지지선</th>
-                    <th scope="col">2차 지지선</th>
-                    <th scope="col">3차 지지선</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-
-            {% for p in pivot %}
-                <tr>
-                    <th scope="row">{{ p.date | date:"Y-m-d" }}</th>
-                    <td>{{ p.prev_closing_price }}</td>
-                    <td>{{ p.prev_high_price }}</td>
-                    <td>{{ p.prev_low_price }}</td>
-                    <th scope="row">{{ p.recommend_high_price }} ~ {{ p.recommend_low_price }}</th>
-                    <td>{{ p.resist_line_3 }}</td>
-                    <td>{{ p.resist_line_2 }}</td>
-                    <td>{{ p.resist_line_1 }}</td>
-                    <td>{{ p.support_line_1 }}</td>
-                    <td>{{ p.support_line_2 }}</td>
-                    <td>{{ p.support_line_3 }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>{{ stock_item.name }} ({{ stock_item.code }})</h2>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-calendar">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                This week
+            </button>
+        </div>
     </div>
 
+    <h4>Pivot Table</h4>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">날짜</th>
+            <th scope="col">전일 종가</th>
+            <th scope="col">전일 고가</th>
+            <th scope="col">전일 저가</th>
+            <th scope="col">구매 적정가</th>
+            <th scope="col">3차 저항선</th>
+            <th scope="col">2차 저항선</th>
+            <th scope="col">1차 저항선</th>
+            <th scope="col">1차 지지선</th>
+            <th scope="col">2차 지지선</th>
+            <th scope="col">3차 지지선</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+
+        {% for p in pivot %}
+            <tr>
+                <th scope="row">{{ p.date | date:"Y-m-d" }}</th>
+                <td>{{ p.prev_closing_price }}</td>
+                <td>{{ p.prev_high_price }}</td>
+                <td>{{ p.prev_low_price }}</td>
+                <th scope="row">{{ p.recommend_high_price }} ~ {{ p.recommend_low_price }}</th>
+                <td>{{ p.resist_line_3 }}</td>
+                <td>{{ p.resist_line_2 }}</td>
+                <td>{{ p.resist_line_1 }}</td>
+                <td>{{ p.support_line_1 }}</td>
+                <td>{{ p.support_line_2 }}</td>
+                <td>{{ p.support_line_3 }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     <hr>
-    {{ stock_item }}
-    <hr>
+    <h4>Finance Information</h4>
     {{ finance_info }}
 
 {% endblock %}
