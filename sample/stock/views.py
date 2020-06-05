@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from .forms import PivotForm
-from .models import Items
+from .models import Items, Pivot
 from .mongo_db import MongoDB
 
 
@@ -29,28 +29,14 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = 'Stock Detail'
+        context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].id).order_by('stock_items_id', '-date')
         context['finance_info'] = MongoDB().find_one('finance_info', { "stock_items_code": self.kwargs['code'] })
 
         return context
 
 
-# class CreatePivot(LoginRequiredMixin, DetailView):
-#     template_name = 'stock/create_pivot.html'
-#     context_object_name = 'stock_item'
-#
-#     def get_object(self, queryset = None):
-#         return get_object_or_404(Items, code = self.kwargs['code'])
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['view_title'] = 'Create Pivot'
-#         context['pivot_form'] = PivotForm(initial = { 'stock_items_id': context[self.context_object_name].id }).as_ul()
-#
-#         return context
-
-
 class CreatePivotProc(LoginRequiredMixin, View):
-    template_name = 'stock/create_pivot.html'
+    template_name = 'stock/create_pivot_popup.html'
 
     def _get_stock_item(self, code: str):
         return get_object_or_404(Items, code = code)
@@ -77,11 +63,13 @@ class CreatePivotProc(LoginRequiredMixin, View):
             pivot.stock_items_id = stock_item
             pivot.base_line = (pivot.prev_closing_price + pivot.prev_low_price + pivot.prev_high_price) / 3
             pivot.resist_line_1 = (pivot.base_line * 2) - pivot.prev_low_price
-            pivot.resist_line_2 = pivot.base_line + pivot.prev_high_price - pivot.prev_low_price
+            pivot.resist_line_2 = pivot.base_line + (pivot.prev_high_price - pivot.prev_low_price)
             pivot.resist_line_3 = pivot.prev_high_price + (pivot.base_line - pivot.prev_low_price) * 2
             pivot.support_line_1 = (pivot.base_line * 2) - pivot.prev_high_price
-            pivot.support_line_2 = pivot.base_line - pivot.prev_high_price - pivot.prev_low_price
+            pivot.support_line_2 = pivot.base_line - (pivot.prev_high_price - pivot.prev_low_price)
             pivot.support_line_3 = pivot.prev_low_price - (pivot.prev_high_price - pivot.base_line) * 2
+            pivot.recommend_high_price = (pivot.resist_line_1 + pivot.base_line) / 2
+            pivot.recommend_low_price = (pivot.base_line + pivot.support_line_1) / 2
             pivot.save()
 
             return popup_close()

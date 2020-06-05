@@ -13,6 +13,46 @@
 
 {% block content %}
 
+    <div class="content-pivot">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">날짜</th>
+                    <th scope="col">전일 종가</th>
+                    <th scope="col">전일 고가</th>
+                    <th scope="col">전일 저가</th>
+                    <th scope="col">구매 적정가</th>
+                    <th scope="col">3차 저항선</th>
+                    <th scope="col">2차 저항선</th>
+                    <th scope="col">1차 저항선</th>
+                    <th scope="col">1차 지지선</th>
+                    <th scope="col">2차 지지선</th>
+                    <th scope="col">3차 지지선</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+            {% for p in pivot %}
+                <tr>
+                    <th scope="row">{{ p.date | date:"Y-m-d" }}</th>
+                    <td>{{ p.prev_closing_price }}</td>
+                    <td>{{ p.prev_high_price }}</td>
+                    <td>{{ p.prev_low_price }}</td>
+                    <th scope="row">{{ p.recommend_high_price }} ~ {{ p.recommend_low_price }}</th>
+                    <td>{{ p.resist_line_3 }}</td>
+                    <td>{{ p.resist_line_2 }}</td>
+                    <td>{{ p.resist_line_1 }}</td>
+                    <td>{{ p.support_line_1 }}</td>
+                    <td>{{ p.support_line_2 }}</td>
+                    <td>{{ p.support_line_3 }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <hr>
     {{ stock_item }}
     <hr>
     {{ finance_info }}
