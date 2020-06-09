@@ -14,6 +14,7 @@ class StockItemList(LoginRequiredMixin, ListView):
     paginate_by = 10
     template_name = 'stock/stock_item_list.html'
     context_object_name = 'stock_items'
+    ordering = ['code']
     extra_context = {
         'view_title': 'Stock List'
     }
@@ -42,7 +43,7 @@ class CreatePivotProc(LoginRequiredMixin, View):
         return get_object_or_404(Items, code = code)
 
     def _get_pivot_form(self, stock_item_id: int):
-        return PivotForm(initial = { 'stock_items_id': stock_item_id }).as_ul()
+        return PivotForm(initial = { 'stock_items_id': stock_item_id }).as_p()
 
     def get(self, request, *args, **kwargs):
         code = self.kwargs.get('code')

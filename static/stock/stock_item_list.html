@@ -13,15 +13,19 @@
 
 {% block content %}
 
-        {% for stock in stock_items %}
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ stock.name }} ({{ stock.code }})</h5>
-                    <a class="btn btn-primary" href="{{ stock.code }}">Detail</a>
-                    <input type="button" class="btn btn-info" value="Pivot 입력" onclick="openWindow('{{ stock.code }}/pivot', 400, 600)">
-                </div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+    {% for stock in stock_items %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body" style="cursor: pointer;" onclick="location.replace('{{ stock.code }}')">
+                <h5 class="card-title">{{ stock.name }} ({{ stock.code }})</h5>
+                <input type="button" class="btn btn-info" value="Pivot 입력"
+                       onclick="openWindow('{{ stock.code }}/pivot', 300, 700)">
             </div>
-        {% endfor %}
+        </div>
+        <br>
+    {% endfor %}
 
     <div class="pagination">
         <span class="step-links">
