@@ -31,7 +31,10 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['view_title'] = 'Stock Detail'
         context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].id).order_by('stock_items_id', '-date')
-        context['finance_info'] = MongoDB().find_one('finance_info', { "stock_items_code": self.kwargs['code'] })
+        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] })
+
+        for t in MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] }) :
+            print(t)
 
         return context
 
@@ -100,7 +103,7 @@ class CreateFinanceInfo(LoginRequiredMixin, View):
         if finance_info_form.is_valid():
             mongo = MongoDB()
             mongo.create('finance_info', {
-                'stock_items_id' : code,
+                'stock_items_code' : code,
                 'year'           : finance_info_form.cleaned_data['year'],
                 'total_sales'    : finance_info_form.cleaned_data['total_sales'],
                 'business_profit': finance_info_form.cleaned_data['business_profit'],

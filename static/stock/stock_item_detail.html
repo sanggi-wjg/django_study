@@ -73,7 +73,25 @@
     </table>
 
     <hr>
+
     <h4>Finance Information</h4>
-    {{ finance_info }}
+    <table class="table table-bordered table-sm">
+        <thead>
+        <tr>
+            <th scope="col">연도</th>
+            <th scope="col">매출액</th>
+            <th scope="col">영업이익</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for f in finance_info %}
+            <tr>
+                <th scope="row"><p>{{ f.year }}</p></th>
+                <td><p>{{ f.total_sales }}</p></td>
+                <td><p>{{ f.business_profit }}</p></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
