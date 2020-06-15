@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
-from .forms import PivotForm
+from .forms import PivotForm, FinanceInfoForm
 from .models import Items, Pivot
 from .mongo_db import MongoDB
 
@@ -81,6 +81,39 @@ class CreatePivotProc(LoginRequiredMixin, View):
                 'stock_item': stock_item,
                 'pivot_form': self._get_pivot_form(stock_item.id),
                 'errors'    : pivot_form.errors,
+            })
+
+
+class CreateFinanceInfo(LoginRequiredMixin, View):
+    template_name = 'stock/create_finance_info_popup.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, context = {
+            'view_title'       : 'Create Finance Info',
+            'finance_info_form': FinanceInfoForm().as_p()
+        })
+
+    def post(self, request, *args, **kwargs):
+        code = self.kwargs.get('code')
+        finance_info_form = FinanceInfoForm(request.POST)
+
+        if finance_info_form.is_valid():
+            mongo = MongoDB()
+            mongo.create('finance_info', {
+                'stock_items_id' : code,
+                'year'           : finance_info_form.cleaned_data['year'],
+                'total_sales'    : finance_info_form.cleaned_data['total_sales'],
+                'business_profit': finance_info_form.cleaned_data['business_profit'],
+            })
+            mongo.close()
+
+            return popup_close()
+
+        else:
+            return render(request, self.template_name, context = {
+                'view_title'       : 'Create Finance Info',
+                'finance_info_form': FinanceInfoForm().as_p(),
+                'errors'           : finance_info_form.errors
             })
 
 

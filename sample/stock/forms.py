@@ -14,3 +14,12 @@ class PivotForm(forms.ModelForm):
     class Meta:
         model = Pivot
         fields = ['prev_closing_price', 'prev_high_price', 'prev_low_price']
+
+
+class FinanceInfoForm(forms.Form):
+    year = forms.IntegerField(label = '년도', required = True, min_value = 1990, initial = 2020
+                              , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))
+    total_sales = forms.IntegerField(label = '매출액', required = True
+                                     , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))
+    business_profit = forms.IntegerField(label = '영어이익', required = True
+                                         , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))

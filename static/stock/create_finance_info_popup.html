@@ -1,0 +1,25 @@
+{% extends "comm/header_popup.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <form action="#" method="post">
+        <div class="form-row">
+            {% csrf_token %}
+            {{ finance_info_form }}
+            {{ errors }}
+        </div>
+        <input class="btn btn-primary" type="submit" value="저장">
+    </form>
+
+{% endblock %}
