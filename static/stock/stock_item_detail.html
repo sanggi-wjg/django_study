@@ -4,9 +4,45 @@
 {% block script_list %}
     {% load static %}
 
+    {% csrf_token %}
     <script>
-        $(document).ready(function () {
+        var CSRF_TOKEN;
 
+        function delete_finance_info()
+        {
+            $(".delete_finance_info").click(function () {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/stocks/item/' + $(this).attr('stock_items_code') + '/finance-info',
+                    accept: 'application/json',
+                    dataType: 'json',
+                    processData: false,
+                    data: JSON.stringify({'year': $(this).attr('year')}),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+                        xhr.setRequestHeader('Content-Type', 'application/json')
+                    },
+                    success: function (result) {
+                        console.log('Success');
+                        console.log(result);
+                        if (result.code === '0000') {
+                            location.reload();
+                        }
+                        else {
+                            alert(result.msg);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('Error ' + errorThrown);
+                    }
+                })
+            });
+        }
+
+        $(document).ready(function () {
+            CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
+
+            delete_finance_info();
         });
     </script>
 {% endblock %}
@@ -78,9 +114,10 @@
     <table class="table table-bordered table-sm">
         <thead>
         <tr>
-            <th scope="col">연도</th>
-            <th scope="col">매출액</th>
-            <th scope="col">영업이익</th>
+            <th scope="col">Year</th>
+            <th scope="col">Total Sales</th>
+            <th scope="col">Business Profit</th>
+            <th scope="col">Command</th>
         </tr>
         </thead>
         <tbody>
@@ -89,6 +126,14 @@
                 <th scope="row"><p>{{ f.year }}</p></th>
                 <td><p>{{ f.total_sales }}</p></td>
                 <td><p>{{ f.business_profit }}</p></td>
+                <td>
+                    <button class="btn btn-sm btn-info modify_finance_info"
+                            stock_items_code="{{ f.stock_items_code }}" year="{{ f.year }}">Modify
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger delete_finance_info"
+                            stock_items_code="{{ f.stock_items_code }}" year="{{ f.year }}">Delete
+                    </button>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

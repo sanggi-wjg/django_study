@@ -58,7 +58,7 @@ class MongoDB:
     # DELETE
     ##############################################################################################
     def remove(self, collection_name: str, document_id):
-        document = self.db[collection_name].delete_one({ "_id": ObjectId(document_id) })
+        document = self.db[collection_name].delete_one(document_id)
         return document.acknowledged
 
     ##############################################################################################
