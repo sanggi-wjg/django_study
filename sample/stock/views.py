@@ -97,7 +97,6 @@ class FinanceInfo(LoginRequiredMixin, View):
         })
 
     def post(self, request, *args, **kwargs):
-        print(self.kwargs)
         code = self.kwargs.get('code')
         finance_info_form = FinanceInfoForm(request.POST)
 
@@ -110,7 +109,6 @@ class FinanceInfo(LoginRequiredMixin, View):
                 'business_profit' : finance_info_form.cleaned_data['business_profit'],
             })
             mongo.close()
-
             return popup_close()
 
         else:
