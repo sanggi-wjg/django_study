@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from .views import StockItemList, StockItemDetail, CreatePivotProc, FinanceInfo
+from apps.stock.views import StockItemList, StockItemDetail, FinanceInfo, CreatePivotProc
 
 urlpatterns = [
     path('item/', StockItemList.as_view()),

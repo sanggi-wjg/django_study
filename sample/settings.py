@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'stock.apps.StockConfig',
+    'apps.sign',
+    'apps.stock',
+    'apps.third_party.database',
+    'apps.third_party.util',
     'debug_toolbar',
 ]
 
@@ -161,6 +164,6 @@ LOGIN_URL = '/login'
 STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), "static"),
+    os.path.join(BASE_DIR, "static"),
     '/home/django_sample/static/',
 ]

@@ -7,9 +7,9 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
-from .forms import PivotForm, FinanceInfoForm
-from .models import Items, Pivot
-from .mongo_db import MongoDB
+from apps.stock.forms import FinanceInfoForm, PivotForm
+from apps.stock.models import Items, Pivot
+from apps.third_party.database.mongo_db import MongoDB
 
 
 class StockItemList(LoginRequiredMixin, ListView):
