@@ -2,7 +2,7 @@ import json
 from json.decoder import JSONDecodeError
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
@@ -10,6 +10,7 @@ from django.views.generic.base import View
 from apps.stock.forms import FinanceInfoForm, PivotForm
 from apps.stock.models import Items, Pivot
 from apps.third_party.database.mongo_db import MongoDB
+from apps.third_party.util.comm_helper import popup_close
 
 
 class StockItemList(LoginRequiredMixin, ListView):
@@ -42,25 +43,18 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
 class CreatePivotProc(LoginRequiredMixin, View):
     template_name = 'stock/create_pivot_popup.html'
 
-    def _get_stock_item(self, code: str):
-        return get_object_or_404(Items, code = code)
-
-    def _get_pivot_form(self, stock_item_id: int):
-        return PivotForm(initial = { 'stock_items_id': stock_item_id }).as_p()
-
     def get(self, request, *args, **kwargs):
-        code = self.kwargs.get('code')
-        stock_item = self._get_stock_item(code)
+        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
 
         return render(request, self.template_name, context = {
             'view_title': 'Create Pivot',
             'stock_item': stock_item,
-            'pivot_form': self._get_pivot_form(stock_item.id),
+            'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
         })
 
     def post(self, request, *args, **kwargs):
         pivot_form = PivotForm(request.POST)
-        stock_item = self._get_stock_item(self.kwargs.get('code'))
+        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
 
         if pivot_form.is_valid():
             pivot = pivot_form.save(commit = False)
@@ -82,7 +76,7 @@ class CreatePivotProc(LoginRequiredMixin, View):
             return render(request, self.template_name, context = {
                 'view_title': 'Create Pivot',
                 'stock_item': stock_item,
-                'pivot_form': self._get_pivot_form(stock_item.id),
+                'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
                 'errors'    : pivot_form.errors,
             })
 
@@ -131,7 +125,6 @@ class FinanceInfo(LoginRequiredMixin, View):
 
             mongo = MongoDB()
             result = mongo.remove('finance_info', { "stock_items_code": code, "year": int(year) })
-            print(result)
 
         except Exception as e:
             if isinstance(e, (ValueError, JSONDecodeError)):
@@ -142,7 +135,3 @@ class FinanceInfo(LoginRequiredMixin, View):
             return JsonResponse({
                 'code': '0000'
             })
-
-
-def popup_close():
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
