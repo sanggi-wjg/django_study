@@ -3,7 +3,7 @@ from datetime import datetime
 from json.decoder import JSONDecodeError
 
 from bson.json_util import dumps
-from django.http import HttpResponseBadRequest, HttpResponseServerError, JsonResponse, HttpResponseNotAllowed
+from django.http import HttpResponseBadRequest, HttpResponseServerError, JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
@@ -25,8 +25,6 @@ class InQueue(View):
         mongo = MongoDB()
         try:
             query_result = mongo.find_list('in_queue', query = { })
-            query_result = dumps(query_result)
-            print_yellow(query_result)
 
         except Exception as e:
             print_red(e.__class__, e.__str__())
@@ -35,7 +33,7 @@ class InQueue(View):
         finally:
             mongo.close()
 
-        return JsonResponse({ 'code': '0000', 'datalist': query_result }, content_type = self.content_type)
+        return HttpResponse(dumps({ 'code': '0000', 'datalist': query_result }), content_type = self.content_type)
 
     ###############################################################################
 
