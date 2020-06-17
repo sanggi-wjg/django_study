@@ -167,3 +167,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/home/django_sample/static/',
 ]
+
+APPEND_SLASH = False
