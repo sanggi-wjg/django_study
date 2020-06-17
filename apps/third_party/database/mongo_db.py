@@ -37,8 +37,11 @@ class MongoDB:
     def find_one(self, collection_name: str, query):
         return self.db[collection_name].find_one(query)
 
-    def find_list(self, collection_name: str, query):
-        return self.db[collection_name].find(query)
+    def find_list(self, collection_name: str, query, limit = None, sort = None, projection = None):
+        if projection is None:
+            projection = { '_id': False }
+
+        return self.db[collection_name].find(query, projection = projection)
 
     def count(self, collection_name: str, query):
         return self.db[collection_name].count_documents(query)

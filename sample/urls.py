@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.in_queue.views import InQueueProc, InQueueList
+from apps.in_queue.views import InQueue
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, FinanceInfo
 
@@ -35,7 +35,7 @@ urlpatterns = [
     path('stocks/item/<str:code>/pivot', CreatePivotProc.as_view()),
     path('stocks/item/<str:code>/finance-info', FinanceInfo.as_view()),
 
-    path('in-queue/', InQueueProc.as_view()),
+    path('data/in-queue/', InQueue.as_view()),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 
