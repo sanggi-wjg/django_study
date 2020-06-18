@@ -7,6 +7,9 @@ from apps.third_party.util.exception import DBSelectNone
 
 
 class Mongo_InQueue(MongoDAO):
+    """
+    :type mongo: ../MongoDB.py
+    """
 
     @staticmethod
     def get_list(mongo):
@@ -41,11 +44,30 @@ class Mongo_InQueue(MongoDAO):
         return document_ids
 
     @staticmethod
-    def delete_productCd(mongo, productCd = None):
+    def update_productCd_one(mongo, productCd = None, data = None):
+        try:
+            if not productCd: raise ValueError('Empty productCd')
+            if not data: raise ValueError('Empty data')
+
+            document = mongo.update_one(
+                'in_queue',
+                document_id = { 'productCd': productCd },
+                data = data,
+                upsert = True,
+            )
+            print(document.raw_result)
+
+        except Exception as e:
+            raise e
+
+        return document.modified_count
+
+    @staticmethod
+    def delete_productCd_one(mongo, productCd = None):
         try:
             if not productCd: raise ValueError('Empty productCd')
 
-            document = mongo.remove('in_queue', { 'productCd': productCd })
+            document = mongo.delete_one('in_queue', { 'productCd': productCd })
 
         except Exception as e:
             raise e

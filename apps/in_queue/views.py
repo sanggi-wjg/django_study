@@ -64,7 +64,20 @@ class InQueueOne(View):
     ###############################################################################
 
     def patch(self, request, *args, **kwargs):
-        return HttpResponseNotAllowed(self.permitted_methods)
+        try:
+            result = Mongo_InQueue().query(
+                'update_productCd_one',
+                productCd = self.kwargs.get('productCd'),
+                data = {
+                    'productName': 'TEST'
+                }
+            )
+
+        except Exception as e:
+            print_exception()
+            return HttpJsonResponse.fail(e, e.__str__())
+
+        return HttpJsonResponse.success({ 'code': '0000', 'result': result })
 
     ###############################################################################
 

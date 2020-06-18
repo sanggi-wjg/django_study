@@ -19,9 +19,15 @@ class MongoDB:
     def __del__(self):
         self.close()
 
-    ##############################################################################################
-    # INSERT
-    ##############################################################################################
+    """
+    INSERT
+    
+    :rtype InsertOneResult, InsertManyResult
+    :returns properties
+        inserted_id
+        deleted_count
+    """
+
     def create(self, collection_name: str, data):
         document = self.db[collection_name].insert_one(data)
         return document.inserted_id
@@ -30,10 +36,11 @@ class MongoDB:
         document = self.db[collection_name].insert_many(data)
         return document.inserted_ids
 
-    ##############################################################################################
-    # SELECT
-    ##############################################################################################
-    def find_one(self, collection_name: str, query, projection = None):
+    """
+    SELECT
+    """
+
+    def find_one(self, collection_name: str, query, limit = None, sort = None, projection = None):
         if projection is None:
             projection = { '_id': False }
 
@@ -48,27 +55,46 @@ class MongoDB:
     def count(self, collection_name: str, query):
         return self.db[collection_name].count_documents(query)
 
-    ##############################################################################################
-    # UPDATE
-    ##############################################################################################
-    def update(self, collection_name: str, document_id, data, multi = True):
-        document = self.db(collection_name).update(document_id, { "$set": data }, multi = multi)
+    """
+    UPDATE
+    
+    :rtype UpdateResult
+    :returns properties
+        raw_result
+        matched_count
+        modified_count
+        upserted_id
+    """
+
+    def update_one(self, collection_name: str, document_id, data, upsert = True):
+        document = self.db[collection_name].update_one(document_id, { "$set": data }, upsert = upsert)
         return document
 
-    def update_or_create(self, collection_name: str, document_id, data):
-        document = self.db[collection_name].update_one(document_id, { "$set": data }, upsert = True)
+    def update_list(self, collection_name: str, document_id, data, upsert = True):
+        document = self.db(collection_name).update_many(document_id, { "$set": data }, upsert = upsert)
         return document
 
-    ##############################################################################################
-    # DELETE
-    ##############################################################################################
-    def remove(self, collection_name: str, document_id):
+    """
+    DELETE
+    
+    :rtype DeleteResult
+    :returns properties
+        raw_result
+        deleted_count
+    """
+
+    def delete_one(self, collection_name: str, document_id):
         document = self.db[collection_name].delete_one(document_id)
         return document
 
-    ##############################################################################################
-    # ETC
-    ##############################################################################################
+    def delete_list(self, collection_name: str, document_id):
+        document = self.db[collection_name].delete_many(document_id)
+        return document
+
+    """
+    ETC
+    """
+
     def close(self):
         self.client.close()
 
