@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
-from apps.in_queue.http_response import http_response_failed, http_response_success, http_response_success_mongo
+from apps.in_queue.http_response import HttpJsonResponse
 from apps.in_queue.vos import InQueue
 from apps.third_party.database.mongo_dao import MongoDAO
 from apps.third_party.database.mongo_db import MongoDB
@@ -29,12 +29,12 @@ class InQueue(View):
 
         except Exception as e:
             print_red(e.__class__, e.__str__())
-            return http_response_failed(e, response_msg = e.__str__(), content_type = self.content_type)
+            return HttpJsonResponse.fail(e, e.__str__())
 
         finally:
             mongo.close()
 
-        return http_response_success_mongo({ 'code': '0000', 'data': query_result })
+        return HttpJsonResponse.success_mongo({ 'code': '0000', 'data': query_result })
 
     ###############################################################################
 
@@ -72,14 +72,14 @@ class InQueue(View):
 
         except Exception as e:
             print_red(e.__class__, e.__str__())
-            return http_response_failed(e, response_msg = e.__str__())
+            return HttpJsonResponse.fail(e, e.__str__())
 
         finally:
             mongo.close()
 
-        return http_response_success({ 'code': '0000' })
+        return HttpJsonResponse.success({ 'code': '0000' })
 
-    ###############################################################################
+        ###############################################################################
 
 
 @method_decorator(csrf_exempt, name = 'dispatch')
@@ -93,9 +93,9 @@ class InQueueOne(View):
 
         except Exception as e:
             print_exception()
-            return http_response_failed(e, response_msg = e.__str__())
+            return HttpJsonResponse.fail(e, e.__str__())
 
-        return http_response_success_mongo({ 'code': '0000', 'data': product })
+        return HttpJsonResponse.success_mongo({ 'code': '0000', 'data': product })
 
     ###############################################################################
 
@@ -115,6 +115,6 @@ class InQueueOne(View):
 
         except Exception as e:
             print_exception()
-            return http_response_failed(e, response_msg = e.__str__())
+            return HttpJsonResponse.fail(e, e.__str__())
 
-        return http_response_success({ 'code': '0000', 'delete_count': delete_count })
+        return HttpJsonResponse.success({ 'code': '0000', 'delete_count': delete_count })

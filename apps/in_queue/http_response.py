@@ -7,20 +7,23 @@ from django.http import HttpResponseBadRequest, HttpResponseServerError, HttpRes
 from apps.third_party.util.exception import DBError
 
 
-def http_response_failed(e, response_msg = None, content_type = 'application/json'):
-    if isinstance(e, (ValueError, JSONDecodeError,)):
-        return HttpResponseBadRequest(json.dumps({ 'code': '1111', 'msg': response_msg }), content_type = content_type)
+class HttpJsonResponse:
 
-    if isinstance(e, (DBError,)):
-        return HttpResponseBadRequest(json.dumps({ 'code': '2222', 'msg': response_msg }), content_type = content_type)
+    @staticmethod
+    def fail(e, response_msg, content_type = 'application/json'):
+        if isinstance(e, (ValueError, JSONDecodeError,)):
+            return HttpResponseBadRequest(json.dumps({ 'code': '1111', 'msg': response_msg }), content_type = content_type)
 
-    else:
-        return HttpResponseServerError(json.dumps({ 'code': '3333', 'msg': response_msg }), content_type = content_type)
+        elif isinstance(e, (DBError,)):
+            return HttpResponseBadRequest(json.dumps({ 'code': '2222', 'msg': response_msg }), content_type = content_type)
 
+        else:
+            return HttpResponseServerError(json.dumps({ 'code': '3333', 'msg': response_msg }), content_type = content_type)
 
-def http_response_success(response_data, content_type = 'application/json'):
-    return HttpResponse(json.dumps(response_data), content_type = content_type)
+    @staticmethod
+    def success(response_data, content_type = 'application/json', status_code = 200):
+        return HttpResponse(json.dumps(response_data), content_type = content_type, status = status_code)
 
-
-def http_response_success_mongo(response_data, content_type = 'application/json'):
-    return HttpResponse(dumps(response_data), content_type = content_type)
+    @staticmethod
+    def success_mongo(response_data, content_type = 'application/json', status_code = 200):
+        return HttpResponse(dumps(response_data), content_type = content_type, status = status_code)
