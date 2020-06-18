@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'apps.stock',
     'apps.third_party.database',
     'apps.third_party.util',
+
+    # 'rest_framework',
+    # 'drf_yasg',
     'debug_toolbar',
 ]
 
