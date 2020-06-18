@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponseNotAllowed
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -5,7 +7,7 @@ from django.views.generic.base import View
 
 from apps.in_queue.http_response import HttpJsonResponse
 from apps.third_party.database.collections.in_queue import Mongo_InQueue
-from apps.third_party.util.colorful import print_red
+from apps.third_party.util.colorful import print_red, print_green
 from apps.third_party.util.exception import print_exception
 
 
@@ -65,12 +67,12 @@ class InQueueOne(View):
 
     def patch(self, request, *args, **kwargs):
         try:
+            request_body = json.loads(request.body)
+
             result = Mongo_InQueue().query(
                 'update_productCd_one',
                 productCd = self.kwargs.get('productCd'),
-                data = {
-                    'productName': 'TEST'
-                }
+                data = request_body
             )
 
         except Exception as e:

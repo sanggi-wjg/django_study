@@ -53,9 +53,9 @@ class Mongo_InQueue(MongoDAO):
                 'in_queue',
                 document_id = { 'productCd': productCd },
                 data = data,
-                upsert = True,
             )
-            print(document.raw_result)
+            from apps.third_party.util.colorful import print_yellow
+            print_yellow(document.raw_result)
 
         except Exception as e:
             raise e

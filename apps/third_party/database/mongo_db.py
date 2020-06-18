@@ -66,12 +66,12 @@ class MongoDB:
         upserted_id
     """
 
-    def update_one(self, collection_name: str, document_id, data, upsert = True):
-        document = self.db[collection_name].update_one(document_id, { "$set": data }, upsert = upsert)
+    def update_one(self, collection_name: str, document_id, data, upsert = False):
+        document = self.db[collection_name].update_one(document_id, { '$set': data }, upsert = upsert)
         return document
 
-    def update_list(self, collection_name: str, document_id, data, upsert = True):
-        document = self.db(collection_name).update_many(document_id, { "$set": data }, upsert = upsert)
+    def update_list(self, collection_name: str, document_id, data, upsert = False):
+        document = self.db(collection_name).update_many(document_id, { '$set': data }, upsert = upsert)
         return document
 
     """
