@@ -8,9 +8,10 @@ from django.views.generic.base import View
 
 from apps.in_queue.http_response import http_response_failed, http_response_success, http_response_success_mongo
 from apps.in_queue.vos import InQueue
+from apps.third_party.database.mongo_dao import MongoDAO
 from apps.third_party.database.mongo_db import MongoDB
-from apps.third_party.util.colorful import print_red, print_yellow
-from apps.third_party.util.exception import print_exception, DBSelectNone
+from apps.third_party.util.colorful import print_red
+from apps.third_party.util.exception import print_exception
 
 
 @method_decorator(csrf_exempt, name = 'dispatch')
@@ -86,36 +87,13 @@ class InQueueOne(View):
     content_type = 'application/json'
     permitted_methods = ['get', 'delete']
 
-    def _get_productCd_one(self):
-        mongo = MongoDB()
-        try:
-            productCd = self.kwargs.get('productCd')
-            if not self.kwargs['productCd']: raise ValueError('Empty productCd')
-
-            query_result = mongo.find_one('in_queue', { 'productCd': productCd })
-            if not query_result: raise DBSelectNone('No exist product')
-
-        except Exception as e:
-            raise e
-
-        finally:
-            mongo.close()
-
-        return query_result
-
-    ###############################################################################
-
     def get(self, request, *args, **kwargs):
-        mongo = MongoDB()
         try:
-            product = self._get_productCd_one()
+            product = MongoDAO.get_productCd_one(self.kwargs.get('productCd'))
 
         except Exception as e:
             print_exception()
             return http_response_failed(e, response_msg = e.__str__())
-
-        finally:
-            mongo.close()
 
         return http_response_success_mongo({ 'code': '0000', 'data': product })
 
@@ -132,15 +110,11 @@ class InQueueOne(View):
     ###############################################################################
 
     def delete(self, request, *args, **kwargs):
-        mongo = MongoDB()
         try:
-            self._get_productCd_one()
+            MongoDAO.delete_productCd(self.kwargs.get('productCd'))
 
         except Exception as e:
             print_exception()
             return http_response_failed(e, response_msg = e.__str__())
-
-        finally:
-            mongo.close()
 
         return http_response_success({ 'code': '0000' })

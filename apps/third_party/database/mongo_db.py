@@ -51,18 +51,18 @@ class MongoDB:
     ##############################################################################################
     def update(self, collection_name: str, document_id, data, multi = True):
         document = self.db(collection_name).update(document_id, { "$set": data }, multi = multi)
-        return document.acknowledged
+        return document
 
     def update_or_create(self, collection_name: str, document_id, data):
         document = self.db[collection_name].update_one(document_id, { "$set": data }, upsert = True)
-        return document.acknowledged
+        return document
 
     ##############################################################################################
     # DELETE
     ##############################################################################################
     def remove(self, collection_name: str, document_id):
         document = self.db[collection_name].delete_one(document_id)
-        return document.acknowledged
+        return document
 
     ##############################################################################################
     # ETC

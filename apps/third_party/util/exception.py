@@ -39,5 +39,13 @@ class DBUpdateError(DBError):
     pass
 
 
+class DBUpdateNone(DBError):
+    pass
+
+
 class DBDeleteError(DBError):
+    pass
+
+
+class DBDeleteNone(DBError):
     pass
