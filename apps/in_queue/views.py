@@ -89,7 +89,7 @@ class InQueueOne(View):
 
     def get(self, request, *args, **kwargs):
         try:
-            product = MongoDAO.get_productCd_one(self.kwargs.get('productCd'))
+            product = MongoDAO().query('get_productCd_one', productCd = self.kwargs.get('productCd'))
 
         except Exception as e:
             print_exception()
@@ -111,10 +111,10 @@ class InQueueOne(View):
 
     def delete(self, request, *args, **kwargs):
         try:
-            MongoDAO.delete_productCd(self.kwargs.get('productCd'))
+            delete_count = MongoDAO().query('delete_productCd', productCd = self.kwargs.get('productCd'))
 
         except Exception as e:
             print_exception()
             return http_response_failed(e, response_msg = e.__str__())
 
-        return http_response_success({ 'code': '0000' })
+        return http_response_success({ 'code': '0000', 'delete_count': delete_count })

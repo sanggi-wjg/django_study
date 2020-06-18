@@ -1,5 +1,4 @@
 import pymongo
-from bson import ObjectId
 
 
 class MongoDB:
@@ -34,8 +33,11 @@ class MongoDB:
     ##############################################################################################
     # SELECT
     ##############################################################################################
-    def find_one(self, collection_name: str, query):
-        return self.db[collection_name].find_one(query)
+    def find_one(self, collection_name: str, query, projection = None):
+        if projection is None:
+            projection = { '_id': False }
+
+        return self.db[collection_name].find_one(query, projection = projection)
 
     def find_list(self, collection_name: str, query, limit = None, sort = None, projection = None):
         if projection is None:

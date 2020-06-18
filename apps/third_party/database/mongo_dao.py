@@ -1,17 +1,21 @@
 from apps.third_party.database.mongo_db import MongoDB
-from apps.third_party.util.exception import DBSelectNone, DBDeleteNone
+from apps.third_party.util.exception import DBSelectNone
 
 
 class MongoDAO:
 
-    @staticmethod
-    def get_productCd_one(productCd = None):
+    def query(self, query_type = None, **kwargs):
+        try:
+            if not query_type: raise Exception('query_type is empty')
+            if not hasattr(self, query_type): raise Exception('query_type is not proper')
+
+        except Exception as e:
+            raise e
+
         mongo = MongoDB()
         try:
-            if not productCd: raise ValueError('Empty productCd')
-
-            result = mongo.find_one('in_queue', { 'productCd': productCd })
-            if not result: raise DBSelectNone('Non exist product')
+            dispatch_method = getattr(self, query_type)
+            result = dispatch_method(mongo, **kwargs)
 
         except Exception as e:
             raise e
@@ -22,18 +26,26 @@ class MongoDAO:
         return result
 
     @staticmethod
-    def delete_productCd(productCd = None):
-        mongo = MongoDB()
+    def get_productCd_one(mongo, productCd = None):
         try:
             if not productCd: raise ValueError('Empty productCd')
 
-            document = mongo.remove('in_queue', { 'productCd': productCd })
-            if document.deleted_count == 0: raise DBDeleteNone('Delete None')
+            query_result = mongo.find_one('in_queue', { 'productCd': productCd })
+            if not query_result: raise DBSelectNone('Non exist product')
 
         except Exception as e:
             raise e
 
-        finally:
-            mongo.close()
+        return query_result
 
-        return True
+    @staticmethod
+    def delete_productCd(mongo, productCd = None):
+        try:
+            if not productCd: raise ValueError('Empty productCd')
+
+            document = mongo.remove('in_queue', { 'productCd': productCd })
+
+        except Exception as e:
+            raise e
+
+        return document.deleted_count
