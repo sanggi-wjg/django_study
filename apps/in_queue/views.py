@@ -1,16 +1,16 @@
 import json
 from datetime import datetime
-from json.decoder import JSONDecodeError
 
-from bson.json_util import dumps
-from django.http import HttpResponseBadRequest, HttpResponseServerError, JsonResponse, HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseNotAllowed
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
+from apps.in_queue.http_response import http_response_failed, http_response_success, http_response_success_mongo
 from apps.in_queue.vos import InQueue
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.util.colorful import print_red, print_yellow
+from apps.third_party.util.exception import print_exception, DBSelectNone
 
 
 @method_decorator(csrf_exempt, name = 'dispatch')
@@ -28,12 +28,12 @@ class InQueue(View):
 
         except Exception as e:
             print_red(e.__class__, e.__str__())
-            return HttpResponseBadRequest(json.dumps({ 'code': '1111' }), content_type = self.content_type)
+            return http_response_failed(e, response_msg = e.__str__(), content_type = self.content_type)
 
         finally:
             mongo.close()
 
-        return HttpResponse(dumps({ 'code': '0000', 'datalist': query_result }), content_type = self.content_type)
+        return http_response_success_mongo({ 'code': '0000', 'data': query_result })
 
     ###############################################################################
 
@@ -71,23 +71,76 @@ class InQueue(View):
 
         except Exception as e:
             print_red(e.__class__, e.__str__())
+            return http_response_failed(e, response_msg = e.__str__())
 
-            if isinstance(e, (ValueError, JSONDecodeError,)):
-                return HttpResponseBadRequest(json.dumps({ 'code': '1111' }), content_type = self.content_type)
-            else:
-                return HttpResponseServerError(json.dumps({ 'code': '2222' }), content_type = self.content_type)
         finally:
             mongo.close()
 
-        return JsonResponse({ 'code': '0000' }, content_type = self.content_type)
+        return http_response_success({ 'code': '0000' })
+
+    ###############################################################################
+
+
+@method_decorator(csrf_exempt, name = 'dispatch')
+class InQueueOne(View):
+    content_type = 'application/json'
+    permitted_methods = ['get', 'delete']
+
+    def _get_productCd_one(self):
+        mongo = MongoDB()
+        try:
+            productCd = self.kwargs.get('productCd')
+            if not self.kwargs['productCd']: raise ValueError('Empty productCd')
+
+            query_result = mongo.find_one('in_queue', { 'productCd': productCd })
+            if not query_result: raise DBSelectNone('No exist product')
+
+        except Exception as e:
+            raise e
+
+        finally:
+            mongo.close()
+
+        return query_result
+
+    ###############################################################################
+
+    def get(self, request, *args, **kwargs):
+        mongo = MongoDB()
+        try:
+            product = self._get_productCd_one()
+
+        except Exception as e:
+            print_exception()
+            return http_response_failed(e, response_msg = e.__str__())
+
+        finally:
+            mongo.close()
+
+        return http_response_success_mongo({ 'code': '0000', 'data': product })
 
     ###############################################################################
 
     def put(self, request, *args, **kwargs):
         return HttpResponseNotAllowed(self.permitted_methods)
 
+    ###############################################################################
+
     def patch(self, request, *args, **kwargs):
         return HttpResponseNotAllowed(self.permitted_methods)
 
+    ###############################################################################
+
     def delete(self, request, *args, **kwargs):
-        return HttpResponseNotAllowed(self.permitted_methods)
+        mongo = MongoDB()
+        try:
+            self._get_productCd_one()
+
+        except Exception as e:
+            print_exception()
+            return http_response_failed(e, response_msg = e.__str__())
+
+        finally:
+            mongo.close()
+
+        return http_response_success({ 'code': '0000' })
