@@ -60,7 +60,7 @@ class MongoDB:
     
     :rtype UpdateResult
     :returns properties
-        raw_result
+        raw_result : {'n': 1, 'nModified': 1, 'ok': 1.0, 'updatedExisting': True}
         matched_count
         modified_count
         upserted_id

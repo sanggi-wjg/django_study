@@ -3,12 +3,13 @@ from datetime import datetime
 
 from apps.in_queue.vos import InQueue
 from apps.third_party.database.mongo_dao import MongoDAO
+from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.util.exception import DBSelectNone
 
 
 class Mongo_InQueue(MongoDAO):
     """
-    :type mongo: ../MongoDB.py
+    :type mongo: MongoDB
     """
 
     @staticmethod
@@ -25,7 +26,6 @@ class Mongo_InQueue(MongoDAO):
     def get_in_queue_productCd_one(mongo, productCd = None):
         try:
             if not productCd: raise ValueError('Empty productCd')
-
             query_result = mongo.find_one('in_queue', { 'productCd': productCd })
             if not query_result: raise DBSelectNone('Non exist product')
 
@@ -54,8 +54,6 @@ class Mongo_InQueue(MongoDAO):
                 document_id = { 'productCd': productCd },
                 data = data,
             )
-            from apps.third_party.util.colorful import print_yellow
-            print_yellow(document.raw_result)
 
         except Exception as e:
             raise e
