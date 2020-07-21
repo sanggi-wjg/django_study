@@ -39,6 +39,32 @@
             });
         }
 
+        function renew_financial_info()
+        {
+            showGlobalLoading();
+
+            $.ajax({
+                type: 'POST',
+                url: '/stocks/item/{{ stock_item.code }}/scrap-financial',
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                },
+                success: function (result) {
+                    if (result.code === '0000') { location.reload(); }
+                    else { alert(result.msg); }
+                    removeGlobalLoading();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown)
+                    removeGlobalLoading();
+                },
+            })
+        }
+
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
 
@@ -53,7 +79,9 @@
         <h2>{{ stock_item.name }} ({{ stock_item.code }})</h2>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="renew_financial_info();">재무정보
+                    갱신
+                </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
             </div>
             <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
@@ -115,25 +143,38 @@
         <thead>
         <tr>
             <th scope="col">Year</th>
-            <th scope="col">Total Sales</th>
-            <th scope="col">Business Profit</th>
-            <th scope="col">Command</th>
+            <th scope="col">매출액(억원)</th>
+            <th scope="col">YoY(%)</th>
+            <th scope="col">영업이익(억원)</th>
+            <th scope="col">당기순이익(억원)</th>
+            <th scope="col">EPS(원)</th>
+            <th scope="col">PER(배)</th>
+            <th scope="col">PBR(배)</th>
+            <th scope="col">ROE(%)</th>
+            <th scope="col">EV/EBITDA(배)</th>
+            <th scope="col">순부채비율(%)</th>
+            <th scope="col">EPS*ROE</th>
+            <th scope="col">EPS*ROE*Multiple</th>
         </tr>
         </thead>
         <tbody>
+        {% load mathfilters %}
+        {% load humanize %}
         {% for f in finance_info %}
             <tr>
                 <th scope="row"><p>{{ f.year }}</p></th>
-                <td><p>{{ f.total_sales }}</p></td>
-                <td><p>{{ f.business_profit }}</p></td>
-                <td>
-                    <button class="btn btn-sm btn-info modify_finance_info"
-                            stock_items_code="{{ f.stock_items_code }}" year="{{ f.year }}">Modify
-                    </button>
-                    <button type="button" class="btn btn-sm btn-danger delete_finance_info"
-                            stock_items_code="{{ f.stock_items_code }}" year="{{ f.year }}">Delete
-                    </button>
-                </td>
+                <td><p>{{ f.total_sales|intcomma }}</p></td>
+                <td><p>{{ f.total_sales_yoy }}</p></td>
+                <td><p>{{ f.business_profit|intcomma }}</p></td>
+                <td><p>{{ f.net_profit|intcomma }}</p></td>
+                <td><p>{{ f.eps|intcomma }}</p></td>
+                <td><p>{{ f.per }}</p></td>
+                <td><p>{{ f.pbr }}</p></td>
+                <td><p>{{ f.roe }}</p></td>
+                <td><p>{{ f.evebitda }}</p></td>
+                <td><p>{{ f.debt_ratio }}</p></td>
+                <td><p>{{ f.epsroe }}</p></td>
+                <td><p>{{ f.epsroe|mul:section_multiple|floatformat:"0"}}</p></td>
             </tr>
         {% endfor %}
         </tbody>

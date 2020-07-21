@@ -10,7 +10,9 @@ from django.views.generic.base import View
 from apps.stock.forms import FinanceInfoForm, PivotForm
 from apps.stock.models import Items, Pivot
 from apps.third_party.database.mongo_db import MongoDB
+from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.util.comm_helper import popup_close
+from apps.third_party.util.exception import print_exception
 
 
 class StockItemList(LoginRequiredMixin, ListView):
@@ -36,8 +38,12 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
         context['view_title'] = 'Stock Detail'
         context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].id).order_by('stock_items_id', '-date')
         context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] })
+        context['section_multiple'] = self.get_multiple()
 
         return context
+
+    def get_multiple(self):
+        return 0.5
 
 
 class CreatePivotProc(LoginRequiredMixin, View):
@@ -135,3 +141,42 @@ class FinanceInfo(LoginRequiredMixin, View):
             return JsonResponse({
                 'code': '0000'
             })
+
+
+class ScrapFinancialInfo(LoginRequiredMixin, View):
+    """
+    재무정보 스크랩해서 갱신 하기
+    """
+
+    def post(self, request, *args, **kwargs):
+        try:
+            scrap = Scrap_Consensus()
+            result = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = '005930'))
+            self.save_financial_data(result)
+
+        except Exception as e:
+            print_exception()
+            return JsonResponse({ 'code': '1111', 'msg': 'failure' })
+
+        return JsonResponse({ 'code': '0000', 'msg': 'success' })
+
+    def save_financial_data(self, parse_data):
+        for data in parse_data:
+            fs = MongoDB().find_one('finance_info', { "stock_items_code": self.kwargs['code'], 'year': data['year'] })
+
+            if not fs:
+                MongoDB().create('finance_info', {
+                    'stock_items_code': self.kwargs['code'],
+                    'year'            : data['year'],
+                    'total_sales'     : data['total_sales'],
+                    'total_sales_yoy' : data['total_sales_yoy'],
+                    'business_profit' : data['business_profit'],
+                    'net_profit'      : data['net_profit'],
+                    'eps'             : data['eps'],
+                    'per'             : data['per'],
+                    'pbr'             : data['pbr'],
+                    'roe'             : data['roe'],
+                    'evebitda'        : data['evebitda'],
+                    'debt_ratio'      : data['debt_ratio'],
+                    'epsroe'          : int(data['eps'] * data['roe'])
+                })

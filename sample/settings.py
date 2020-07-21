@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'apps.sign',
     'apps.stock',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 
     # 'rest_framework',
     # 'drf_yasg',
+    'mathfilters',
     'debug_toolbar',
 ]
 
