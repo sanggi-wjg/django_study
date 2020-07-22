@@ -174,7 +174,7 @@
                 <td><p>{{ f.evebitda }}</p></td>
                 <td><p>{{ f.debt_ratio }}</p></td>
                 <td><p>{{ f.epsroe }}</p></td>
-                <td><p>{{ f.epsroe|mul:section_multiple|floatformat:"0"}}</p></td>
+                <td><p>{{ f.epsroe|mul:stock_item.stock_section_multiple_id__multiple|floatformat:"0" }}</p></td>
             </tr>
         {% endfor %}
         </tbody>

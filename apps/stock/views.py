@@ -31,30 +31,27 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'stock_item'
 
     def get_object(self, queryset = None):
-        return get_object_or_404(Items, code = self.kwargs['code'])
+        data = Items.objects.select_related('stock_section_name_id', 'stock_section_multiple_id').values(
+            'id', 'name', 'code', 'stock_section_multiple_id__multiple', 'stock_section_name_id__name'
+        ).get(code = self.kwargs['code'])
+        print(data)
+        return data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = 'Stock Detail'
-        context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].id).order_by('stock_items_id', '-date')
+        context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].get('id')).order_by('-date')
         context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] })
-        context['section_multiple'] = self.get_multiple()
-
         return context
-
-    def get_multiple(self):
-        return 0.5
 
 
 class CreatePivotProc(LoginRequiredMixin, View):
     template_name = 'stock/create_pivot_popup.html'
 
     def get(self, request, *args, **kwargs):
-        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
-
         return render(request, self.template_name, context = {
             'view_title': 'Create Pivot',
-            'stock_item': stock_item,
+            'stock_item': get_object_or_404(Items, code = self.kwargs.get('code')),
             'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
         })
 
