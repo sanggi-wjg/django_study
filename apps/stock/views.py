@@ -88,6 +88,22 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
 
+
+class ScrapDemandInfo(LoginRequiredMixin, View):
+    """
+
+    """
+
+    def post(self, request, *args, **kwargs):
+        try:
+            pass
+
+        except Exception as e:
+            print_exception()
+            return JsonResponse({ 'code': '1111', 'msg': 'failure' })
+
+        return JsonResponse({ 'code': '0000', 'msg': 'success' })
+
 # class FinanceInfo(LoginRequiredMixin, View):
 #     template_name = 'stock/create_finance_info_popup.html'
 #

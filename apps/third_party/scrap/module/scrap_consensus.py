@@ -12,15 +12,14 @@ class Scrap_Consensus(ScrapMain):
         result = []
 
         for d in scrap_data:
-            text_to_list = d.text.split(' ')
-            if len(text_to_list) >= 1:
-                if self._is_year_number(text_to_list[0]):
-                    result.append(text_to_list)
+            to_list = d.text.split(' ')
+            if len(to_list) >= 1:
+                if self._is_year_number(to_list[0]):
+                    result.append(to_list)
 
-        return self._parse_to_dict(result)
+        return self._to_dict(result)
 
-    @staticmethod
-    def _parse_to_dict(scrap_data_list):
+    def _to_dict(self, scrap_data_list):
         result = []
 
         for i, data in enumerate(scrap_data_list):

@@ -15,10 +15,13 @@ class ScrapMain:
         self.driver = webdriver.Chrome(executable_path = '/home/django_sample/apps/third_party/scrap/chromedriver', options = options)
 
     def get_scrap_data(self):
-        raise NotImplementedError('scrap_data() is not implemented')
+        raise NotImplementedError('get_scrap_data() is not implemented')
 
     def parse_scrap_data(self, scrap_data):
-        raise NotImplementedError('scrap_data() is not implemented')
+        raise NotImplementedError('parse_scrap_data() is not implemented')
+
+    def _to_dict(self, scrap_data_list):
+        raise NotImplementedError('_to_dict() is not implemented')
 
     def run(self, url, sleep_time = 3):
 
@@ -28,11 +31,10 @@ class ScrapMain:
 
             scrap_data = self.get_scrap_data()
             result = self.parse_scrap_data(scrap_data)
+            return result
 
         except Exception as e:
             raise e
 
         finally:
             self.driver.quit()
-
-        return result
