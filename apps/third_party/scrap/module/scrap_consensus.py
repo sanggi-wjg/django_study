@@ -24,6 +24,12 @@ class Scrap_Consensus(ScrapMain):
         result = []
 
         for i, data in enumerate(scrap_data_list):
+            if len(data) != 12:
+                data.insert(2, '0')
+                data.insert(3, '0')
+                data.insert(10, '0')
+                data.insert(11, '0')
+
             result.append({
                 'year'           : str(data[0]),
                 'total_sales'    : int(escape_number(data[2])),
@@ -51,3 +57,7 @@ class Scrap_Consensus(ScrapMain):
             return True
 
         return False
+
+# if __name__ == '__main__':
+#     scrap = Scrap_Consensus()
+#     scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd=055550')
