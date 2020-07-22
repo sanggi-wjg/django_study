@@ -9,6 +9,7 @@ from django.views.generic.base import View
 
 from apps.stock.forms import FinanceInfoForm, PivotForm
 from apps.stock.models import Items, Pivot
+from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.util.comm_helper import popup_close
@@ -31,11 +32,9 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'stock_item'
 
     def get_object(self, queryset = None):
-        data = Items.objects.select_related('stock_section_name_id', 'stock_section_multiple_id').values(
+        return Items.objects.select_related('stock_section_name_id', 'stock_section_multiple_id').values(
             'id', 'name', 'code', 'stock_section_multiple_id__multiple', 'stock_section_name_id__name'
         ).get(code = self.kwargs['code'])
-        print(data)
-        return data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -49,6 +48,7 @@ class CreatePivotProc(LoginRequiredMixin, View):
     template_name = 'stock/create_pivot_popup.html'
 
     def get(self, request, *args, **kwargs):
+        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
         return render(request, self.template_name, context = {
             'view_title': 'Create Pivot',
             'stock_item': get_object_or_404(Items, code = self.kwargs.get('code')),
@@ -149,31 +149,10 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
         try:
             scrap = Scrap_Consensus()
             result = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = '005930'))
-            self.save_financial_data(result)
+            Mongo_FI().query('register', stock_items_code = self.kwargs['code'], fi_data = result)
 
         except Exception as e:
             print_exception()
             return JsonResponse({ 'code': '1111', 'msg': 'failure' })
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
-
-    def save_financial_data(self, parse_data):
-        for data in parse_data:
-            fs = MongoDB().find_one('finance_info', { "stock_items_code": self.kwargs['code'], 'year': data['year'] })
-
-            if not fs:
-                MongoDB().create('finance_info', {
-                    'stock_items_code': self.kwargs['code'],
-                    'year'            : data['year'],
-                    'total_sales'     : data['total_sales'],
-                    'total_sales_yoy' : data['total_sales_yoy'],
-                    'business_profit' : data['business_profit'],
-                    'net_profit'      : data['net_profit'],
-                    'eps'             : data['eps'],
-                    'per'             : data['per'],
-                    'pbr'             : data['pbr'],
-                    'roe'             : data['roe'],
-                    'evebitda'        : data['evebitda'],
-                    'debt_ratio'      : data['debt_ratio'],
-                    'epsroe'          : int(data['eps'] * data['roe'])
-                })
