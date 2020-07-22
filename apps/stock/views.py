@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
-from apps.stock.forms import FinanceInfoForm, PivotForm
+from apps.stock.forms import PivotForm
 from apps.stock.models import Items, Pivot
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
@@ -32,9 +32,7 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'stock_item'
 
     def get_object(self, queryset = None):
-        return Items.objects.select_related('stock_section_name_id', 'stock_section_multiple_id').values(
-            'id', 'name', 'code', 'stock_section_multiple_id__multiple', 'stock_section_name_id__name'
-        ).get(code = self.kwargs['code'])
+        return Items.objects.get_detail_join_one(stock_code = self.kwargs['code'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,86 +55,19 @@ class CreatePivotProc(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         pivot_form = PivotForm(request.POST)
-        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
 
         if pivot_form.is_valid():
-            pivot = pivot_form.save(commit = False)
-            pivot.stock_items_id = stock_item
-            pivot.base_line = (pivot.prev_closing_price + pivot.prev_low_price + pivot.prev_high_price) / 3
-            pivot.resist_line_1 = (pivot.base_line * 2) - pivot.prev_low_price
-            pivot.resist_line_2 = pivot.base_line + (pivot.prev_high_price - pivot.prev_low_price)
-            pivot.resist_line_3 = pivot.prev_high_price + (pivot.base_line - pivot.prev_low_price) * 2
-            pivot.support_line_1 = (pivot.base_line * 2) - pivot.prev_high_price
-            pivot.support_line_2 = pivot.base_line - (pivot.prev_high_price - pivot.prev_low_price)
-            pivot.support_line_3 = pivot.prev_low_price - (pivot.prev_high_price - pivot.base_line) * 2
-            pivot.recommend_high_price = (pivot.resist_line_1 + pivot.base_line) / 2
-            pivot.recommend_low_price = (pivot.base_line + pivot.support_line_1) / 2
-            pivot.save()
-
+            Pivot.objects.register(self.kwargs['code'], pivot_form)
             return popup_close()
 
         else:
+            stock_item = get_object_or_404(Items, code = self.kwargs['code'])
+
             return render(request, self.template_name, context = {
                 'view_title': 'Create Pivot',
                 'stock_item': stock_item,
                 'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
                 'errors'    : pivot_form.errors,
-            })
-
-
-class FinanceInfo(LoginRequiredMixin, View):
-    template_name = 'stock/create_finance_info_popup.html'
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, context = {
-            'view_title'       : 'Create Finance Info',
-            'finance_info_form': FinanceInfoForm().as_p()
-        })
-
-    def post(self, request, *args, **kwargs):
-        code = self.kwargs.get('code')
-        finance_info_form = FinanceInfoForm(request.POST)
-
-        if finance_info_form.is_valid():
-            mongo = MongoDB()
-            mongo.create('finance_info', {
-                'stock_items_code': code,
-                'year'            : finance_info_form.cleaned_data['year'],
-                'total_sales'     : finance_info_form.cleaned_data['total_sales'],
-                'business_profit' : finance_info_form.cleaned_data['business_profit'],
-            })
-            mongo.close()
-            return popup_close()
-
-        else:
-            return render(request, self.template_name, context = {
-                'view_title'       : 'Create Finance Info',
-                'finance_info_form': FinanceInfoForm().as_p(),
-                'errors'           : finance_info_form.errors
-            })
-
-    def patch(self, request, *args, **kwargs):
-        pass
-
-    def delete(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            code = self.kwargs.get('code')
-            year = data.get('year')
-            if not code: raise ValueError('Empty code')
-            if not year: raise ValueError('Empty year')
-
-            mongo = MongoDB()
-            result = mongo.remove('finance_info', { "stock_items_code": code, "year": int(year) })
-
-        except Exception as e:
-            if isinstance(e, (ValueError, JSONDecodeError)):
-                return HttpResponseBadRequest(json.dumps({ 'code': '1111', 'msg': e.__str__() }))
-            else:
-                return HttpResponseServerError(json.dumps({ 'code': '2222', 'msg': e.__str__() }))
-        else:
-            return JsonResponse({
-                'code': '0000'
             })
 
 
@@ -148,7 +79,7 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         try:
             scrap = Scrap_Consensus()
-            result = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = '005930'))
+            result = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['code']))
             Mongo_FI().query('register', stock_items_code = self.kwargs['code'], fi_data = result)
 
         except Exception as e:
@@ -156,3 +87,58 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
             return JsonResponse({ 'code': '1111', 'msg': 'failure' })
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
+
+# class FinanceInfo(LoginRequiredMixin, View):
+#     template_name = 'stock/create_finance_info_popup.html'
+#
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name, context = {
+#             'view_title'       : 'Create Finance Info',
+#             'finance_info_form': FinanceInfoForm().as_p()
+#         })
+#
+#     def post(self, request, *args, **kwargs):
+#         code = self.kwargs.get('code')
+#         finance_info_form = FinanceInfoForm(request.POST)
+#
+#         if finance_info_form.is_valid():
+#             mongo = MongoDB()
+#             mongo.create('finance_info', {
+#                 'stock_items_code': code,
+#                 'year'            : finance_info_form.cleaned_data['year'],
+#                 'total_sales'     : finance_info_form.cleaned_data['total_sales'],
+#                 'business_profit' : finance_info_form.cleaned_data['business_profit'],
+#             })
+#             mongo.close()
+#             return popup_close()
+#
+#         else:
+#             return render(request, self.template_name, context = {
+#                 'view_title'       : 'Create Finance Info',
+#                 'finance_info_form': FinanceInfoForm().as_p(),
+#                 'errors'           : finance_info_form.errors
+#             })
+#
+#     def patch(self, request, *args, **kwargs):
+#         pass
+#
+#     def delete(self, request, *args, **kwargs):
+#         try:
+#             data = json.loads(request.body)
+#             code = self.kwargs.get('code')
+#             year = data.get('year')
+#             if not code: raise ValueError('Empty code')
+#             if not year: raise ValueError('Empty year')
+#
+#             mongo = MongoDB()
+#             result = mongo.remove('finance_info', { "stock_items_code": code, "year": int(year) })
+#
+#         except Exception as e:
+#             if isinstance(e, (ValueError, JSONDecodeError)):
+#                 return HttpResponseBadRequest(json.dumps({ 'code': '1111', 'msg': e.__str__() }))
+#             else:
+#                 return HttpResponseServerError(json.dumps({ 'code': '2222', 'msg': e.__str__() }))
+#         else:
+#             return JsonResponse({
+#                 'code': '0000'
+#             })
