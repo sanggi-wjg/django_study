@@ -20,7 +20,7 @@ from django.urls import path, include
 
 from apps.in_queue.views import InQueue, InQueueOne
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
-from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SectorList
+from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SectorList, SectorDetail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,6 +40,7 @@ urlpatterns = [
 
     # 업종
     path('stocks/sector/', SectorList.as_view()),
+    path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
 
     path('data/in-queue/', InQueue.as_view()),
     path('data/in-queue/<str:productCd>', InQueueOne.as_view()),

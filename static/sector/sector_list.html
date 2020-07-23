@@ -16,14 +16,18 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     </div>
 
-    {% for sector in sectors %}
-        <div class="card" style="width: 18rem;">
-            <div class="card-body" style="cursor: pointer;">
-                <h5 class="card-title" onclick="location.replace('{{ sector.id }}')">{{ sector.name }}</h5>
+    <div class="row">
+        {% for sector in sectors %}
+            <div class="col-sm-3">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body" style="cursor: pointer;">
+                        <h5 class="card-title" onclick="location.replace('{{ sector.id }}')">{{ sector.name }}</h5>
+                    </div>
+                </div>
+                <br>
             </div>
-        </div>
-        <br>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
     {% include 'comm/page.html' %}
 

@@ -1,6 +1,5 @@
-import copy
-
 import pymongo
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -37,7 +36,7 @@ class StockItemList(LoginRequiredMixin, MyListView):
     block_size = 10
     template_name = 'stock/stock_item_list.html'
     context_object_name = 'stock_items'
-    ordering = ['code']
+    ordering = ['stock_section_name_id']
     extra_context = {
         'view_title': '기업 리스트'
     }
@@ -149,6 +148,39 @@ class SectorList(LoginRequiredMixin, MyListView):
     extra_context = {
         'view_title': '업종 리스트'
     }
+
+
+class SectorDetail(LoginRequiredMixin, DetailView):
+    template_name = 'sector/sector_detail.html'
+    context_object_name = 'sector'
+
+    def get_object(self, queryset = None):
+        return get_object_or_404(Section_Name, id = self.kwargs['sector_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_title'] = 'Sector Detail'
+        context['finance_info'] = self._get_sector_finance_info()
+        return context
+
+    def _get_sector_finance_info(self):
+        finance_info, company_finance_info = { }, { }
+
+        stock_items = Items.objects.filter(stock_section_name_id = self.kwargs['sector_id']).order_by('id')
+        for stock in stock_items:
+            finance_info.setdefault(stock.name, MongoDB().find_list('finance_info', { 'stock_items_code': stock.code }).sort('year'))
+
+        for company_name, info in finance_info.items():
+            for i in info:
+                if company_name not in company_finance_info:
+                    company_finance_info.setdefault(company_name, { })
+
+                if i['year'] not in company_finance_info[company_name].keys():
+                    company_finance_info[company_name].setdefault(i['year'], [i])
+                else:
+                    company_finance_info[company_name][i['year']].append(i)
+
+        return company_finance_info
 
 # class FinanceInfo(LoginRequiredMixin, View):
 #     template_name = 'stock/create_finance_info_popup.html'
