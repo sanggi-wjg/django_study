@@ -11,6 +11,7 @@ class Mongo_Demand(MongoDAO):
 
         for data in demand_data:
             fs = mongo.find_one(collection_name, { "stock_items_code": stock_items_code, 'date': data['date'] })
+            print(fs)
 
             if not fs:
                 document_id = mongo.create(collection_name, {

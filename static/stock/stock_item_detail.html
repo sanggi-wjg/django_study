@@ -112,11 +112,10 @@
     </table>
 
     <hr>
-
     <h4>Finance Information</h4>
     <table class="table table-bordered table-hover table-sm">
         <thead>
-        <tr class="table-primary">
+        <tr>
             <th scope="col">Year</th>
             <th scope="col">매출액(억원)</th>
             <th scope="col">YoY(%)</th>
@@ -150,6 +149,37 @@
                 <td><p>{{ f.debt_ratio }}</p></td>
                 <td><p>{{ f.epsroe }}</p></td>
                 <td><p>{{ f.epsroe|mul:stock_item.stock_section_multiple_id__multiple|floatformat:"0" }}</p></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <h4>Demand Information</h4>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">일자</th>
+            <th scope="col">보유주식수</th>
+            <th scope="col">지분율(%)</th>
+            <th scope="col">순매수량</th>
+            <th scope="col">순매수량</th>
+            <th scope="col">종가</th>
+            <th scope="col">전일 대비</th>
+            <th scope="col">등락률(%)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for d in demand_info %}
+            <tr>
+                <td><p>{{ d.date }}</p></td>
+                <td><p>{{ d.foreign_total_own|intcomma }}</p></td>
+                <td><p>{{ d.foreign_total_own_ratio }}</p></td>
+                <td><p>{{ d.foreign_total_own_ratio }}</p></td>
+                <td><p>{{ d.foreign_purchase_volume }}</p></td>
+                <td><p>{{ d.closing_price }}</p></td>
+                <td><p>{{ d.compare_prev_day }}</p></td>
+                <td><p>{{ d.fluctuation_ratio }}</p></td>
             </tr>
         {% endfor %}
         </tbody>

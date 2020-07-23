@@ -41,6 +41,7 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
         context['view_title'] = 'Stock Detail'
         context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].get('id')).order_by('-date')
         context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] })
+        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] })
         return context
 
 
