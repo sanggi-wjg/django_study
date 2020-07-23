@@ -1,14 +1,14 @@
-import json
-from json.decoder import JSONDecodeError
+import copy
 
+import pymongo
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from apps.stock.forms import PivotForm
-from apps.stock.models import Items, Pivot
+from apps.stock.models import Items, Pivot, Section_Name
 from apps.third_party.database.collections.demand import Mongo_Demand
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
@@ -18,14 +18,28 @@ from apps.third_party.util.comm_helper import popup_close
 from apps.third_party.util.exception import print_exception
 
 
-class StockItemList(LoginRequiredMixin, ListView):
+class MyListView(ListView):
+
+    def get_context_data(self, **kwargs):
+        context = super(MyListView, self).get_context_data()
+
+        if self.paginate_by and hasattr(self, 'block_size'):
+            start_index = int((context['page_obj'].number - 1) / self.block_size) * self.block_size
+            end_index = min(start_index + self.block_size, len(context['paginator'].page_range))
+            context['page_range'] = context['paginator'].page_range[start_index:end_index]
+
+        return context
+
+
+class StockItemList(LoginRequiredMixin, MyListView):
     model = Items
-    paginate_by = 10
+    paginate_by = 20
+    block_size = 10
     template_name = 'stock/stock_item_list.html'
     context_object_name = 'stock_items'
     ordering = ['code']
     extra_context = {
-        'view_title': 'Stock List'
+        'view_title': '기업 리스트'
     }
 
 
@@ -40,9 +54,25 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['view_title'] = 'Stock Detail'
         context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].get('id')).order_by('-date')
-        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] })
-        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] })
+        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] }).sort('year')
+
+        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING)
+        context['summary_demand_info'] = {
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(5)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(10)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(15)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(20)),
+        }
         return context
+
+    def _get_sums(self, data):
+        foreign_sum, company_sum = 0, 0
+
+        for d in data:
+            foreign_sum += d.get('foreign_purchase_volume')
+            company_sum += d.get('company_purchase_volume')
+
+        return foreign_sum, company_sum
 
 
 class CreatePivotProc(LoginRequiredMixin, View):
@@ -94,7 +124,6 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
 
 class ScrapDemandInfo(LoginRequiredMixin, View):
     """
-
     """
 
     def post(self, request, *args, **kwargs):
@@ -108,6 +137,18 @@ class ScrapDemandInfo(LoginRequiredMixin, View):
             return JsonResponse({ 'code': '1111', 'msg': 'failure' })
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
+
+
+class SectorList(LoginRequiredMixin, MyListView):
+    model = Section_Name
+    paginate_by = 20
+    block_size = 10
+    template_name = 'sector/sector_list.html'
+    context_object_name = 'sectors'
+    ordering = ['id']
+    extra_context = {
+        'view_title': '업종 리스트'
+    }
 
 # class FinanceInfo(LoginRequiredMixin, View):
 #     template_name = 'stock/create_finance_info_popup.html'

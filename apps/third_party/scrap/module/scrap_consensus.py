@@ -13,7 +13,7 @@ class Scrap_Consensus(ScrapMain):
 
         for d in scrap_data:
             to_list = d.text.split(' ')
-            if len(to_list) >= 1:
+            if len(to_list) > 2:
                 if self._is_year_number(to_list[0]):
                     result.append(to_list)
 
