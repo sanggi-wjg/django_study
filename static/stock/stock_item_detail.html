@@ -39,32 +39,6 @@
             });
         }
 
-        function renew_financial_info()
-        {
-            showGlobalLoading();
-
-            $.ajax({
-                type: 'POST',
-                url: '/stocks/item/{{ stock_item.code }}/scrap-financial',
-                accept: 'application/json',
-                dataType: 'json',
-                processData: false,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
-                    xhr.setRequestHeader('Content-Type', 'application/json')
-                },
-                success: function (result) {
-                    if (result.code === '0000') { location.reload(); }
-                    else { alert(result.msg); }
-                    removeGlobalLoading();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown)
-                    removeGlobalLoading();
-                },
-            })
-        }
-
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
 
@@ -79,10 +53,13 @@
         <h2>{{ stock_item.name }} ({{ stock_item.code }})</h2>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="renew_financial_info();">재무정보
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="request_ajax_n_reload('/stocks/item/{{ stock_item.code }}/scrap-financial')">재무정보
                     갱신
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="request_ajax_n_reload('/stocks/item/{{ stock_item.code }}/scrap-demand')">수급 갱신
+                </button>
             </div>
             <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -116,9 +93,6 @@
         </tr>
         </thead>
         <tbody>
-
-        </tbody>
-
         {% for p in pivot %}
             <tr>
                 <th scope="row">{{ p.date | date:"Y-m-d" }}</th>
@@ -134,14 +108,15 @@
                 <td>{{ p.support_line_3 }}</td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 
     <hr>
 
     <h4>Finance Information</h4>
-    <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-hover table-sm">
         <thead>
-        <tr>
+        <tr class="table-primary">
             <th scope="col">Year</th>
             <th scope="col">매출액(억원)</th>
             <th scope="col">YoY(%)</th>

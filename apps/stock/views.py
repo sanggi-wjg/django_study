@@ -9,9 +9,11 @@ from django.views.generic.base import View
 
 from apps.stock.forms import PivotForm
 from apps.stock.models import Items, Pivot
+from apps.third_party.database.collections.demand import Mongo_Demand
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
+from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
 from apps.third_party.util.comm_helper import popup_close
 from apps.third_party.util.exception import print_exception
 
@@ -79,8 +81,8 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         try:
             scrap = Scrap_Consensus()
-            result = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['code']))
-            Mongo_FI().query('register', stock_items_code = self.kwargs['code'], fi_data = result)
+            scrap_data = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['code']))
+            Mongo_FI().query('register', stock_items_code = self.kwargs['code'], fi_data = scrap_data)
 
         except Exception as e:
             print_exception()
@@ -96,7 +98,9 @@ class ScrapDemandInfo(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         try:
-            pass
+            scrap = Scrap_Demand()
+            scrap_data = scrap.run('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = self.kwargs['code']))
+            Mongo_Demand().query('register', stock_items_code = self.kwargs['code'], demand_data = scrap_data)
 
         except Exception as e:
             print_exception()

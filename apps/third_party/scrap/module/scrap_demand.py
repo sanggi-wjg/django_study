@@ -36,10 +36,9 @@ class Scrap_Demand(ScrapMain):
                 'fluctuation_ratio'      : float(escape_char(data[7])),
             })
 
-        pprint(result)
         return result
 
 
-if __name__ == '__main__':
-    scrap = Scrap_Demand()
-    scrap.run('https://finance.daum.net/quotes/A055550#influential_investors/home')
+# if __name__ == '__main__':
+#     scrap = Scrap_Demand()
+#     scrap.run('https://finance.daum.net/quotes/A055550#influential_investors/home')

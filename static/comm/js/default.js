@@ -14,3 +14,29 @@ function removeGlobalLoading()
     document.getElementById("GlobalLoadingBox").style.display = "none";
     return true;
 }
+
+function request_ajax_n_reload(url)
+{
+    showGlobalLoading();
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        accept: 'application/json',
+        dataType: 'json',
+        processData: false,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+            xhr.setRequestHeader('Content-Type', 'application/json')
+        },
+        success: function (result) {
+            if (result.code === '0000') { location.reload(); }
+            else { alert(result.msg); }
+            removeGlobalLoading();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown)
+            removeGlobalLoading();
+        },
+    })
+}

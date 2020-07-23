@@ -20,7 +20,7 @@ from django.urls import path, include
 
 from apps.in_queue.views import InQueue, InQueueOne
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
-from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo
+from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +36,7 @@ urlpatterns = [
     # path('stocks/item/<str:code>/finance-info', FinanceInfo.as_view()),
 
     path('stocks/item/<str:code>/scrap-financial', ScrapFinancialInfo.as_view()),
+    path('stocks/item/<str:code>/scrap-demand', ScrapDemandInfo.as_view()),
 
     path('data/in-queue/', InQueue.as_view()),
     path('data/in-queue/<str:productCd>', InQueueOne.as_view()),

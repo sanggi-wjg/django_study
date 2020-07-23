@@ -6,14 +6,14 @@ class Mongo_FI(MongoDAO):
     @staticmethod
     def register(mongo, stock_items_code, fi_data):
         if not fi_data: raise ValueError('Empty fi_data')
-
+        collection_name = 'finance_info'
         document_result = []
 
         for data in fi_data:
-            fs = mongo.find_one('finance_info', { "stock_items_code": stock_items_code, 'year': data['year'] })
+            fs = mongo.find_one(collection_name, { "stock_items_code": stock_items_code, 'year': data['year'] })
 
             if not fs:
-                document_id = mongo.create('finance_info', {
+                document_id = mongo.create(collection_name, {
                     'stock_items_code': stock_items_code,
                     'year'            : data['year'],
                     'total_sales'     : data['total_sales'],
@@ -33,7 +33,7 @@ class Mongo_FI(MongoDAO):
             else:
                 if '(E)' in data['year']:
                     document_id = mongo.update_one(
-                        'finance_info',
+                        collection_name,
                         document_id = { 'stock_items_code': stock_items_code, 'year': data['year'] },
                         data = {
                             'total_sales'    : data['total_sales'],
