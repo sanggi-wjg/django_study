@@ -128,7 +128,7 @@
             <th scope="col">EV/EBITDA(배)</th>
             <th scope="col">순부채비율(%)</th>
             <th scope="col">EPS*ROE</th>
-            <th scope="col">EPS*ROE*Multiple</th>
+            <th scope="col">EPS*ROE*PBR</th>
         </tr>
         </thead>
         <tbody>
@@ -148,7 +148,8 @@
                 <td><p>{{ f.evebitda }}</p></td>
                 <td><p>{{ f.debt_ratio }}</p></td>
                 <td><p>{{ f.epsroe|intcomma }}원</p></td>
-                <td><p>{{ f.epsroe|mul:stock_item.stock_section_multiple_id__multiple|floatformat:"0"|intcomma }}원</p>
+                {% comment %}<td><p>{{ f.epsroe|mul:stock_item.stock_section_multiple_id__multiple|floatformat:"0"|intcomma }}원</p>{% endcomment %}
+                <td><p>{{ f.epsroe|mul:f.pbr|floatformat:"0"|intcomma }}원</p>
                 </td>
             </tr>
         {% endfor %}
@@ -178,16 +179,16 @@
         <tr>
             {% for sd in summary_demand_info %}
                 {% if sd.0 > 0 %}
-                    <td><p style="color: red;">{{ sd.0 }}</p></td>
+                    <td><p style="color: red;">{{ sd.0|intcomma }}</p></td>
                 {% else %}
-                    <td><p style="color: blue;">{{ sd.0 }}</p></td>
+                    <td><p style="color: blue;">{{ sd.0|intcomma }}</p></td>
                 {% endif %}
             {% endfor %}
             {% for sd in summary_demand_info %}
                 {% if sd.1 > 0 %}
-                    <td><p style="color: red;">{{ sd.1 }}</p></td>
+                    <td><p style="color: red;">{{ sd.1|intcomma }}</p></td>
                 {% else %}
-                    <td><p style="color: blue;">{{ sd.1 }}</p></td>
+                    <td><p style="color: blue;">{{ sd.1|intcomma }}</p></td>
                 {% endif %}
             {% endfor %}
         </tr>
@@ -218,16 +219,16 @@
                 <td><p>{{ d.foreign_total_own|intcomma }}</p></td>
                 <td><p>{{ d.foreign_total_own_ratio }}%</p></td>
                 {% if d.foreign_purchase_volume > 0 %}
-                    <td><p style="color: red;">{{ d.foreign_purchase_volume }}</p></td>
+                    <td><p style="color: red;">{{ d.foreign_purchase_volume|intcomma }}</p></td>
                 {% else %}
-                    <td><p style="color: blue;">{{ d.foreign_purchase_volume }}</p></td>
+                    <td><p style="color: blue;">{{ d.foreign_purchase_volume|intcomma }}</p></td>
                 {% endif %}
                 {% if d.company_purchase_volume > 0 %}
-                    <td><p style="color: red;">{{ d.company_purchase_volume }}</p></td>
+                    <td><p style="color: red;">{{ d.company_purchase_volume|intcomma }}</p></td>
                 {% else %}
-                    <td><p style="color: blue;">{{ d.company_purchase_volume }}</p></td>
+                    <td><p style="color: blue;">{{ d.company_purchase_volume|intcomma }}</p></td>
                 {% endif %}
-                <th scope="row"><p>{{ d.closing_price }}</p></th>
+                <th scope="row"><p>{{ d.closing_price|intcomma }}</p></th>
                 {% if '▲' in d.compare_prev_day %}
                     <td><p style="color: red;">{{ d.compare_prev_day }}</p></td>
                 {% else %}

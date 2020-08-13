@@ -51,7 +51,7 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['view_title'] = 'Stock Detail'
+        context['view_title'] = context[self.context_object_name].get('name')
         context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].get('id')).order_by('-date')
         context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] }).sort('year')
 
@@ -123,6 +123,7 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
 
 class ScrapDemandInfo(LoginRequiredMixin, View):
     """
+    수급 정보
     """
 
     def post(self, request, *args, **kwargs):
