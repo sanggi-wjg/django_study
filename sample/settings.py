@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'apps.sign',
     'apps.stock',
+    'apps.func',
     'apps.third_party',
     'apps.third_party.database',
     'apps.third_party.util',

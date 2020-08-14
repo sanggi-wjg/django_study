@@ -18,10 +18,16 @@ class Section_Multiple(models.Model):
     id = models.AutoField(primary_key = True, db_column = 'id')
     multiple = models.FloatField(blank = False, null = False, default = 1.0, db_column = 'multiple')
 
+    def __str__(self):
+        return '[{} : {}]'.format(self.id, self.multiple)
+
 
 class Section_Name(models.Model):
     id = models.AutoField(primary_key = True, db_column = '')
     name = models.CharField(blank = False, null = False, default = '', max_length = 20, unique = True, db_column = 'name')
+
+    def __str__(self):
+        return self.name
 
 
 class ItemsQuerySet(models.QuerySet):

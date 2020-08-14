@@ -1,0 +1,82 @@
+{% extends "comm/header_popup.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="form-row">
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">시가총액</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" aria-label="market_capitalization">
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">매출액</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" aria-label="total_sales">
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">순이익</span>
+                <span class="input-group-text" id="basic-addon2">￦</span>
+            </div>
+            <input type="number" class="form-control" aria-label="net_profit">
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">발행주식수</span>
+            </div>
+            <input type="number" class="form-control" aria-label="number_shares">
+        </div>
+    </div>
+    <hr>
+    <div class="form-row">
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">EPS</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" placeholder="주당 순이익 (당기순이익/발행주식수)" aria-label="eps" readonly>
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">PER</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" placeholder="주가 수익비율 (현재주가/EPS)" aria-label="eps" readonly>
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">BPS</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" placeholder="주당 순자산가치 (기업 순자산/발행주식수)" aria-label="eps" readonly>
+        </div>
+
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">PBR</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="number" class="form-control" placeholder="주가 순자산비율 (현재주가/BPS)" aria-label="eps" readonly>
+        </div>
+    </div>
+
+{% endblock %}

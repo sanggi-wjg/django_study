@@ -32,6 +32,7 @@
     </style>
 
     <script src={% static 'comm/js/jquery_3.4.1.js' %}></script>
+    <script src={% static 'comm/bootstrap-4.5.0-dist/js/popper.js' %}></script>
     <script src={% static 'comm/bootstrap-4.5.0-dist/js/bootstrap.min.js' %}></script>
     <script src={% static 'comm/js/default.js' %}></script>
 
@@ -156,7 +157,7 @@
                     </ul>
 
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span>Saved reports</span>
+                        <span>부가 기능</span>
                         <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none"
@@ -170,7 +171,8 @@
                     </h6>
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="#"
+                               onclick="openWindow('/func/financial-metrics', 'financial-metrics',500,500)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -182,7 +184,7 @@
                                     <line x1="16" y1="17" x2="8" y2="17"></line>
                                     <polyline points="10 9 9 9 8 9"></polyline>
                                 </svg>
-                                Current month
+                                재무지표
                             </a>
                         </li>
                         <li class="nav-item">

@@ -24,9 +24,9 @@
                         <h5 class="card-title" onclick="location.replace('{{ stock.code }}')">{{ stock.name }}
                             ({{ stock.code }})</h5>
                         <input type="button" class="btn btn-info" value="Pivot 입력"
-                               onclick="openWindow('{{ stock.code }}/pivot', 300, 700)">
+                               onclick="openWindow('{{ stock.code }}/pivot', 'pivot', 300, 700)">
                         <input type="button" class="btn btn-info" value="재무정보 입력" disabled
-                               onclick="openWindow('{{ stock.code }}/finance-info', 300, 700)">
+                               onclick="openWindow('{{ stock.code }}/finance-info', 'financial', 300, 700)">
                     </div>
                 </div>
             <br>

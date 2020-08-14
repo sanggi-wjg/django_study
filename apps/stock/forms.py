@@ -21,5 +21,5 @@ class FinanceInfoForm(forms.Form):
                               , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))
     total_sales = forms.IntegerField(label = '매출액', required = True
                                      , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))
-    business_profit = forms.IntegerField(label = '영어이익', required = True
+    business_profit = forms.IntegerField(label = '영업이익', required = True
                                          , widget = forms.NumberInput(attrs = { 'class': 'form-control' }))
