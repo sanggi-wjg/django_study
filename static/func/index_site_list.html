@@ -1,0 +1,65 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#currency"
+            aria-expanded="false" aria-controls="currency">통화
+    </button>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#emerging"
+            aria-expanded="false" aria-controls="emerging">이머징
+    </button>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#futures"
+            aria-expanded="false" aria-controls="futures">선물
+    </button>
+    <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target=".multi-collapse"
+            aria-expanded="false" aria-controls="currency emerging futures">See all
+    </button>
+    <div class="row">
+        <div class="col">
+            <div class="collapse multi-collapse" id="currency">
+                <div class="card card-body">
+                    유로<a href="https://kr.investing.com/indices/investing.com-eur-index" target="_blank">https://kr.investing.com/indices/investing.com-eur-index</a>
+                    달러<a href="https://kr.investing.com/indices/usdollar" target="_blank">https://kr.investing.com/indices/usdollar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="collapse multi-collapse" id="emerging">
+                <div class="card card-body">
+                    이머징 마켓<a href="https://kr.investing.com/indices/msci-emerging-markets" target="_blank">https://kr.investing.com/indices/msci-emerging-markets</a>
+                    이머징 통화<a href="https://kr.investing.com/indices/msci-intl-em-currency" target="_blank">https://kr.investing.com/indices/msci-intl-em-currency</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="collapse multi-collapse" id="futures">
+                <div class="card card-body">
+                    국가지수 선물<a href="https://kr.investing.com/indices/indices-futures" target="_blank">https://kr.investing.com/indices/indices-futures</a>
+                    국제유가 선물<a href="https://kr.investing.com/commodities/crude-oil" target="_blank">https://kr.investing.com/commodities/crude-oil</a>
+                    금 선물<a href="https://kr.investing.com/commodities/gold" target="_blank">https://kr.investing.com/commodities/gold</a>
+                    은 선물<a href="https://kr.investing.com/commodities/silver" target="_blank">https://kr.investing.com/commodities/silver</a>
+                    구리 선물<a href="https://kr.investing.com/commodities/copper" target="_blank">https://kr.investing.com/commodities/copper</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

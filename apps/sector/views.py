@@ -13,7 +13,7 @@ class SectorList(LoginRequiredMixin, MyListView):
     block_size = 10
     template_name = 'sector/sector_list.html'
     context_object_name = 'sector_group'
-    ordering = ['id']
+    ordering = ['name']
     extra_context = {
         'view_title': '업종 리스트'
     }

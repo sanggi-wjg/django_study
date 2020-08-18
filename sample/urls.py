@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.func.views import FinancialMetrics
+from apps.func.views import FinancialMetrics, IndexSites
 from apps.in_queue.views import InQueue, InQueueOne
 from apps.sector.views import SectorDetail, SectorList
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
@@ -47,6 +47,7 @@ urlpatterns = [
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),
+    path('func/indexs', IndexSites.as_view()),
 
     path('data/in-queue/', InQueue.as_view()),
     path('data/in-queue/<str:productCd>', InQueueOne.as_view()),

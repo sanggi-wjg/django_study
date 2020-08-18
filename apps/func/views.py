@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 
 
-class PopupViews(LoginRequiredMixin, View):
+class Views(LoginRequiredMixin, View):
     template_name = ''
     view_title = ''
     content_type = 'text/html'
@@ -27,6 +27,11 @@ class PopupViews(LoginRequiredMixin, View):
                       status = self.status)
 
 
-class FinancialMetrics(PopupViews):
+class FinancialMetrics(Views):
     view_title = '재무지표'
     template_name = 'func/financial_metrics_popup.html'
+
+
+class IndexSites(Views):
+    view_title = 'Index Site'
+    template_name = 'func/index_site_list.html'
