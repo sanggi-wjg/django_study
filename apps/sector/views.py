@@ -12,7 +12,7 @@ class SectorList(LoginRequiredMixin, MyListView):
     paginate_by = 20
     block_size = 10
     template_name = 'sector/sector_list.html'
-    context_object_name = 'sectors'
+    context_object_name = 'sector_group'
     ordering = ['id']
     extra_context = {
         'view_title': '업종 리스트'
@@ -26,17 +26,20 @@ class SectorList(LoginRequiredMixin, MyListView):
     def _get_sector_group(self, sector_list):
         result = []
 
-        for sector in sector_list:
-            sector_group = { }
-            stock_items = Items.objects.values('id', 'name').filter(stock_section_name_id = sector.id).order_by('id')
+        for n, sector in enumerate(sector_list):
+            stock_items = Items.objects.values('code', 'name').filter(stock_section_name_id = sector.id).order_by('id')
+
+            sector_group = {
+                'sector_id'     : sector.id,
+                'sector_name'   : sector.name,
+                'stock_of_group': []
+            }
 
             for stock in stock_items:
-                if sector.name not in sector_group.keys():
-                    sector_group.setdefault(sector.name, [stock.get('id')])
-                else:
-                    sector_group[sector.name].append(stock.get('id'))
+                sector_group['stock_of_group'].append((stock['code'], stock['name']))
 
             result.append(sector_group)
+
         return result
 
 
@@ -45,7 +48,7 @@ class SectorDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'sector'
 
     def get_object(self, queryset = None):
-        return get_object_or_404(Section_Name, name = self.kwargs['sector_name'])
+        return get_object_or_404(Section_Name, id = self.kwargs['sector_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

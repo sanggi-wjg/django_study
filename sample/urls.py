@@ -42,7 +42,7 @@ urlpatterns = [
 
     # 업종
     path('stocks/sector/', SectorList.as_view()),
-    path('stocks/sector/<str:sector_name>', SectorDetail.as_view()),
+    path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),
