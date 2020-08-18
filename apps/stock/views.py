@@ -1,7 +1,9 @@
+import json
+
 import pymongo
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
@@ -40,6 +42,22 @@ class StockItemList(LoginRequiredMixin, MyListView):
     extra_context = {
         'view_title': '기업 리스트'
     }
+
+
+class StockItemSearchCompanyList(LoginRequiredMixin, View):
+    """
+    Search Company autocomplete ajax in header
+    """
+
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get('term')
+        items = Items.objects.values('code', 'name').filter(name__icontains = term)
+
+        result = []
+        for item in items:
+            result.append({ 'code': item['code'], 'name': item['name'] })
+
+        return HttpResponse(json.dumps(result))
 
 
 class StockItemDetail(LoginRequiredMixin, DetailView):
@@ -137,7 +155,6 @@ class ScrapDemandInfo(LoginRequiredMixin, View):
             return JsonResponse({ 'code': '1111', 'msg': 'failure' })
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
-
 
 # class FinanceInfo(LoginRequiredMixin, View):
 #     template_name = 'stock/create_finance_info_popup.html'

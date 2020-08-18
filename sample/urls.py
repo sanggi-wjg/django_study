@@ -22,7 +22,7 @@ from apps.func.views import FinancialMetrics
 from apps.in_queue.views import InQueue, InQueueOne
 from apps.sector.views import SectorDetail, SectorList
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
-from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo
+from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, StockItemSearchCompanyList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,7 +33,8 @@ urlpatterns = [
     path('logout', LogoutView.as_view()),
 
     # 기업
-    path('stocks/item/', StockItemList.as_view()),
+    path('stocks/item', StockItemList.as_view()),
+    path('stocks/item/list', StockItemSearchCompanyList.as_view()),
     path('stocks/item/<str:code>', StockItemDetail.as_view()),
     path('stocks/item/<str:code>/pivot', CreatePivotProc.as_view()),
     # path('stocks/item/<str:code>/finance-info', FinanceInfo.as_view()),
@@ -41,7 +42,7 @@ urlpatterns = [
     path('stocks/item/<str:code>/scrap-demand', ScrapDemandInfo.as_view()),
 
     # 업종
-    path('stocks/sector/', SectorList.as_view()),
+    path('stocks/sector', SectorList.as_view()),
     path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
 
     # 부가기능

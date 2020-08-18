@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'comm/css/jquery-ui.css' %}">
 
     <style>
         #GlobalLoadingBox {
@@ -37,6 +38,12 @@
     <script src={% static 'comm/bootstrap-4.5.0-dist/js/bootstrap.min.js' %}></script>
     <script src={% static 'comm/js/default.js' %}></script>
 
+    <script>
+        $(document).ready(function () {
+            search_company();
+        });
+    </script>
+
     {% block script_list %} {% endblock %}
 </head>
 <body>
@@ -49,7 +56,8 @@
             data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+    <input type="hidden" id="search_company_id" value="">
+    <input class="form-control form-control-dark w-100" type="text" id="search_company" placeholder="Search Company" aria-label="Search Company">
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             {% if user.is_authenticated %}
@@ -71,8 +79,8 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link{% if request.path|startswith:'/stocks/item/' %} active{% endif %}"
-                               href="/stocks/item/">
+                            <a class="nav-link{% if request.path|startswith:'/stocks/item' %} active{% endif %}"
+                               href="/stocks/item">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -85,8 +93,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link{% if request.path|startswith:'/stocks/sector/' %} active{% endif %}"
-                               href="/stocks/sector/">
+                            <a class="nav-link{% if request.path|startswith:'/stocks/sector' %} active{% endif %}"
+                               href="/stocks/sector">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
