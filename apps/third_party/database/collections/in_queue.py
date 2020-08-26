@@ -4,7 +4,7 @@ from datetime import datetime
 from apps.in_queue.vos import InQueue
 from apps.third_party.database.mongo_dao import MongoDAO
 from apps.third_party.database.mongo_db import MongoDB
-from apps.third_party.util.exception import DBSelectNone
+from apps.third_party.util.exceptions import DBSelectNone
 
 
 class Mongo_InQueue(MongoDAO):

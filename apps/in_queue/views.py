@@ -8,7 +8,7 @@ from django.views.generic.base import View
 from apps.in_queue.http_response import HttpJsonResponse
 from apps.third_party.database.collections.in_queue import Mongo_InQueue
 from apps.third_party.util.colorful import print_red, print_green
-from apps.third_party.util.exception import print_exception
+from apps.third_party.util.exceptions import print_exception
 
 
 @method_decorator(csrf_exempt, name = 'dispatch')

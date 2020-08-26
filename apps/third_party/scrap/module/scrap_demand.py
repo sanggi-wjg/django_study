@@ -1,8 +1,6 @@
-from pprint import pprint
-
 from apps.third_party.scrap.scrap_main import ScrapMain
 from apps.third_party.scrap.scrap_util import escape_number, escape_char
-from apps.third_party.util.time_helper import today_dateformat
+from apps.third_party.util.utils import today_dateformat
 
 
 class Scrap_Demand(ScrapMain):
@@ -37,7 +35,6 @@ class Scrap_Demand(ScrapMain):
             })
 
         return result
-
 
 # if __name__ == '__main__':
 #     scrap = Scrap_Demand()

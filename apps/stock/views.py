@@ -15,8 +15,8 @@ from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
-from apps.third_party.util.comm_helper import popup_close
-from apps.third_party.util.exception import print_exception
+from apps.third_party.util.helpers import popup_close
+from apps.third_party.util.exceptions import print_exception
 
 
 class MyListView(ListView):

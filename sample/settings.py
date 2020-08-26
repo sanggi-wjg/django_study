@@ -76,7 +76,7 @@ TEMPLATES = [
     {
         'BACKEND' : 'django.template.backends.django.DjangoTemplates',
         'DIRS'    : [
-            '/home/django_sample/static/'
+            '/home/django_sample/template/'
         ],
         'APP_DIRS': True,
         'OPTIONS' : {

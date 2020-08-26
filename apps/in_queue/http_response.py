@@ -4,7 +4,7 @@ from json.decoder import JSONDecodeError
 from bson.json_util import dumps
 from django.http import HttpResponseBadRequest, HttpResponseServerError, HttpResponse
 
-from apps.third_party.util.exception import DBError
+from apps.third_party.util.exceptions import DBError
 
 
 class HttpJsonResponse:
