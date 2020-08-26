@@ -2,14 +2,11 @@ import json
 
 import pymongo
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import ListView, DetailView
-from django.views.generic.base import View
 
 from apps.stock.forms import PivotForm
-from apps.stock.models import Items, Pivot, Section_Name
+from apps.stock.models import Items, Pivot
 from apps.third_party.database.collections.demand import Mongo_Demand
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
@@ -17,22 +14,10 @@ from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
 from apps.third_party.util.helpers import popup_close
 from apps.third_party.util.exceptions import print_exception
+from apps.third_party.util.viewmixins import ListViews, DetailViews, HttpViews
 
 
-class MyListView(ListView):
-
-    def get_context_data(self, **kwargs):
-        context = super(MyListView, self).get_context_data()
-
-        if self.paginate_by and hasattr(self, 'block_size'):
-            start_index = int((context['page_obj'].number - 1) / self.block_size) * self.block_size
-            end_index = min(start_index + self.block_size, len(context['paginator'].page_range))
-            context['page_range'] = context['paginator'].page_range[start_index:end_index]
-
-        return context
-
-
-class StockItemList(LoginRequiredMixin, MyListView):
+class StockItemList(ListViews):
     model = Items
     paginate_by = 20
     block_size = 10
@@ -44,7 +29,7 @@ class StockItemList(LoginRequiredMixin, MyListView):
     }
 
 
-class StockItemSearchCompanyList(LoginRequiredMixin, View):
+class StockItemSearchCompanyList(HttpViews):
     """
     Search Company autocomplete ajax in header
     """
@@ -60,7 +45,7 @@ class StockItemSearchCompanyList(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(result))
 
 
-class StockItemDetail(LoginRequiredMixin, DetailView):
+class StockItemDetail(DetailViews):
     template_name = 'stock/stock_item_detail.html'
     context_object_name = 'stock_item'
 
@@ -92,7 +77,7 @@ class StockItemDetail(LoginRequiredMixin, DetailView):
         return foreign_sum, company_sum
 
 
-class CreatePivotProc(LoginRequiredMixin, View):
+class CreatePivotProc(HttpViews):
     template_name = 'stock/create_pivot_popup.html'
 
     def get(self, request, *args, **kwargs):
@@ -121,7 +106,7 @@ class CreatePivotProc(LoginRequiredMixin, View):
             })
 
 
-class ScrapFinancialInfo(LoginRequiredMixin, View):
+class ScrapFinancialInfo(HttpViews):
     """
     재무정보 스크랩해서 갱신 하기
     """
@@ -139,7 +124,7 @@ class ScrapFinancialInfo(LoginRequiredMixin, View):
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
 
 
-class ScrapDemandInfo(LoginRequiredMixin, View):
+class ScrapDemandInfo(HttpViews):
     """
     수급 정보
     """
@@ -155,58 +140,3 @@ class ScrapDemandInfo(LoginRequiredMixin, View):
             return JsonResponse({ 'code': '1111', 'msg': 'failure' })
 
         return JsonResponse({ 'code': '0000', 'msg': 'success' })
-
-# class FinanceInfo(LoginRequiredMixin, View):
-#     template_name = 'stock/create_finance_info_popup.html'
-#
-#     def get(self, request, *args, **kwargs):
-#         return render(request, self.template_name, context = {
-#             'view_title'       : 'Create Finance Info',
-#             'finance_info_form': FinanceInfoForm().as_p()
-#         })
-#
-#     def post(self, request, *args, **kwargs):
-#         code = self.kwargs.get('code')
-#         finance_info_form = FinanceInfoForm(request.POST)
-#
-#         if finance_info_form.is_valid():
-#             mongo = MongoDB()
-#             mongo.create('finance_info', {
-#                 'stock_items_code': code,
-#                 'year'            : finance_info_form.cleaned_data['year'],
-#                 'total_sales'     : finance_info_form.cleaned_data['total_sales'],
-#                 'business_profit' : finance_info_form.cleaned_data['business_profit'],
-#             })
-#             mongo.close()
-#             return popup_close()
-#
-#         else:
-#             return render(request, self.template_name, context = {
-#                 'view_title'       : 'Create Finance Info',
-#                 'finance_info_form': FinanceInfoForm().as_p(),
-#                 'errors'           : finance_info_form.errors
-#             })
-#
-#     def patch(self, request, *args, **kwargs):
-#         pass
-#
-#     def delete(self, request, *args, **kwargs):
-#         try:
-#             data = json.loads(request.body)
-#             code = self.kwargs.get('code')
-#             year = data.get('year')
-#             if not code: raise ValueError('Empty code')
-#             if not year: raise ValueError('Empty year')
-#
-#             mongo = MongoDB()
-#             result = mongo.remove('finance_info', { "stock_items_code": code, "year": int(year) })
-#
-#         except Exception as e:
-#             if isinstance(e, (ValueError, JSONDecodeError)):
-#                 return HttpResponseBadRequest(json.dumps({ 'code': '1111', 'msg': e.__str__() }))
-#             else:
-#                 return HttpResponseServerError(json.dumps({ 'code': '2222', 'msg': e.__str__() }))
-#         else:
-#             return JsonResponse({
-#                 'code': '0000'
-#             })

@@ -1,13 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView
 
 from apps.stock.models import Section_Name, Items
-from apps.stock.views import MyListView
 from apps.third_party.database.mongo_db import MongoDB
+from apps.third_party.util.viewmixins import ListViews, DetailViews
 
 
-class SectorList(LoginRequiredMixin, MyListView):
+class SectorList(ListViews):
     model = Section_Name
     paginate_by = 20
     block_size = 10
@@ -43,7 +41,7 @@ class SectorList(LoginRequiredMixin, MyListView):
         return result
 
 
-class SectorDetail(LoginRequiredMixin, DetailView):
+class SectorDetail(DetailViews):
     template_name = 'sector/sector_detail.html'
     context_object_name = 'sector'
 
