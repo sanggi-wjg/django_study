@@ -1,4 +1,4 @@
-from apps.third_party.util.viewmixins import FuncViews
+from apps.third_party.core.viewmixins import FuncViews
 
 
 class FinancialMetrics(FuncViews):

@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from apps.stock.models import Section_Name, Items
 from apps.third_party.database.mongo_db import MongoDB
-from apps.third_party.util.viewmixins import ListViews, DetailViews
+from apps.third_party.core.viewmixins import ListViews, DetailViews
 
 
 class SectorList(ListViews):

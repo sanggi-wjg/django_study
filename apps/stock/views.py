@@ -14,7 +14,7 @@ from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
 from apps.third_party.util.helpers import popup_close
 from apps.third_party.util.exceptions import print_exception
-from apps.third_party.util.viewmixins import ListViews, DetailViews, HttpViews
+from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 
 
 class StockItemList(ListViews):
