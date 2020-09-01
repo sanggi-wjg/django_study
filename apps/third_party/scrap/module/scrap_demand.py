@@ -1,9 +1,8 @@
-from apps.third_party.scrap.scrap_main import ScrapMain
-from apps.third_party.scrap.scrap_util import escape_number, escape_char
-from apps.third_party.util.utils import today_dateformat
+from apps.third_party.scrap.scrap_module import ScrapModule
+from apps.third_party.util.utils import today_dateformat, escape_char, escape_number
 
 
-class Scrap_Demand(ScrapMain):
+class Scrap_Demand(ScrapModule):
 
     def get_scrap_data(self):
         return self.driver.find_element_by_class_name('box_contents').find_element_by_tag_name('div').find_element_by_tag_name('table').find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
@@ -35,7 +34,3 @@ class Scrap_Demand(ScrapMain):
             })
 
         return result
-
-# if __name__ == '__main__':
-#     scrap = Scrap_Demand()
-#     scrap.run('https://finance.daum.net/quotes/A055550#influential_investors/home')

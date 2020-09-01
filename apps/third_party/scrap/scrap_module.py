@@ -1,18 +1,9 @@
 import time
 
-from selenium import webdriver
+from apps.third_party.scrap.chrome_driver import ChromeDriver
 
 
-class ScrapMain:
-
-    def __init__(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-
-        self.driver = webdriver.Chrome(executable_path = '/home/django_sample/apps/third_party/scrap/chromedriver', options = options)
+class ScrapModule(ChromeDriver):
 
     def get_scrap_data(self):
         raise NotImplementedError('get_scrap_data() is not implemented')
@@ -23,7 +14,7 @@ class ScrapMain:
     def _to_dict(self, scrap_data_list):
         raise NotImplementedError('_to_dict() is not implemented')
 
-    def run(self, url, sleep_time = 3):
+    def scrap(self, url, sleep_time = 3):
 
         try:
             self.driver.get(url)

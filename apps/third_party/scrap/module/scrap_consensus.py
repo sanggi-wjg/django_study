@@ -1,8 +1,8 @@
-from apps.third_party.scrap.scrap_main import ScrapMain
-from apps.third_party.scrap.scrap_util import escape_number
+from apps.third_party.scrap.scrap_module import ScrapModule
+from apps.third_party.util.utils import escape_number
 
 
-class Scrap_Consensus(ScrapMain):
+class Scrap_Consensus(ScrapModule):
 
     def get_scrap_data(self):
         self.driver.switch_to.frame('frmFS1')
@@ -56,7 +56,3 @@ class Scrap_Consensus(ScrapMain):
             return True
 
         return False
-
-# if __name__ == '__main__':
-#     scrap = Scrap_Consensus()
-#     scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd=055550')

@@ -23,3 +23,15 @@ def get_date_list(date_range: int, time_format: str = '%Y-%m-%d') -> list:
         date_list.append(day.strftime(time_format))
 
     return date_list
+
+
+def escape_number(text):
+    text = text.replace(',', '')
+    text = text.replace('+', '')
+    text = text.replace('--', '-')
+    return text
+
+
+def escape_char(text):
+    text = text.replace('%', '')
+    return text

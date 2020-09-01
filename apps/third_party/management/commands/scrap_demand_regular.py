@@ -28,5 +28,5 @@ class Command(BaseCommand):
 
 def request_scrap(stock_code: str):
     scrap = Scrap_Demand()
-    scrap_data = scrap.run('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = stock_code))
+    scrap_data = scrap.scrap('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = stock_code))
     Mongo_Demand().query('register', stock_items_code = stock_code, demand_data = scrap_data)

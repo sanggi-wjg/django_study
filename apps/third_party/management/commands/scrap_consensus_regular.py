@@ -28,5 +28,5 @@ class Command(BaseCommand):
 
 def request_scrap(stock_code: str):
     scrap = Scrap_Consensus()
-    scrap_data = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = stock_code))
+    scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = stock_code))
     Mongo_FI().query('register', stock_items_code = stock_code, fi_data = scrap_data)

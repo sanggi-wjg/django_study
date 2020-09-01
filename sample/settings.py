@@ -176,3 +176,4 @@ STATICFILES_DIRS = [
 ]
 
 APPEND_SLASH = False
+CHROME_DRIVER_PATH = '/home/django_sample/apps/third_party/scrap/assets/chromedriver'
