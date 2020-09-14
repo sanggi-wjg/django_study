@@ -97,3 +97,21 @@ function search_company()
         }
     })
 }
+
+
+/*
+<div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status" style="visibility: hidden">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+* */
+function set_spinner_visible()
+{
+    $(".spinner-border").css('visibility', 'visible');
+}
+
+function set_spinner_invisible()
+{
+    $(".spinner-border").css('visibility', 'hidden');
+}

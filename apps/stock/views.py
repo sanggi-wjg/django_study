@@ -114,7 +114,7 @@ class ScrapFinancialInfo(HttpViews):
     def post(self, request, *args, **kwargs):
         try:
             scrap = Scrap_Consensus()
-            scrap_data = scrap.run('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['code']))
+            scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['code']))
             Mongo_FI().query('register', stock_items_code = self.kwargs['code'], fi_data = scrap_data)
 
         except Exception as e:
@@ -132,7 +132,7 @@ class ScrapDemandInfo(HttpViews):
     def post(self, request, *args, **kwargs):
         try:
             scrap = Scrap_Demand()
-            scrap_data = scrap.run('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = self.kwargs['code']))
+            scrap_data = scrap.scrap('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = self.kwargs['code']))
             Mongo_Demand().query('register', stock_items_code = self.kwargs['code'], demand_data = scrap_data)
 
         except Exception as e:

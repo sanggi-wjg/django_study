@@ -5,6 +5,30 @@
     {% load static %}
 
     <script>
+        function request_financial_data_image(fd_type, term)
+        {
+            showGlobalLoading()
+            var fd_data_content = $(".fd-data-content");
+
+            $.ajax({
+                type: 'GET',
+                url: '/func/indexs/financial/' + fd_type + '/' + term + '/image',
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                success: function (result) {
+                    console.log(result)
+                    image_path = '/media/' + result.image_path;
+                    fd_data_content.html("<img src='" + image_path + "' alt='error'>");
+                    removeGlobalLoading()
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    removeGlobalLoading()
+                }
+            });
+        }
+
         $(document).ready(function () {
 
         });
@@ -34,6 +58,25 @@
                 <div class="card card-body">
                     유로<a href="https://kr.investing.com/indices/investing.com-eur-index" target="_blank">https://kr.investing.com/indices/investing.com-eur-index</a>
                     달러<a href="https://kr.investing.com/indices/usdollar" target="_blank">https://kr.investing.com/indices/usdollar</a>
+                    환율
+                    {% load my_tags %}
+                    <div class="list-group list-group-horizontal-sm">
+                        <button class="list-group-item list-group-item-action"
+                                onclick="request_financial_data_image('USDKRW', '1991')">전체
+                        </button>
+                        <button class="list-group-item list-group-item-action"
+                                onclick="request_financial_data_image('USDKRW', '{% delta_year 20 %}')">20년
+                        </button>
+                        <button class="list-group-item list-group-item-action"
+                                onclick="request_financial_data_image('USDKRW', '{% delta_year 10 %}')">10년
+                        </button>
+                        <button class="list-group-item list-group-item-action"
+                                onclick="request_financial_data_image('USDKRW', '{% delta_year 5 %}')">5년
+                        </button>
+                        <button class="list-group-item list-group-item-action"
+                                onclick="request_financial_data_image('USDKRW', '{% delta_year 1 %}')">1년
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,6 +103,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="fd-data-content">
+
     </div>
 
 {% endblock %}

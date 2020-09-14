@@ -175,5 +175,8 @@ STATICFILES_DIRS = [
     '/home/django_sample/static/',
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 APPEND_SLASH = False
 CHROME_DRIVER_PATH = '/home/django_sample/apps/third_party/scrap/assets/chromedriver'

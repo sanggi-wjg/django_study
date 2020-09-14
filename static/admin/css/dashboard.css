@@ -25,3 +25,7 @@ ul.actionlist li {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
 }
+
+.ui-autocomplete-loading {
+    background: white url("/assets/images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
