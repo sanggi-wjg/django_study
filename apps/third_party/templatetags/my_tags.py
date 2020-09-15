@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
-
 from django import template
 from django.template.defaultfilters import stringfilter
+
+from apps.third_party.util.utils import current_year_subtract
 
 register = template.Library()
 
@@ -13,7 +13,5 @@ def startswith(text: str, starts_text: str):
 
 
 @register.simple_tag
-def delta_year(delta):
-    current_year = datetime.today().strftime('%Y')
-    date = datetime.strptime(current_year, '%Y') - timedelta(days = (int(delta) * 365))
-    return date.strftime('%Y')
+def year_subtract(delta: int):
+    return current_year_subtract(delta)

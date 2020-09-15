@@ -25,6 +25,12 @@ def get_date_list(date_range: int, time_format: str = '%Y-%m-%d') -> list:
     return date_list
 
 
+def current_year_subtract(delta: int):
+    current_year = datetime.today().strftime('%Y')
+    date = datetime.strptime(current_year, '%Y') - timedelta(days = (int(delta) * 365))
+    return date.strftime('%Y')
+
+
 def escape_number(text):
     text = text.replace(',', '')
     text = text.replace('+', '')

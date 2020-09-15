@@ -1,8 +1,12 @@
 {% extends "comm/header.html" %}
+{% load view_help_tag %}
 {% block view_title %}{{ view_title }} {% endblock %}
 
+{% load static %}
+{% load my_tags %}
+{% load view_help_tag %}
+
 {% block script_list %}
-    {% load static %}
 
     <script>
         function request_financial_data_image(fd_type, term)
@@ -59,24 +63,9 @@
                     유로<a href="https://kr.investing.com/indices/investing.com-eur-index" target="_blank">https://kr.investing.com/indices/investing.com-eur-index</a>
                     달러<a href="https://kr.investing.com/indices/usdollar" target="_blank">https://kr.investing.com/indices/usdollar</a>
                     환율
-                    {% load my_tags %}
-                    <div class="list-group list-group-horizontal-sm">
-                        <button class="list-group-item list-group-item-action"
-                                onclick="request_financial_data_image('USDKRW', '1991')">전체
-                        </button>
-                        <button class="list-group-item list-group-item-action"
-                                onclick="request_financial_data_image('USDKRW', '{% delta_year 20 %}')">20년
-                        </button>
-                        <button class="list-group-item list-group-item-action"
-                                onclick="request_financial_data_image('USDKRW', '{% delta_year 10 %}')">10년
-                        </button>
-                        <button class="list-group-item list-group-item-action"
-                                onclick="request_financial_data_image('USDKRW', '{% delta_year 5 %}')">5년
-                        </button>
-                        <button class="list-group-item list-group-item-action"
-                                onclick="request_financial_data_image('USDKRW', '{% delta_year 1 %}')">1년
-                        </button>
-                    </div>
+                    {% autoescape off %}
+                    {% request_financial_data_btns 'USDKRW' %}
+                    {% endautoescape %}
                 </div>
             </div>
         </div>
@@ -97,9 +86,21 @@
                 <div class="card card-body">
                     국가지수 선물<a href="https://kr.investing.com/indices/indices-futures" target="_blank">https://kr.investing.com/indices/indices-futures</a>
                     국제유가 선물<a href="https://kr.investing.com/commodities/crude-oil" target="_blank">https://kr.investing.com/commodities/crude-oil</a>
+                    {% autoescape off %}
+                    {% request_financial_data_btns 'CL' %}
+                    {% endautoescape %}
                     금 선물<a href="https://kr.investing.com/commodities/gold" target="_blank">https://kr.investing.com/commodities/gold</a>
+                    {% autoescape off %}
+                    {% request_financial_data_btns 'GC' %}
+                    {% endautoescape %}
                     은 선물<a href="https://kr.investing.com/commodities/silver" target="_blank">https://kr.investing.com/commodities/silver</a>
+                    {% autoescape off %}
+                    {% request_financial_data_btns 'SI' %}
+                    {% endautoescape %}
                     구리 선물<a href="https://kr.investing.com/commodities/copper" target="_blank">https://kr.investing.com/commodities/copper</a>
+                    {% autoescape off %}
+                    {% request_financial_data_btns 'HG' %}
+                    {% endautoescape %}
                 </div>
             </div>
         </div>
