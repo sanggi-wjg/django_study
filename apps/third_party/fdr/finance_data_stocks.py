@@ -8,7 +8,7 @@ from apps.third_party.util.utils import today_dateformat
 from sample.settings import MEDIA_ROOT
 
 
-class FinanceDataStocks(FinanceData):
+class FinanceDataEtc(FinanceData):
 
     def __init__(self, symbol: str, start_date: str = '1991', end_date: str = None):
         """
@@ -32,15 +32,12 @@ class FinanceDataStocks(FinanceData):
         else:
             self._end_date = end_date
 
-    def get_data_frame(self):
-        return fdr.DataReader(self._symbol, self._start_date, self._end_date)
-
     def save_image(self):
         image_path = _get_image_path(self._symbol, self._start_date, self._end_date)
         if os.path.exists(image_path):  # 파일이 있으니까 로직 작동 X
             return False
 
-        df = self.get_data_frame()
+        df = fdr.DataReader(self._symbol, self._start_date, self._end_date)
         df['Close'].plot()
         plt.savefig(image_path)
         return True
