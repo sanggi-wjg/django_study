@@ -19,7 +19,14 @@ class FinanceDataStocks(FinanceData):
         """
         super().__init__()
         self._symbol = symbol
-        self._start_date = start_date + '-01-01'
+
+        if len(start_date) == 4:
+            self._start_date = start_date + '-01-01'
+        elif len(start_date) == 7:
+            self._start_date = start_date + '-01'
+        else:
+            self._start_date = start_date
+
         if end_date is None:
             self._end_date = today_dateformat(time_format = '%Y-%m-%d')
         else:
@@ -33,8 +40,8 @@ class FinanceDataStocks(FinanceData):
         if os.path.exists(image_path):  # 파일이 있으니까 로직 작동 X
             return False
 
-        fd = self.get_data_frame()
-        fd.plot()
+        df = self.get_data_frame()
+        df['Close'].plot()
         plt.savefig(image_path)
         return True
 

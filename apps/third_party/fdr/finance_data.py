@@ -7,7 +7,8 @@ class FinanceData:
     """
 
     def __init__(self):
-        # plt.rcParams["font.family"] = 'nanummyeongjo'
+        plt.rcParams["font.family"] = 'nanummyeongjo'
         plt.rcParams["figure.figsize"] = (14, 4)
         plt.rcParams['lines.linewidth'] = 2
         plt.rcParams["axes.grid"] = True
+        pass

@@ -31,6 +31,12 @@ def current_year_subtract(delta: int):
     return date.strftime('%Y')
 
 
+def current_month_subtract(delta: int):
+    current_year = datetime.today().strftime('%Y-%m')
+    date = datetime.strptime(current_year, '%Y-%m') - timedelta(days = (int(delta) * 30))
+    return date.strftime('%Y-%m')
+
+
 def escape_number(text):
     text = text.replace(',', '')
     text = text.replace('+', '')

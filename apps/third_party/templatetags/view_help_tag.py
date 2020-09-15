@@ -1,6 +1,6 @@
 from django import template
 
-from apps.third_party.util.utils import current_year_subtract
+from apps.third_party.util.utils import current_year_subtract, current_month_subtract
 
 register = template.Library()
 
@@ -15,6 +15,9 @@ def request_financial_data_btns(fd_type: str):
         '5년' : current_year_subtract(5),
         '3년' : current_year_subtract(3),
         '1년' : current_year_subtract(1),
+        '6개월': current_month_subtract(6),
+        '3개월': current_month_subtract(3),
+        '1개월': current_month_subtract(1),
     }
 
     for key, value in year_list.items():

@@ -13,6 +13,7 @@
         {
             showGlobalLoading()
             var fd_data_content = $(".fd-data-content");
+            fd_data_content.html('')
 
             $.ajax({
                 type: 'GET',
@@ -64,7 +65,7 @@
                     달러<a href="https://kr.investing.com/indices/usdollar" target="_blank">https://kr.investing.com/indices/usdollar</a>
                     환율
                     {% autoescape off %}
-                    {% request_financial_data_btns 'USDKRW' %}
+                        {% request_financial_data_btns 'USDKRW' %}
                     {% endautoescape %}
                 </div>
             </div>
@@ -87,19 +88,19 @@
                     국가지수 선물<a href="https://kr.investing.com/indices/indices-futures" target="_blank">https://kr.investing.com/indices/indices-futures</a>
                     국제유가 선물<a href="https://kr.investing.com/commodities/crude-oil" target="_blank">https://kr.investing.com/commodities/crude-oil</a>
                     {% autoescape off %}
-                    {% request_financial_data_btns 'CL' %}
+                        {% request_financial_data_btns 'CL' %}
                     {% endautoescape %}
                     금 선물<a href="https://kr.investing.com/commodities/gold" target="_blank">https://kr.investing.com/commodities/gold</a>
                     {% autoescape off %}
-                    {% request_financial_data_btns 'GC' %}
+                        {% request_financial_data_btns 'GC' %}
                     {% endautoescape %}
                     은 선물<a href="https://kr.investing.com/commodities/silver" target="_blank">https://kr.investing.com/commodities/silver</a>
                     {% autoescape off %}
-                    {% request_financial_data_btns 'SI' %}
+                        {% request_financial_data_btns 'SI' %}
                     {% endautoescape %}
                     구리 선물<a href="https://kr.investing.com/commodities/copper" target="_blank">https://kr.investing.com/commodities/copper</a>
                     {% autoescape off %}
-                    {% request_financial_data_btns 'HG' %}
+                        {% request_financial_data_btns 'HG' %}
                     {% endautoescape %}
                 </div>
             </div>
