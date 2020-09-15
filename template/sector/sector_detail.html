@@ -1,12 +1,38 @@
 {% extends "comm/header.html" %}
 {% block view_title %}{{ view_title }} {% endblock %}
 
-{% block script_list %}
-    {% load static %}
+{% load static %}
+{% load view_help_tag %}
 
+{% block script_list %}
     {% csrf_token %}
     <script>
         var CSRF_TOKEN;
+
+        function request_financial_data_sector_image(sector_id, term)
+        {
+            showGlobalLoading()
+            var fd_data_content = $(".fd-data-content");
+            fd_data_content.html('')
+
+            $.ajax({
+                type: 'GET',
+                url: '/stocks/sector/' + sector_id + '/' + term + '/financial/image',
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                success: function (result) {
+                    console.log(result)
+                    image_path = '/media/' + result.image_path;
+                    {#fd_data_content.html("<img src='" + image_path + "' alt='error'>");#}
+                    removeGlobalLoading()
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    removeGlobalLoading()
+                }
+            });
+        }
 
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
@@ -42,12 +68,19 @@
         </div>
     </div>
 
-    <h4>Compare Finance Info</h4>
-    <table class="table table-hover">
-        {% load humanize %}
-        {% for company_name, data in finance_info.items %}
-            {{ company_name }}            {{ data }}<br>
-        {% endfor %}
-    </table>
+    <h6>Compare Finance Info</h6>
+{#    <table class="table table-hover">#}
+{#        {% load humanize %}#}
+{#        {% for company_name, data in finance_info.items %}#}
+{#            {{ company_name }} {{ data }}<br>#}
+{#        {% endfor %}#}
+{#    </table>#}
+
+    <h6>Compare Sector Stock Price</h6>
+    {% autoescape off %}
+        {% request_financial_data_sector_btns sector.id %}
+    {% endautoescape %}
+
+    <div class="fd-data-content"></div>
 
 {% endblock %}

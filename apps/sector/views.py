@@ -1,8 +1,10 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from apps.stock.models import Section_Name, Items
 from apps.third_party.database.mongo_db import MongoDB
-from apps.third_party.core.viewmixins import ListViews, DetailViews
+from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
+from apps.third_party.fdr.finance_data_list import FinanceDataList
 
 
 class SectorList(ListViews):
@@ -73,3 +75,20 @@ class SectorDetail(DetailViews):
                     company_finance_info[company_name][i['year']].append(i)
 
         return company_finance_info
+
+
+class SectorFinancialDataImage(HttpViews):
+
+    def get(self, request, *args, **kwargs):
+        sector_id = self.kwargs['sector_id']
+        term = self.kwargs['term']
+
+        sector = Section_Name.objects.values('id').filter(id = sector_id)
+        if not sector:
+            return JsonResponse({ 'msg': '{} is not sectors id'.format(sector_id) })
+
+        fdl = FinanceDataList(start_date = term, end_date = None)
+        fdl.get_fd_data(symbol_list = [stock['code'] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)])
+
+        return JsonResponse({ 'msg': 'debug' })
+        # return JsonResponse({ 'msg': 'create' if result else 'exist', 'image_path': fde.get_save_image_path() })

@@ -4,27 +4,18 @@ import FinanceDataReader as fdr
 import matplotlib.pyplot as plt
 
 from apps.third_party.fdr.finance_data import FinanceData
-from apps.third_party.util.utils import today_dateformat
 from sample.settings import MEDIA_ROOT
 
 
 class FinanceDataBasic(FinanceData):
+    _symbol = None
 
-    def __init__(self, start_date: str = '1991', end_date: str = None, symbol: str = ''):
+    def save_image(self, symbol: str) -> bool:
         """
         :param symbol: 주식코드(ex, 005930) / 환율(ex, USD/KRW) / Ticker(ex, QQQ)
+        :return: If create new plot image file, then return True. Otherwise return False.
         """
-        super().__init__(start_date, end_date)
-
-        if not symbol:
-            raise ValueError('symbol is not declared')
         self._symbol = symbol
-
-    def save_image(self) -> bool:
-        """
-        :return: If create new plot image file, then return True.
-                 Otherwise return False.
-        """
         image_path = _get_image_path(self._symbol, self._start_date, self._end_date)
         if os.path.exists(image_path):  # 파일이 있으니까 로직 작동 X
             return False
