@@ -18,9 +18,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialData, IndexFinancialDataImage
+from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
 # from apps.in_queue.views import InQueue, InQueueOne
-from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataImage
+from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, StockItemSearchCompanyList
 
@@ -44,7 +44,7 @@ urlpatterns = [
     # 업종
     path('stocks/sector', SectorList.as_view()),
     path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
-    path('stocks/sector/<str:sector_id>/<str:term>/financial/image', SectorFinancialDataImage.as_view()),
+    path('stocks/sector/<str:sector_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),

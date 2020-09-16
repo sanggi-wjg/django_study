@@ -24,7 +24,7 @@
                 success: function (result) {
                     console.log(result)
                     image_path = '/media/' + result.image_path;
-                    {#fd_data_content.html("<img src='" + image_path + "' alt='error'>");#}
+                    fd_data_content.html("<img src='" + image_path + "' alt='error'>");
                     removeGlobalLoading()
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

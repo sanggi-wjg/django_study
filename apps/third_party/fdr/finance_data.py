@@ -31,3 +31,13 @@ class FinanceData:
             self._end_date = today_dateformat(time_format = '%Y-%m-%d')
         else:
             self._end_date = end_date
+
+
+def _replace_symbol(symbol: str) -> str:
+    symbol = symbol.replace('/', '')
+    return symbol
+
+
+def _get_filename(start_date: str, end_date: str) -> str:
+    filename = '{}_{}.png'.format(start_date, end_date)
+    return filename

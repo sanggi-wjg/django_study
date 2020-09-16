@@ -26,6 +26,6 @@ class IndexFinancialDataImage(HttpViews):
         term = self.kwargs['term']
 
         fde = FinanceDataBasic(start_date = term, end_date = None)
-        result = fde.save_image(symbol = fd_type)
+        result_flag, image_path = fde.save_image(symbol = fd_type)
 
-        return JsonResponse({ 'msg': 'create' if result else 'exist', 'image_path': fde.get_save_image_path() })
+        return JsonResponse({ 'msg': 'create' if result_flag else 'exist', 'image_path': image_path })

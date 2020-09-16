@@ -1,4 +1,7 @@
+import os
 from datetime import datetime, timedelta
+
+from sample.settings import MEDIA_ROOT
 
 
 def today_dateformat(time_format = '%Y-%m-%d %H:%M:%S'):
@@ -35,6 +38,12 @@ def current_month_subtract(delta: int):
     current_year = datetime.today().strftime('%Y-%m')
     date = datetime.strptime(current_year, '%Y-%m') - timedelta(days = (int(delta) * 30))
     return date.strftime('%Y-%m')
+
+
+def validate_media_path(path: str):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return True
 
 
 def escape_number(text):

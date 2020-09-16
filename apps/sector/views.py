@@ -77,7 +77,7 @@ class SectorDetail(DetailViews):
         return company_finance_info
 
 
-class SectorFinancialDataImage(HttpViews):
+class SectorFinancialDataComparedPriceImage(HttpViews):
 
     def get(self, request, *args, **kwargs):
         sector_id = self.kwargs['sector_id']
@@ -88,7 +88,9 @@ class SectorFinancialDataImage(HttpViews):
             return JsonResponse({ 'msg': '{} is not sectors id'.format(sector_id) })
 
         fdl = FinanceDataList(start_date = term, end_date = None)
-        fdl.get_fd_data(symbol_list = [stock['code'] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)])
+        result_flag, image_path = fdl.save_compared_stock_price_image(
+            symbol_list = [[stock['name'], stock['code']] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)],
+            sector_id = sector_id
+        )
 
-        return JsonResponse({ 'msg': 'debug' })
-        # return JsonResponse({ 'msg': 'create' if result else 'exist', 'image_path': fde.get_save_image_path() })
+        return JsonResponse({ 'msg': 'create' if result_flag else 'exist', 'image_path': image_path })
