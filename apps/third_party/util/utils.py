@@ -40,7 +40,7 @@ def current_month_subtract(delta: int):
     return date.strftime('%Y-%m')
 
 
-def validate_media_path(path: str):
+def validate_path(path: str):
     if not os.path.exists(path):
         os.mkdir(path)
     return True

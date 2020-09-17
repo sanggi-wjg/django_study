@@ -2,7 +2,7 @@ from django.http import JsonResponse
 
 from apps.func.view_helpers import _name_replace
 from apps.third_party.core.viewmixins import FuncViews, HttpViews
-from apps.third_party.fdr.finance_data_basic import FinanceDataBasic
+from apps.third_party.fdr.finance_data_image_etc_one import FinanceDataImageEtcOne
 
 
 class FinancialMetrics(FuncViews):
@@ -25,7 +25,7 @@ class IndexFinancialDataImage(HttpViews):
         fd_type = _name_replace(self.kwargs['fd_type'])
         term = self.kwargs['term']
 
-        fde = FinanceDataBasic(start_date = term, end_date = None)
-        result_flag, image_path = fde.save_image(symbol = fd_type)
+        fd = FinanceDataImageEtcOne(start_date = term, end_date = None)
+        result_flag, image_path = fd.save_image(symbol = fd_type, media_path = fd_type)
 
         return JsonResponse({ 'msg': 'create' if result_flag else 'exist', 'image_path': image_path })

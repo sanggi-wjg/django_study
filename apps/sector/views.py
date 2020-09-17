@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from apps.stock.models import Section_Name, Items
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
-from apps.third_party.fdr.finance_data_list import FinanceDataList
+from apps.third_party.fdr.finance_data_image_stock_list import FinanceDataImageStockList
 
 
 class SectorList(ListViews):
@@ -87,10 +87,10 @@ class SectorFinancialDataComparedPriceImage(HttpViews):
         if not sector:
             return JsonResponse({ 'msg': '{} is not sectors id'.format(sector_id) })
 
-        fdl = FinanceDataList(start_date = term, end_date = None)
-        result_flag, image_path = fdl.save_compared_stock_price_image(
-            symbol_list = [[stock['name'], stock['code']] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)],
-            sector_id = sector_id
+        fdl = FinanceDataImageStockList(start_date = term, end_date = None)
+        result_flag, image_path = fdl.save_image(
+            symbol = [[stock['name'], stock['code']] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)],
+            media_path = sector_id
         )
 
         return JsonResponse({ 'msg': 'create' if result_flag else 'exist', 'image_path': image_path })
