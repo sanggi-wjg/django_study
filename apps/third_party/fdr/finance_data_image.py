@@ -83,7 +83,7 @@ class FinanceDataImage:
         """
         :param symbol: If is_str, 주식코드(ex, 005930) / 환율(ex, USD/KRW) / Ticker(ex, QQQ)
                        If is_list, [ [주식명, 주식코드] ... ]
-        :param media_path: media save path
+        :param media_path: path in media folder
         :return: If create new plot image file, then return True.
                  Otherwise return False.
         """
