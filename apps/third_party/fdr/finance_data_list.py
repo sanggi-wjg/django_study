@@ -42,7 +42,6 @@ class FinanceDataList(FinanceData):
         # 생성
         df = self.get_fd_data()
         df.plot()
-        plt.rcParams["font.family"] = 'nanummyeongjo'
         plt.savefig(image_path)
 
         return True, self._get_compared_stock_price_image_path()

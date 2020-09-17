@@ -15,8 +15,8 @@ class FinanceData:
                 :param end_date: 종료날짜 (ex, 2020-01-01) (default : today)
                 :type end_date: default None
                 """
-        plt.rcParams["font.family"] = 'nanummyeongjo'
-        plt.rcParams["figure.figsize"] = (14, 4)
+        plt.rcParams["font.family"] = 'NanumGothic'
+        plt.rcParams["figure.figsize"] = (15, 8)
         plt.rcParams['lines.linewidth'] = 2
         plt.rcParams["axes.grid"] = True
 
