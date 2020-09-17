@@ -57,6 +57,7 @@ class FinanceDataImage:
         else:
             raise TypeError('Data type of symbol is not allowed.')
 
+        # print_yellow(df)
         return df
 
     def _get_save_image_path(self) -> str:
@@ -93,6 +94,7 @@ class FinanceDataImage:
         data_frame = self.finance_data_frame(symbol)
         data_frame.plot()
         plt.savefig(full_path)
+        plt.close('all')
 
         return True, self._get_save_image_path()
 
