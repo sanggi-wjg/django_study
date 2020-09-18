@@ -5,8 +5,9 @@ import pymongo
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.model.pivot import Pivot
+from apps.model.stocks import Stocks
 from apps.stock.forms import PivotForm
-from apps.stock.models import Items, Pivot
 from apps.third_party.database.collections.demand import Mongo_Demand
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.database.mongo_db import MongoDB
@@ -18,12 +19,12 @@ from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 
 
 class StockItemList(ListViews):
-    model = Items
+    model = Stocks
     paginate_by = 20
     block_size = 10
     template_name = 'stock/stock_item_list.html'
     context_object_name = 'stock_items'
-    ordering = ['stock_section_name_id']
+    ordering = ['id']
     extra_context = {
         'view_title': '기업 리스트'
     }
@@ -36,11 +37,11 @@ class StockItemSearchCompanyList(HttpViews):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term')
-        items = Items.objects.values('code', 'name').filter(name__icontains = term)
+        items = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
 
         result = []
         for item in items:
-            result.append({ 'code': item['code'], 'name': item['name'] })
+            result.append({ 'code': item['stock_code'], 'name': item['stock_name'] })
 
         return HttpResponse(json.dumps(result))
 
@@ -50,12 +51,12 @@ class StockItemDetail(DetailViews):
     context_object_name = 'stock_item'
 
     def get_object(self, queryset = None):
-        return Items.objects.get_detail_join_one(stock_code = self.kwargs['code'])
+        return Stocks.objects.get_detail_join_one(stock_code = self.kwargs['code'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].get('name')
-        context['pivot'] = Pivot.objects.filter(stock_items_id = context[self.context_object_name].get('id')).order_by('-date')
+        context['pivot'] = Pivot.objects.filter(stocks_id = context[self.context_object_name].get('id')).order_by('-date')
         context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] }).sort('year')
 
         context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING)
@@ -81,11 +82,11 @@ class CreatePivotProc(HttpViews):
     template_name = 'stock/create_pivot_popup.html'
 
     def get(self, request, *args, **kwargs):
-        stock_item = get_object_or_404(Items, code = self.kwargs.get('code'))
+        stock_item = get_object_or_404(Stocks, stock_code = self.kwargs.get('code'))
         return render(request, self.template_name, context = {
             'view_title': 'Create Pivot',
-            'stock_item': get_object_or_404(Items, code = self.kwargs.get('code')),
-            'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
+            'stock_item': get_object_or_404(Stocks, stock_code = self.kwargs.get('code')),
+            'pivot_form': PivotForm(initial = { 'stocks_id': stock_item.id }).as_p(),
         })
 
     def post(self, request, *args, **kwargs):
@@ -96,12 +97,12 @@ class CreatePivotProc(HttpViews):
             return popup_close()
 
         else:
-            stock_item = get_object_or_404(Items, code = self.kwargs['code'])
+            stock_item = get_object_or_404(Stocks, stock_code = self.kwargs['code'])
 
             return render(request, self.template_name, context = {
                 'view_title': 'Create Pivot',
                 'stock_item': stock_item,
-                'pivot_form': PivotForm(initial = { 'stock_items_id': stock_item.id }).as_p(),
+                'pivot_form': PivotForm(initial = { 'stocks_id': stock_item.id }).as_p(),
                 'errors'    : pivot_form.errors,
             })
 

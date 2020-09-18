@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.stock.models import Pivot
+from apps.model.pivot import Pivot
 
 
 class PivotForm(forms.ModelForm):

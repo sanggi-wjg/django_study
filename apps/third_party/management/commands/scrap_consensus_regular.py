@@ -2,7 +2,7 @@ import traceback
 
 from django.core.management import BaseCommand
 
-from apps.stock.models import Items
+from apps.model.stocks import Stocks
 from apps.third_party.database.collections.financial_info import Mongo_FI
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 
@@ -14,7 +14,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        stock_items = Items.objects.values('code', 'name').all()
+        stock_items = Stocks.objects.values('stock_code', 'stock_name').all()
 
         for stock in stock_items:
             try:

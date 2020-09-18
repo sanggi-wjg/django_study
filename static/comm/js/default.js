@@ -50,7 +50,7 @@ function search_company()
         source: function (request, response) {
             $.ajax({
                 type: 'get'
-                , url: '/stocks/item/list'
+                , url: '/stocks/list'
                 , dataType: "json"
                 , data: {
                     term: request.term,
@@ -93,7 +93,7 @@ function search_company()
                 return false;
             }
 
-            location.replace('/stocks/item/' + search_company_id_obj.val())
+            location.replace('/stocks/' + search_company_id_obj.val())
         }
     })
 }

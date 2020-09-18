@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+    'apps.model',
     'apps.sign',
     'apps.stock',
     'apps.func',

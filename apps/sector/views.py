@@ -1,19 +1,20 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from apps.stock.models import Section_Name, Items
+from apps.model.sectors import Sectors
+from apps.model.stocks import Stocks
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 from apps.third_party.fdr.finance_data_image_stock_list import FinanceDataImageStockList
 
 
 class SectorList(ListViews):
-    model = Section_Name
+    model = Sectors
     paginate_by = 20
     block_size = 10
     template_name = 'sector/sector_list.html'
     context_object_name = 'sector_group'
-    ordering = ['name']
+    ordering = ['sector_name']
     extra_context = {
         'view_title': '업종 리스트'
     }
@@ -27,16 +28,16 @@ class SectorList(ListViews):
         result = []
 
         for n, sector in enumerate(sector_list):
-            stock_items = Items.objects.values('code', 'name').filter(stock_section_name_id = sector.id).order_by('id')
+            stock_items = Stocks.objects.values('stock_code', 'stock_name').filter(sectors_id = sector.id).order_by('id')
 
             sector_group = {
                 'sector_id'     : sector.id,
-                'sector_name'   : sector.name,
+                'sector_name'   : sector.sector_name,
                 'stock_of_group': []
             }
 
             for stock in stock_items:
-                sector_group['stock_of_group'].append((stock['code'], stock['name']))
+                sector_group['stock_of_group'].append((stock['stock_code'], stock['stock_name']))
 
             result.append(sector_group)
 
@@ -48,11 +49,11 @@ class SectorDetail(DetailViews):
     context_object_name = 'sector'
 
     def get_object(self, queryset = None):
-        return get_object_or_404(Section_Name, id = self.kwargs['sector_id'])
+        return get_object_or_404(Sectors, id = self.kwargs['sector_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['view_title'] = context[self.context_object_name].name
+        context['view_title'] = context[self.context_object_name].sector_name
         context['finance_info'] = self._get_sector_finance_info()
         return context
 
@@ -60,9 +61,9 @@ class SectorDetail(DetailViews):
         finance_info, company_finance_info = { }, { }
         context = super().get_context_data()
 
-        stock_items = Items.objects.filter(stock_section_name_id = context[self.context_object_name].id).order_by('id')
+        stock_items = Stocks.objects.filter(sectors_id = context[self.context_object_name].id).order_by('id')
         for stock in stock_items:
-            finance_info.setdefault(stock.name, MongoDB().find_list('finance_info', { 'stock_items_code': stock.code }).sort('year'))
+            finance_info.setdefault(stock.stock_name, MongoDB().find_list('finance_info', { 'stock_items_code': stock.stock_code }).sort('year'))
 
         for company_name, info in finance_info.items():
             for i in info:
@@ -83,13 +84,13 @@ class SectorFinancialDataComparedPriceImage(HttpViews):
         sector_id = self.kwargs['sector_id']
         term = self.kwargs['term']
 
-        sector = Section_Name.objects.values('id').filter(id = sector_id)
+        sector = Sectors.objects.values('id').filter(id = sector_id)
         if not sector:
             return JsonResponse({ 'msg': '{} is not sectors id'.format(sector_id) })
 
         fdl = FinanceDataImageStockList(start_date = term, end_date = None)
         result_flag, image_path = fdl.save_image(
-            symbol = [[stock['name'], stock['code']] for stock in Items.objects.values('code', 'name').filter(stock_section_name_id__id = sector_id)],
+            symbol = [[stock['name'], stock['code']] for stock in Stocks.objects.values('stock_code', 'stock_name').filter(sector_id__id = sector_id)],
             media_path = sector_id
         )
 

@@ -26,7 +26,7 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                 {% for group in sector.stock_of_group %}
-                    <a class="dropdown-item" href="/stocks/item/{{ group.0 }}">{{ group.1 }}</a>
+                    <a class="dropdown-item" href="/stocks/{{ group.0 }}">{{ group.1 }}</a>
                 {% endfor %}
             </div>
         </div>

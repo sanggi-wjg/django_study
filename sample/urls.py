@@ -33,13 +33,13 @@ urlpatterns = [
     path('logout', LogoutView.as_view()),
 
     # 기업
-    path('stocks/item', StockItemList.as_view()),
-    path('stocks/item/list', StockItemSearchCompanyList.as_view()),
-    path('stocks/item/<str:code>', StockItemDetail.as_view()),
-    path('stocks/item/<str:code>/pivot', CreatePivotProc.as_view()),
-    # path('stocks/item/<str:code>/finance-info', FinanceInfo.as_view()),
-    path('stocks/item/<str:code>/scrap-financial', ScrapFinancialInfo.as_view()),
-    path('stocks/item/<str:code>/scrap-demand', ScrapDemandInfo.as_view()),
+    path('stocks', StockItemList.as_view()),
+    path('stocks/list', StockItemSearchCompanyList.as_view()),
+    path('stocks/<str:code>', StockItemDetail.as_view()),
+    path('stocks/<str:code>/pivot', CreatePivotProc.as_view()),
+    # path('stocks/<str:code>/finance-info', FinanceInfo.as_view()),
+    path('stocks/<str:code>/scrap-financial', ScrapFinancialInfo.as_view()),
+    path('stocks/<str:code>/scrap-demand', ScrapDemandInfo.as_view()),
 
     # 업종
     path('stocks/sector', SectorList.as_view()),
