@@ -3,7 +3,7 @@ import traceback
 from django.core.management import BaseCommand
 
 from apps.model.stocks import Stocks
-from apps.third_party.database.collections.financial_info import Mongo_FI
+from apps.third_party.database.collections.financial_info import financial_info_register
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 
 
@@ -29,4 +29,4 @@ class Command(BaseCommand):
 def request_scrap(stock_code: str):
     scrap = Scrap_Consensus()
     scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = stock_code))
-    Mongo_FI().query('register', stock_code = stock_code, fi_data = scrap_data)
+    financial_info_register(stock_code, financial_data = scrap_data)

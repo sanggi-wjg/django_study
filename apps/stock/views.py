@@ -7,8 +7,8 @@ from apps.model.pivot import Pivot
 from apps.model.stocks import Stocks
 from apps.stock.forms import PivotForm
 from apps.stock.view_helpers import stock_detail_get_context
-from apps.third_party.database.collections.demand import Mongo_Demand
-from apps.third_party.database.collections.financial_info import Mongo_FI
+from apps.third_party.database.collections.demand import demand_info_register
+from apps.third_party.database.collections.financial_info import financial_info_register
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
 from apps.third_party.util.helpers import popup_close
@@ -94,7 +94,7 @@ class ScrapFinancialInfo(HttpViews):
         try:
             scrap = Scrap_Consensus()
             scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['stock_code']))
-            Mongo_FI().query('register', stock_code = self.kwargs['stock_code'], fi_data = scrap_data)
+            financial_info_register(stock_code, financial_data = scrap_data)
 
         except Exception as e:
             print_exception()
@@ -112,7 +112,7 @@ class ScrapDemandInfo(HttpViews):
         try:
             scrap = Scrap_Demand()
             scrap_data = scrap.scrap('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = self.kwargs['stock_code']))
-            Mongo_Demand().query('register', stock_code = self.kwargs['stock_code'], demand_data = scrap_data)
+            demand_info_register(self.kwargs['stock_code'], demand_data = scrap_data)
 
         except Exception as e:
             print_exception()
