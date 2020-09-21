@@ -3,7 +3,7 @@ import pymongo
 
 class MongoDB:
     _instance = None
-    client = pymongo.MongoClient(host = '172.17.0.3', port = 27017, username = 'root', password = 'wpdlwl')
+    client = pymongo.MongoClient(host = '172.17.0.3', port = 27017, username = 'root', password = 'wpdlwl', maxPoolSize = 100)
     db = client.backend
     """
     :type client: pymongo.MongoClient

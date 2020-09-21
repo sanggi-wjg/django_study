@@ -1,6 +1,8 @@
 import os
 from datetime import datetime, timedelta
 
+import psutil
+
 from sample.settings import MEDIA_ROOT
 
 
@@ -56,3 +58,7 @@ def escape_number(text):
 def escape_char(text):
     text = text.replace('%', '')
     return text
+
+
+def get_cpu_count() -> int:
+    return psutil.cpu_count()
