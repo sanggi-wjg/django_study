@@ -75,12 +75,12 @@ class CreatePivotProc(HttpViews):
             return popup_close()
 
         else:
-            stock_item = get_object_or_404(Stocks, stock_code = self.kwargs['code'])
+            stock = get_object_or_404(Stocks, stock_code = self.kwargs['code'])
 
             return render(request, self.template_name, context = {
                 'view_title': 'Create Pivot',
-                'stock_item': stock_item,
-                'pivot_form': PivotForm(initial = { 'stocks_id': stock_item.id }).as_p(),
+                'stock_item': stock,
+                'pivot_form': PivotForm(initial = { 'stocks_id': stock.id }).as_p(),
                 'errors'    : pivot_form.errors,
             })
 
