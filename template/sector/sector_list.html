@@ -16,7 +16,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     </div>
 
-    {% for sector in sector_list %}
+    {% for sector in sector_group %}
         <div class="btn-group" style="margin: 10px">
             <button class="btn btn-primary" type="button"
                     onclick="location.replace('/sector/{{ sector.id }}')">{{ sector.sector_name }}</button>

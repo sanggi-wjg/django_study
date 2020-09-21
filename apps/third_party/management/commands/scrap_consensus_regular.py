@@ -18,8 +18,8 @@ class Command(BaseCommand):
 
         for stock in stock_items:
             try:
-                print('[{}] {} consensus scraping...'.format(stock['code'], stock['name']))
-                request_scrap(stock['code'])
+                print('[{}] {} consensus scraping...'.format(stock['stock_code'], stock['stock_name']))
+                request_scrap(stock['stock_code'])
 
             except:
                 print(traceback.format_exc())

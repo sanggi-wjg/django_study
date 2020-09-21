@@ -43,8 +43,8 @@ urlpatterns = [
 
     # 업종
     path('sector', SectorList.as_view()),
-    path('sector/<str:sectors_id>', SectorDetail.as_view()),
-    path('sector/<str:sectors_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
+    path('sector/<str:sector_id>', SectorDetail.as_view()),
+    path('sector/<str:sector_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),

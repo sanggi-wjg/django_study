@@ -34,11 +34,8 @@ class SectorList(ListViews):
             sector_group = {
                 'sector_id'  : sector.id,
                 'sector_name': sector.sector_name,
-                'stock_group': []
+                'stock_group': [(s['stock_code'], s['stock_name']) for s in stock]
             }
-
-            for s in stock:
-                sector_group['stock_group'].append((s['stock_code'], s['stock_name']))
 
             result.append(sector_group)
 
