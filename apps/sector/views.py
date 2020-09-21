@@ -88,7 +88,7 @@ class SectorFinancialDataComparedPriceImage(HttpViews):
 
         fdl = FinanceDataImageStockList(start_date = term, end_date = None)
         result_flag, image_path = fdl.save_image(
-            symbol = [[stock['name'], stock['code']] for stock in Stocks.objects.values('stock_code', 'stock_name').filter(sector_id__id = sector_id)],
+            symbol = [[s['stock_name'], s['stock_code']] for s in Stocks.objects.values('stock_code', 'stock_name').filter(sectors_id__id = sector_id)],
             media_path = sector_id
         )
 
