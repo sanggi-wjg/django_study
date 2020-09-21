@@ -1,16 +1,14 @@
 import json
 
-import pymongo
-
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from apps.model.pivot import Pivot
 from apps.model.stocks import Stocks
 from apps.stock.forms import PivotForm
+from apps.stock.view_helpers import stock_detail_get_context
 from apps.third_party.database.collections.demand import Mongo_Demand
 from apps.third_party.database.collections.financial_info import Mongo_FI
-from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
 from apps.third_party.util.helpers import popup_close
@@ -18,7 +16,7 @@ from apps.third_party.util.exceptions import print_exception
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 
 
-class StockItemList(ListViews):
+class StockList(ListViews):
     model = Stocks
     paginate_by = 50
     block_size = 10
@@ -30,20 +28,7 @@ class StockItemList(ListViews):
     }
 
 
-class StockItemSearchCompanyList(HttpViews):
-    """
-    Search Company autocomplete ajax in header
-    """
-
-    def get(self, request, *args, **kwargs):
-        term = request.GET.get('term')
-        stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
-
-        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'] } for stock in stock_list]
-        return HttpResponse(json.dumps(result))
-
-
-class StockItemDetail(DetailViews):
+class StockDetail(DetailViews):
     template_name = 'stock/stock_detail.html'
     context_object_name = 'stock'
 
@@ -54,25 +39,21 @@ class StockItemDetail(DetailViews):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].get('stock_name')
         context['pivot'] = Pivot.objects.filter(stocks_id = context[self.context_object_name].get('id')).order_by('-date')
-        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('year')
-
-        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING)
-        context['summary_demand_info'] = {
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(5)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(10)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(15)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(20)),
-        }
+        context.update(stock_detail_get_context(self.kwargs['stock_code']))
         return context
 
-    def _get_sums(self, data):
-        foreign_sum, company_sum = 0, 0
 
-        for d in data:
-            foreign_sum += d.get('foreign_purchase_volume')
-            company_sum += d.get('company_purchase_volume')
+class StockSearchCompanyList(HttpViews):
+    """
+    Search Company autocomplete ajax in header
+    """
 
-        return foreign_sum, company_sum
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get('term')
+        stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
+
+        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'] } for stock in stock_list]
+        return HttpResponse(json.dumps(result))
 
 
 class CreatePivotProc(HttpViews):
@@ -113,7 +94,7 @@ class ScrapFinancialInfo(HttpViews):
         try:
             scrap = Scrap_Consensus()
             scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['stock_code']))
-            Mongo_FI().query('register', stock_items_code = self.kwargs['stock_code'], fi_data = scrap_data)
+            Mongo_FI().query('register', stock_code = self.kwargs['stock_code'], fi_data = scrap_data)
 
         except Exception as e:
             print_exception()
@@ -131,7 +112,7 @@ class ScrapDemandInfo(HttpViews):
         try:
             scrap = Scrap_Demand()
             scrap_data = scrap.scrap('https://finance.daum.net/quotes/A{stock_code}#influential_investors/home'.format(stock_code = self.kwargs['stock_code']))
-            Mongo_Demand().query('register', stock_items_code = self.kwargs['stock_code'], demand_data = scrap_data)
+            Mongo_Demand().query('register', stock_code = self.kwargs['stock_code'], demand_data = scrap_data)
 
         except Exception as e:
             print_exception()

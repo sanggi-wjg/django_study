@@ -22,7 +22,7 @@ from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImag
 # from apps.in_queue.views import InQueue, InQueueOne
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
-from apps.stock.views import StockItemList, StockItemDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, StockItemSearchCompanyList
+from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, StockSearchCompanyList, StockList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,9 +33,9 @@ urlpatterns = [
     path('logout', LogoutView.as_view()),
 
     # 기업
-    path('stocks', StockItemList.as_view()),
-    path('stocks/list', StockItemSearchCompanyList.as_view()),
-    path('stocks/<str:stock_code>', StockItemDetail.as_view()),
+    path('stocks', StockList.as_view()),
+    path('stocks/list', StockSearchCompanyList.as_view()),
+    path('stocks/<str:stock_code>', StockDetail.as_view()),
     path('stocks/<str:stock_code>/pivot', CreatePivotProc.as_view()),
     # path('stocks/<str:code>/finance-info', FinanceInfo.as_view()),
     path('stocks/<str:stock_code>/scrap-financial', ScrapFinancialInfo.as_view()),

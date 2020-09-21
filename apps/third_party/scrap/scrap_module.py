@@ -22,10 +22,11 @@ class ScrapModule(ChromeDriver):
 
             scrap_data = self.get_scrap_data()
             result = self.parse_scrap_data(scrap_data)
-            return result
 
         except Exception as e:
             raise e
 
         finally:
             self.driver.quit()
+
+        return result
