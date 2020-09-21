@@ -16,21 +16,33 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     </div>
 
-    {% for sector in sector_group %}
-        <div class="btn-group" style="margin: 10px">
-            <button class="btn btn-primary" type="button"
-                    onclick="location.replace('/sector/{{ sector.sector_id }}')">{{ sector.sector_name }}</button>
-            <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                {% for group in sector.stock_group %}
-                    <a class="dropdown-item" href="/stocks/{{ group.0 }}">{{ group.1 }}</a>
-                {% endfor %}
+    <div class="row">
+        {% for sector in sector_group %}
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <h5 class="card-title" style="cursor: pointer;"
+                                onclick="location.replace('/sector/{{ sector.sector_id }}')">{{ sector.sector_name }}</h5>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" type="button">종목</button>
+                            <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-reference="parent">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                                {% for group in sector.stock_group %}
+                                    <a class="dropdown-item" href="/stocks/{{ group.0 }}">{{ group.1 }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
     {% include 'comm/page.html' %}
 

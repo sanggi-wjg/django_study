@@ -9,3 +9,6 @@ class Industries(models.Model):
     class Meta:
         managed = False
         db_table = 'industries'
+
+    def __str__(self):
+        return self.industry_name

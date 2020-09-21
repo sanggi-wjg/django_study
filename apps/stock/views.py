@@ -20,7 +20,7 @@ from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 
 class StockItemList(ListViews):
     model = Stocks
-    paginate_by = 20
+    paginate_by = 50
     block_size = 10
     template_name = 'stock/stock_list.html'
     context_object_name = 'stock_list'
@@ -37,12 +37,9 @@ class StockItemSearchCompanyList(HttpViews):
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term')
-        items = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
+        stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
 
-        result = []
-        for item in items:
-            result.append({ 'code': item['stock_code'], 'name': item['stock_name'] })
-
+        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'] } for stock in stock_list]
         return HttpResponse(json.dumps(result))
 
 

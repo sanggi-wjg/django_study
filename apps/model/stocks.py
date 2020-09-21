@@ -26,9 +26,9 @@ class Stocks(models.Model):
     sectors_id = models.ForeignKey(Sectors, on_delete = models.DO_NOTHING, db_column = 'sectors_id')
     industries_id = models.ForeignKey(Industries, on_delete = models.DO_NOTHING, db_column = 'industries_id')
 
-    def __str__(self):
-        return '[{}] {}({})'.format(self.stock_market, self.stock_name, self.stock_code)
-
     class Meta:
         managed = False
         db_table = 'stocks'
+
+    def __str__(self):
+        return '[{}] {}({})'.format(self.stock_market, self.stock_name, self.stock_code)
