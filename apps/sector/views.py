@@ -6,6 +6,7 @@ from apps.model.stocks import Stocks
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 from apps.third_party.fdr.finance_data_image_stock_list import FinanceDataImageStockList
+from apps.third_party.util.colorful import print_yellow
 
 
 class SectorList(ListViews):
@@ -13,7 +14,7 @@ class SectorList(ListViews):
     paginate_by = 20
     block_size = 10
     template_name = 'sector/sector_list.html'
-    context_object_name = 'sector_group'
+    context_object_name = 'sector_list'
     ordering = ['sector_name']
     extra_context = {
         'view_title': '업종 리스트'
@@ -27,17 +28,17 @@ class SectorList(ListViews):
     def _get_sector_group(self, sector_list):
         result = []
 
-        for n, sector in enumerate(sector_list):
-            stock_items = Stocks.objects.values('stock_code', 'stock_name').filter(sectors_id = sector.id).order_by('id')
+        for sector in sector_list:
+            stock = Stocks.objects.values('stock_code', 'stock_name').filter(sectors_id = sector.id).order_by('id')
 
             sector_group = {
-                'sector_id'     : sector.id,
-                'sector_name'   : sector.sector_name,
-                'stock_of_group': []
+                'sector_id'  : sector.id,
+                'sector_name': sector.sector_name,
+                'stock_group': []
             }
 
-            for stock in stock_items:
-                sector_group['stock_of_group'].append((stock['stock_code'], stock['stock_name']))
+            for s in stock:
+                sector_group['stock_group'].append((s['stock_code'], s['stock_name']))
 
             result.append(sector_group)
 

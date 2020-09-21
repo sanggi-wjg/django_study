@@ -30,5 +30,5 @@ class Stocks(models.Model):
         return '[{}] {}({})'.format(self.stock_market, self.stock_name, self.stock_code)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'stocks'

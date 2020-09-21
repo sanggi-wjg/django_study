@@ -22,8 +22,8 @@ class StockItemList(ListViews):
     model = Stocks
     paginate_by = 20
     block_size = 10
-    template_name = 'stock/stock_item_list.html'
-    context_object_name = 'stock_items'
+    template_name = 'stock/stock_list.html'
+    context_object_name = 'stock_list'
     ordering = ['id']
     extra_context = {
         'view_title': '기업 리스트'
@@ -47,24 +47,24 @@ class StockItemSearchCompanyList(HttpViews):
 
 
 class StockItemDetail(DetailViews):
-    template_name = 'stock/stock_item_detail.html'
-    context_object_name = 'stock_item'
+    template_name = 'stock/stock_detail.html'
+    context_object_name = 'stock'
 
     def get_object(self, queryset = None):
-        return Stocks.objects.get_detail_join_one(stock_code = self.kwargs['code'])
+        return Stocks.objects.get_detail_join_one(stock_code = self.kwargs['stock_code'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['view_title'] = context[self.context_object_name].get('name')
+        context['view_title'] = context[self.context_object_name].get('stock_name')
         context['pivot'] = Pivot.objects.filter(stocks_id = context[self.context_object_name].get('id')).order_by('-date')
-        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['code'] }).sort('year')
+        context['finance_info'] = MongoDB().find_list('finance_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('year')
 
-        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING)
+        context['demand_info'] = MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING)
         context['summary_demand_info'] = {
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(5)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(10)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(15)),
-            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['code'] }).sort('date', pymongo.DESCENDING).limit(20)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(5)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(10)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(15)),
+            self._get_sums(MongoDB().find_list('demand_info', { "stock_items_code": self.kwargs['stock_code'] }).sort('date', pymongo.DESCENDING).limit(20)),
         }
         return context
 

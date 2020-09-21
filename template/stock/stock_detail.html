@@ -50,14 +50,14 @@
 {% block content %}
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2>{{ stock_item.stock_name }} ({{ stock_item.stock_code }})</h2>
+        <h2>{{ stock.stock_name }} ({{ stock.stock_code }})</h2>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="request_ajax_n_reload('/stocks/{{ stock_item.stock_code }}/scrap-financial')">재무정보 갱신
+                        onclick="request_ajax_n_reload('/stocks/{{ stock.stock_code }}/scrap-financial')">재무정보 갱신
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="request_ajax_n_reload('/stocks/{{ stock_item.stock_code }}/scrap-demand')">수급 갱신
+                        onclick="request_ajax_n_reload('/stocks/{{ stock.stock_code }}/scrap-demand')">수급 갱신
                 </button>
             </div>
             <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">

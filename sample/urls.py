@@ -35,16 +35,16 @@ urlpatterns = [
     # 기업
     path('stocks', StockItemList.as_view()),
     path('stocks/list', StockItemSearchCompanyList.as_view()),
-    path('stocks/<str:code>', StockItemDetail.as_view()),
-    path('stocks/<str:code>/pivot', CreatePivotProc.as_view()),
+    path('stocks/<str:stock_code>', StockItemDetail.as_view()),
+    path('stocks/<str:stock_code>/pivot', CreatePivotProc.as_view()),
     # path('stocks/<str:code>/finance-info', FinanceInfo.as_view()),
-    path('stocks/<str:code>/scrap-financial', ScrapFinancialInfo.as_view()),
-    path('stocks/<str:code>/scrap-demand', ScrapDemandInfo.as_view()),
+    path('stocks/<str:stock_code>/scrap-financial', ScrapFinancialInfo.as_view()),
+    path('stocks/<str:stock_code>/scrap-demand', ScrapDemandInfo.as_view()),
 
     # 업종
-    path('stocks/sector', SectorList.as_view()),
-    path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
-    path('stocks/sector/<str:sector_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
+    path('sector', SectorList.as_view()),
+    path('sector/<str:sectors_id>', SectorDetail.as_view()),
+    path('sector/<str:sectors_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),

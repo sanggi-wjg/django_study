@@ -7,5 +7,8 @@ class Sectors(models.Model):
     sector_name = models.CharField(max_length = 50, unique = True, db_column = 'sector_name')
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'sectors'
+
+    def __str__(self):
+        return self.sector_name

@@ -7,5 +7,5 @@ class Industries(models.Model):
     industry_name = models.CharField(max_length = 200, unique = True, db_column = 'industry_name')
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'industries'

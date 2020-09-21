@@ -45,3 +45,7 @@ class Pivot(models.Model):
     recommend_low_price = models.PositiveIntegerField(blank = False, null = False, default = 0, db_column = 'recommend_low_price')
 
     date = models.DateField(auto_now = True, db_column = 'date')
+
+    class Meta:
+        managed = False
+        db_table = 'pivot'
