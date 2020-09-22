@@ -17,7 +17,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        print_green('KRX 정보를 가져옵니다.')
+        print_green('주식 정보를 가져옵니다.')
         krx = fdr.StockListing('KRX')
 
         for symbol, market, name, sector, industry, *_ in krx.values:
@@ -35,7 +35,7 @@ class Command(BaseCommand):
                 break
 
 
-def is_preferred_stock(sector, industry):
+def is_preferred_stock(sector, industry) -> bool:
     if isinstance(sector, float) and isinstance(industry, float):
         if math.isnan(sector) and math.isnan(industry):
             return True
@@ -43,7 +43,7 @@ def is_preferred_stock(sector, industry):
     return False
 
 
-def register_stock(market, symbol, name, sector, industry):
+def register_stock(market, symbol, name, sector, industry) -> bool:
     try:
         Stocks.objects.get(stock_code = symbol)
 
@@ -63,7 +63,7 @@ def register_stock(market, symbol, name, sector, industry):
     return True
 
 
-def register_sector(sector):
+def register_sector(sector) -> Sectors:
     try:
         result = Sectors.objects.get(sector_name = sector)
 
@@ -75,7 +75,7 @@ def register_sector(sector):
     return result
 
 
-def register_industry(industry):
+def register_industry(industry) -> Industries:
     try:
         result = Industries.objects.get(industry_name = industry)
 
