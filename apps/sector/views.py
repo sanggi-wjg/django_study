@@ -3,10 +3,9 @@ from django.shortcuts import get_object_or_404
 
 from apps.model.sectors import Sectors
 from apps.model.stocks import Stocks
-from apps.third_party.database.mongo_db import MongoDB
+from apps.sector.view_helpers import sector_list_get_sector_group, sector_detail_get_finance_info
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
 from apps.third_party.fdr.finance_data_image_stock_list import FinanceDataImageStockList
-from apps.third_party.util.colorful import print_yellow
 
 
 class SectorList(ListViews):
@@ -22,24 +21,8 @@ class SectorList(ListViews):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({ 'sector_group': self._get_sector_group(context['object_list']) })
+        context.update({ 'sector_group': sector_list_get_sector_group(context['object_list']) })
         return context
-
-    def _get_sector_group(self, sector_list):
-        result = []
-
-        for sector in sector_list:
-            stock = Stocks.objects.values('stock_code', 'stock_name').filter(sectors_id = sector.id).order_by('id')
-
-            sector_group = {
-                'sector_id'  : sector.id,
-                'sector_name': sector.sector_name,
-                'stock_group': [(s['stock_code'], s['stock_name']) for s in stock]
-            }
-
-            result.append(sector_group)
-
-        return result
 
 
 class SectorDetail(DetailViews):
@@ -52,28 +35,8 @@ class SectorDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].sector_name
-        context['finance_info'] = self._get_sector_finance_info()
+        context['finance_info'] = sector_detail_get_finance_info(context[self.context_object_name])
         return context
-
-    def _get_sector_finance_info(self):
-        finance_info, company_finance_info = { }, { }
-        context = super().get_context_data()
-
-        stock_items = Stocks.objects.filter(sectors_id = context[self.context_object_name].id).order_by('id')
-        for stock in stock_items:
-            finance_info.setdefault(stock.stock_name, MongoDB().find_list('finance_info', { 'stock_items_code': stock.stock_code }).sort('year'))
-
-        for company_name, info in finance_info.items():
-            for i in info:
-                if company_name not in company_finance_info:
-                    company_finance_info.setdefault(company_name, { })
-
-                if i['year'] not in company_finance_info[company_name].keys():
-                    company_finance_info[company_name].setdefault(i['year'], [i])
-                else:
-                    company_finance_info[company_name][i['year']].append(i)
-
-        return company_finance_info
 
 
 class SectorFinancialDataComparedPriceImage(HttpViews):

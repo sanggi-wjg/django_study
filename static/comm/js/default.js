@@ -43,8 +43,39 @@ function request_ajax_n_reload(url)
 
 function search_company()
 {
+    $.widget("custom.autocomplete", $.ui.autocomplete, {
+        // _renderItem: function (ul, item) {
+        //     var link = '/stocks/';
+        //     if (item.category === 'Sector') {
+        //         link = '/sector/'
+        //     }
+        //
+        //     return $("<li>")
+        //         .append($("<div>").text(item.label))
+        //         .attr('data-link', link)
+        //         .appendTo(ul);
+        // },
+        _renderMenu: function (ul, items) {
+            var that = this,
+                currentCategory = "";
+
+            $.each(items, function (index, item) {
+                var li;
+                if (item.category !== currentCategory) {
+                    ul.append("<div class='ui-autocomplete-category'>" + item.category + "</div>");
+                    currentCategory = item.category;
+                }
+                li = that._renderItemData(ul, item);
+                if (item.category) {
+                    li.attr("aria-label", item.category);
+                }
+            });
+        }
+    });
+
     var search_company_obj = $("#search_company");
     var search_company_id_obj = $("#search_company_id");
+    var search_company_link_obj = $("#search_company_link");
 
     search_company_obj.autocomplete({
         source: function (request, response) {
@@ -62,6 +93,7 @@ function search_company()
                                 'code': item.code,
                                 'label': item.name,
                                 'value': item.name,
+                                'category': item.category,
                             }
                         })
                     );
@@ -78,7 +110,8 @@ function search_company()
             'ui-autocomplete': 'highlight'
         },
         select: function (event, ui) {
-            search_company_id_obj.val(ui.item.code)
+            search_company_id_obj.val(ui.item.code);
+            search_company_link_obj.val(ui.item.category);
         },
         focus: function (event, ui) {
             return false;
@@ -93,7 +126,12 @@ function search_company()
                 return false;
             }
 
-            location.replace('/stocks/' + search_company_id_obj.val())
+            if (search_company_link_obj.val() === '') {
+                location.replace('/stocks/' + search_company_id_obj.val())
+            }
+            else {
+                location.replace('/' + search_company_link_obj.val() + '/' + search_company_id_obj.val())
+            }
         }
     })
 }

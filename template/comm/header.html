@@ -30,6 +30,13 @@
             background-repeat: no-repeat;
             background-position: center center;
         }
+
+        .ui-autocomplete-category {
+            font-weight: bold;
+            padding: .2em .4em;
+            margin: .8em 0 .2em;
+            line-height: 1.5;
+        }
     </style>
 
     <script src={% static 'comm/js/jquery_3.4.1.js' %}></script>
@@ -57,6 +64,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <input type="hidden" id="search_company_id" value="">
+    <input type="hidden" id="search_company_link" value="">
     <input class="form-control form-control-dark w-100" type="text" id="search_company" placeholder="Search Company"
            aria-label="Search Company">
     <ul class="navbar-nav px-3">

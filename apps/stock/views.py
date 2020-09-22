@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from apps.model.pivot import Pivot
+from apps.model.sectors import Sectors
 from apps.model.stocks import Stocks
 from apps.stock.forms import PivotForm
 from apps.stock.view_helpers import stock_detail_get_context
@@ -11,6 +12,7 @@ from apps.third_party.database.collections.demand import demand_info_register
 from apps.third_party.database.collections.financial_info import financial_info_register
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
+from apps.third_party.util.colorful import print_yellow
 from apps.third_party.util.helpers import popup_close
 from apps.third_party.util.exceptions import print_exception
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
@@ -43,16 +45,20 @@ class StockDetail(DetailViews):
         return context
 
 
-class StockSearchCompanyList(HttpViews):
+class SearchStockNSectorList(HttpViews):
     """
-    Search Company autocomplete ajax in header
+    Search Stock And Sector autocomplete ajax in header
     """
 
     def get(self, request, *args, **kwargs):
         term = request.GET.get('term')
         stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
+        sector_list = Sectors.objects.values('id', 'sector_name').filter(sector_name__icontains = term)
 
-        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'] } for stock in stock_list]
+        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'], 'category': '' } for stock in stock_list]
+        [result.append({ 'code': str(sector['id']), 'name': sector['sector_name'], 'category': 'sector' }) for sector in sector_list]
+
+        print_yellow(result)
         return HttpResponse(json.dumps(result))
 
 
