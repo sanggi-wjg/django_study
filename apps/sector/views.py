@@ -35,6 +35,7 @@ class SectorDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].sector_name
+        context['stock_list'] = Stocks.objects.filter(sectors_id = self.kwargs['sector_id']).order_by('id')
         context['finance_info'] = sector_detail_get_finance_info(context[self.context_object_name])
         return context
 
