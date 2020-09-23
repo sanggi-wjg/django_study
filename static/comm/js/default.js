@@ -81,7 +81,7 @@ function search_company()
         source: function (request, response) {
             $.ajax({
                 type: 'get'
-                , url: '/stocks/list'
+                , url: '/stocks/company/list'
                 , dataType: "json"
                 , data: {
                     term: request.term,
@@ -127,7 +127,7 @@ function search_company()
             }
 
             if (search_company_link_obj.val() === '') {
-                location.replace('/stocks/' + search_company_id_obj.val())
+                location.replace('/stocks/company/' + search_company_id_obj.val())
             }
             else {
                 location.replace('/' + search_company_link_obj.val() + '/' + search_company_id_obj.val())

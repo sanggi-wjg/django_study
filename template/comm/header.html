@@ -88,8 +88,8 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link{% if request.path|startswith:'/stocks' %} active{% endif %}"
-                               href="/stocks">
+                            <a class="nav-link{% if request.path|startswith:'/stocks/company' %} active{% endif %}"
+                               href="/stocks/company">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -102,8 +102,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link{% if request.path|startswith:'/sector' %} active{% endif %}"
-                               href="/sector">
+                            <a class="nav-link{% if request.path|startswith:'/stocks/sector' %} active{% endif %}"
+                               href="/stocks/sector">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"

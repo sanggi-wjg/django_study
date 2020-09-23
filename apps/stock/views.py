@@ -100,7 +100,7 @@ class ScrapFinancialInfo(HttpViews):
         try:
             scrap = Scrap_Consensus()
             scrap_data = scrap.scrap('https://wisefn.finance.daum.net/company/c1010001.aspx?cmp_cd={stock_code}'.format(stock_code = self.kwargs['stock_code']))
-            financial_info_register(stock_code, financial_data = scrap_data)
+            financial_info_register(self.kwargs['stock_code'], financial_data = scrap_data)
 
         except Exception as e:
             print_exception()
