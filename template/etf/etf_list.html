@@ -1,0 +1,36 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+    <div class="row">
+        {% for etf in etf_list %}
+            <div class="col-sm-2">
+                <div class="card">
+                    <div class="card-body" style="cursor: pointer;">
+                        <h5 class="card-title"
+                            onclick="location.replace('/stocks/etf/{{ etf.etf_code }}')">{{ etf.company_id__company_name }} {{ etf.etf_name }}</h5>
+                    </div>
+                </div>
+                <br>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+
+    {% include 'comm/page.html' %}
+
+{% endblock %}

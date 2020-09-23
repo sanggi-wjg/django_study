@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.etf.views import EtfList
 from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
 # from apps.in_queue.views import InQueue, InQueueOne
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
@@ -45,6 +46,9 @@ urlpatterns = [
     path('stocks/sector', SectorList.as_view()),
     path('stocks/sector/<str:sector_id>', SectorDetail.as_view()),
     path('stocks/sector/<str:sector_id>/<str:term>/financial/image', SectorFinancialDataComparedPriceImage.as_view()),
+
+    # ETF
+    path('stocks/etf', EtfList.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),
