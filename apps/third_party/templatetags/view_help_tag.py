@@ -1,12 +1,12 @@
 from django import template
 
-from apps.third_party.util.utils import current_year_subtract, current_month_subtract
+from apps.third_party.util.utils import current_year_subtract, current_month_subtract, current_day_subtract
 
 register = template.Library()
 
 
 @register.simple_tag
-def request_financial_data_basic_btns(fd_type: str):
+def request_financial_data_basic_btns(fd_type: str) -> str:
     html = ''
 
     for tag_value, term in _term_list():
@@ -16,7 +16,7 @@ def request_financial_data_basic_btns(fd_type: str):
 
 
 @register.simple_tag
-def request_financial_data_sector_btns(sector_id: str):
+def request_financial_data_sector_btns(sector_id: str) -> str:
     html = ''
 
     for tag_value, term in _term_list():
@@ -25,7 +25,7 @@ def request_financial_data_sector_btns(sector_id: str):
     return '<div class="list-group list-group-horizontal-sm">' + html + '</div>'
 
 
-def _term_list():
+def _term_list() -> list:
     return [
         ['전체', '1991'],
         ['20년', current_year_subtract(20)],
@@ -37,3 +37,8 @@ def _term_list():
         ['3개월', current_month_subtract(3)],
         ['1개월', current_month_subtract(1)],
     ]
+
+
+@register.simple_tag
+def day_subtract(delta: int):
+    return current_day_subtract(delta)

@@ -4,42 +4,141 @@
 {% load static %}
 
 {% block script_list %}
-    {% comment %} https://www.chartjs.org/docs/latest/general/responsive.html {% endcomment %}
+    {% comment %}
+    https://www.chartjs.org/docs/latest/charts/line.html
+    https://www.chartjs.org/docs/latest/general/responsive.html
+    {% endcomment %}
     <link rel="stylesheet" href="{% static 'comm/Chart.js-2.9.3/Chart.min.css' %}">
     <script src={% static 'comm/Chart.js-2.9.3/Chart.min.js' %}></script>
-
     {% csrf_token %}
     <script>
         var CSRF_TOKEN;
+        var TREND_CHART;
 
-        function draw_chart()
+        function set_dates_and_search(delta)
+        {
+            var date = new Date();
+            date.setMonth(date.getMonth() - delta);
+            $("#from_date").val(date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2));
+            set_chart_datasets();
+        }
+
+        function set_chart_datasets()
+        {
+            $.ajax({
+                type: 'POST',
+                url: '{{ request.path }}/' + $("#from_date").val() + '/' + $("#to_date").val(),
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                },
+                success: function (result) {
+                    var index = 0;
+                    $.each(result.datasets, function (key, data) {
+                        TREND_CHART.data
+                        TREND_CHART.data.datasets[index++].data = data
+                    });
+
+                    TREND_CHART.data.labels = result.labels;
+                    TREND_CHART.update();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            })
+        }
+
+        function set_chart()
         {
             var ctx = $("#trend_chart");
-            var trend_chart = new Chart(ctx, {
+            TREND_CHART = new Chart(ctx, {
                 type: 'line',
-
                 // The data for our dataset
                 data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                    datasets: [{
-                        label: 'My First dataset',
-                        borderColor: 'rgb(99,161,255)',
-                        data: [0, 10, 5, 2, 20, 30, 45]
-                    }]
+                    datasets: [
+                        {
+                            label: '개인',
+                            borderColor: "rgba(255,0,0, 0.8)",
+                            fill: false,
+                        },
+                        {
+                            label: '외국인',
+                            borderColor: "rgba(51,105,231, 0.8)",
+                            fill: false,
+                        },
+                        {
+                            label: '증권',
+                            borderColor: "rgba(0,0,0, 0.8)",
+                            fill: false,
+                        },
+                        {
+                            label: '보험',
+                            borderColor: "rgba(193,216,47,0.5)",
+                            fill: false,
+                        },
+                        {
+                            label: '투신',
+                            borderColor: "rgba(0,124,192, 0.5)",
+                            fill: false,
+                        },
+                        {
+                            label: '은행',
+                            borderColor: "rgba(216,150,216, 0.5)",
+                            fill: false,
+                        },
+                        {
+                            label: '종금',
+                            borderColor: "rgba(180,169,150, 0.5)",
+                            fill: false,
+                        },
+                        {
+                            label: '연기금',
+                            borderColor: "rgba(255,170,0,0.8)",
+                            fill: false,
+                        },
+                        {
+                            label: '사모펀드',
+                            borderColor: "rgba(196,223,246, 0.5)",
+                            fill: false,
+                        },
+                        {
+                            label: '기타법인',
+                            borderColor: "rgba(73,192,182, 0.5)",
+                            fill: false,
+                        },
+                    ],
                 },
-
                 // Configuration options go here
                 options: {
                     responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    {#return value.toLocaleString("ko-KR", {style: "currency", currency: "WON"});#}
+                                    return '￦' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            }
+                        }]
+                    }
                 }
             });
         }
 
-
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
 
-            draw_chart();
+            set_chart();
+            set_chart_datasets();
+
+            $("#from_date, #to_date").keydown(function (key) {
+                if (key.keyCode === 13) {
+                    set_chart_datasets();
+                }
+            });
         });
     </script>
 {% endblock %}
@@ -47,15 +146,29 @@
 {% block content %}
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        {{ investor_trend_data }}
+        {{ investor_trend_data.labels }}
     </div>
 
     <div>
-        <button type="button" class="btn btn-primary">KOSPI</button>
-        <button type="button" class="btn btn-primary">KOSDAQ</button>
+        <button type="button" class="btn btn-primary" onclick="location.replace('/stocks/trend/1')">KOSPI</button>
+        <button type="button" class="btn btn-primary" onclick="location.replace('/stocks/trend/2')">KOSDAQ</button>
+        <label>
+            <input type="text" class="form-control" id="from_date" value="{{ date_condition.0 }}">
+        </label>
+        <label>
+            <input type="text" class="form-control" id="to_date" value="{{ date_condition.1 }}">
+        </label>
+        <input type="button" class="btn btn-dark" value="검색" onclick="set_chart_datasets()">
+        <input type="button" class="btn btn-light" value="1개월" onclick="set_dates_and_search(1)">
+        <input type="button" class="btn btn-light" value="2개월" onclick="set_dates_and_search(2)">
+        <input type="button" class="btn btn-light" value="3개월" onclick="set_dates_and_search(3)">
     </div>
+    <hr>
 
-    <div>
-        <canvas id="trend_chart" width="500" height="500" role="img" aria-label="Inverstor Trend Chart"></canvas>
+    <h4>{{ market_name }} Investor Trends</h4>
+    <div style="position: relative;">
+        <canvas id="trend_chart" width="500" height="250" role="img" aria-label="Investor Trend Chart"></canvas>
     </div>
 
 {% endblock %}

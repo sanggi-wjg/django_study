@@ -30,16 +30,22 @@ def get_date_list(date_range: int, time_format: str = '%Y-%m-%d') -> list:
     return date_list
 
 
-def current_year_subtract(delta: int):
-    current_year = datetime.today().strftime('%Y')
-    date = datetime.strptime(current_year, '%Y') - timedelta(days = (int(delta) * 365))
-    return date.strftime('%Y')
+def current_year_subtract(delta: int, time_format: str = '%Y'):
+    current_year = datetime.today().strftime(time_format)
+    date = datetime.strptime(current_year, time_format) - timedelta(days = (int(delta) * 365))
+    return date.strftime(time_format)
 
 
-def current_month_subtract(delta: int):
-    current_year = datetime.today().strftime('%Y-%m')
-    date = datetime.strptime(current_year, '%Y-%m') - timedelta(days = (int(delta) * 30))
-    return date.strftime('%Y-%m')
+def current_month_subtract(delta: int, time_format: str = '%Y-%m'):
+    current_year = datetime.today().strftime(time_format)
+    date = datetime.strptime(current_year, time_format) - timedelta(days = (int(delta) * 30))
+    return date.strftime(time_format)
+
+
+def current_day_subtract(delta: int, time_format: str = '%Y-%m-%d'):
+    current_year = datetime.today().strftime(time_format)
+    date = datetime.strptime(current_year, time_format) - timedelta(days = delta)
+    return date.strftime(time_format)
 
 
 def validate_path(path: str):
