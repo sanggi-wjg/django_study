@@ -24,6 +24,7 @@ from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImag
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList
+from apps.trend.views import InvestorTrend
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,6 +50,9 @@ urlpatterns = [
 
     # ETF
     path('stocks/etf', EtfList.as_view()),
+
+    # Investor trend
+    path('stocks/trend/<str:market>', InvestorTrend.as_view()),
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view()),

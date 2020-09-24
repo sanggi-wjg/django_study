@@ -35,7 +35,7 @@ class Scrap_InvestorTrend(ScrapModule):
     def _to_dict(self, scrap_data_list):
         pass
 
-    def scrap(self, market = 1, page_no = 1) -> dict:
+    def scrap(self, market: str = '1', page_no: int = 1) -> dict:
         """
         :param market: 1:KOSPI / 2:KOSDAQ
         :param page_no

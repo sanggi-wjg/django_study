@@ -1,0 +1,61 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% load static %}
+
+{% block script_list %}
+    {% comment %} https://www.chartjs.org/docs/latest/general/responsive.html {% endcomment %}
+    <link rel="stylesheet" href="{% static 'comm/Chart.js-2.9.3/Chart.min.css' %}">
+    <script src={% static 'comm/Chart.js-2.9.3/Chart.min.js' %}></script>
+
+    {% csrf_token %}
+    <script>
+        var CSRF_TOKEN;
+
+        function draw_chart()
+        {
+            var ctx = $("#trend_chart");
+            var trend_chart = new Chart(ctx, {
+                type: 'line',
+
+                // The data for our dataset
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [{
+                        label: 'My First dataset',
+                        borderColor: 'rgb(99,161,255)',
+                        data: [0, 10, 5, 2, 20, 30, 45]
+                    }]
+                },
+
+                // Configuration options go here
+                options: {
+                    responsive: true,
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
+
+            draw_chart();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-primary">KOSPI</button>
+        <button type="button" class="btn btn-primary">KOSDAQ</button>
+    </div>
+
+    <div>
+        <canvas id="trend_chart" width="500" height="500" role="img" aria-label="Inverstor Trend Chart"></canvas>
+    </div>
+
+{% endblock %}
