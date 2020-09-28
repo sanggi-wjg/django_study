@@ -40,9 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'apps.model',
+    'apps.etf',
+    'apps.func',
+    'apps.portfolio',
+    'apps.sector',
     'apps.sign',
     'apps.stock',
-    'apps.func',
+    'apps.trend',
+
     'apps.third_party',
     'apps.third_party.database',
     'apps.third_party.util',

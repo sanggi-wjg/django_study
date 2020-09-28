@@ -1,0 +1,45 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% load static %}
+
+{% block script_list %}
+    <script>
+        function add_comma(obj)
+        {
+            obj.value = obj.value.replace(/[^0-9]/g, '');   // 입력값이 숫자가 아니면 공백
+            obj.value = obj.value.replace(/,/g, '');    // ,값 공백처리
+            obj.value = obj.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");    // 정규식을 이용해서 3자리 마다, 추가
+        }
+
+        $(document).ready(function () {
+            add_comma(document.getElementById('portfolio_deposit'));
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="portfolio_name">포르폴리오 이름</label>
+            <input type="text" class="form-control" id="portfolio_name" name="portfolio_name" required>
+        </div>
+        <div class="form-group">
+            <label for="portfolio_deposit">예수금</label>
+            <input type="text" class="form-control" id="portfolio_deposit" name="portfolio_deposit" aria-describedby="deposit_help"
+                   value="10000000" onkeyup="add_comma(this)" required>
+            <small id="deposit_help" class="form-text text-muted">ex, ￦1,0000,000 (천만원)</small>
+        </div>
+        <div class="form-row">
+            {{ errors }}
+        </div>
+        <input class="btn btn-outline-success" type="submit" value="생성">
+    </form>
+
+{% endblock %}

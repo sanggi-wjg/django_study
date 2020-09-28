@@ -1,0 +1,53 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% load static %}
+
+{% block script_list %}
+    {% csrf_token %}
+    <script>
+        var CSRF_TOKEN;
+
+        $(document).ready(function () {
+            CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+    </div>
+
+    <div>
+        <input class="btn btn-info" type="button" value="포트폴리오 추가" onclick="location.replace('/portfolios/create')">
+    </div>
+    <hr>
+
+    {% load humanize %}
+
+    <div class="row">
+        {% for portfolio in portfolio_list %}
+            <div class="col-sm-6" onclick="location.replace('/portfolios/{{ portfolio.id }}')" style="cursor: pointer">
+                <div class="card">
+                    <div class="card-header"><h6>{{ portfolio.portfolio_name }}</h6></div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            평가금액 :
+                            <span class="badge badge-warning">10%</span>
+                        </h5>
+                        <p class="card-text">사용금액: {{ portfolio.portfolio_purchase_price|intcomma }}
+                            / 설정 예수금: {{ portfolio.portfolio_deposit|intcomma }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            수정일: {{ portfolio.update_date }} / 등록일: {{ portfolio.register_date }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

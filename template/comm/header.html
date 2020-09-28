@@ -130,7 +130,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link{% if request.path|startswith:'/stocks/trend' %} active{% endif %}"
-                               href="/stocks/trend/1">
+                               href="/stocks/trend">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -159,7 +159,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link{% if request.path|startswith:'/portfolios' %} active{% endif %}"
+                               href="/portfolios">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -169,7 +170,7 @@
                                     <polyline points="2 17 12 22 22 17"></polyline>
                                     <polyline points="2 12 12 17 22 12"></polyline>
                                 </svg>
-                                Integrations
+                                My Portfolio
                             </a>
                         </li>
                     </ul>

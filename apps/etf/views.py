@@ -12,7 +12,7 @@ class EtfList(ListViews):
     ordering = ['id']
     extra_context = {
         'view_title'  : 'ETF 리스트',
-        'company_list': EtfsCompany.objects.values('id', 'company_name').order_by('company_name').all()
+        'company_list': EtfsCompany.objects.values('id', 'company_name').order_by('id').all()
     }
 
     def get_queryset(self):

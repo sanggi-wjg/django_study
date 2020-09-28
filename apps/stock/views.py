@@ -57,8 +57,7 @@ class SearchStockNSectorList(HttpViews):
 
         result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'], 'category': 'company' } for stock in stock_list]
         [result.append({ 'code': str(sector['id']), 'name': sector['sector_name'], 'category': 'sector' }) for sector in sector_list]
-
-        print_yellow(result)
+        # print_yellow(result)
         return HttpResponse(json.dumps(result))
 
 
