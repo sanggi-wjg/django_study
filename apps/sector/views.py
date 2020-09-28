@@ -26,11 +26,10 @@ class SectorList(ListViews):
 
 
 class SectorDetail(DetailViews):
+    model = Sectors
     template_name = 'sector/sector_detail.html'
     context_object_name = 'sector'
-
-    def get_object(self, queryset = None):
-        return get_object_or_404(Sectors, id = self.kwargs['sector_id'])
+    pk_url_kwarg = 'sector_id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

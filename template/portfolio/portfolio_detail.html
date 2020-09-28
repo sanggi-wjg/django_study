@@ -1,0 +1,24 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% load static %}
+
+{% block script_list %}
+    {% csrf_token %}
+    <script>
+        var CSRF_TOKEN;
+
+        $(document).ready(function () {
+            CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+
+
+{% endblock %}

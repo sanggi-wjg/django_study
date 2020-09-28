@@ -21,7 +21,7 @@ from django.urls import path, include
 from apps.etf.views import EtfList
 from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
 # from apps.in_queue.views import InQueue, InQueueOne
-from apps.portfolio.views import PortfolioList, CreatePortfolio
+from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList
@@ -59,6 +59,7 @@ urlpatterns = [
 
     # Portfolio
     path('portfolios', PortfolioList.as_view()),
+    path('portfolios/<str:portfolio_id>', PortfolioDetail.as_view()),
     path('portfolios/create', CreatePortfolio.as_view()),
 
     # 부가기능

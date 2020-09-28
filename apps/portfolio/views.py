@@ -1,8 +1,8 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from apps.model.portfolios import Portfolios
-from apps.third_party.core.viewmixins import ListViews, HttpViews
+from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
 
 
 class PortfolioList(ListViews):
@@ -13,6 +13,18 @@ class PortfolioList(ListViews):
     extra_context = {
         'view_title': '포트폴리오 리스트'
     }
+
+
+class PortfolioDetail(DetailViews):
+    model = Portfolios
+    template_name = 'portfolio/portfolio_detail.html'
+    context_object_name = 'portfolio'
+    pk_url_kwarg = 'portfolio_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_title'] = context[self.context_object_name].portfolio_name + ' 포트폴리오'
+        return context
 
 
 class CreatePortfolio(HttpViews):
