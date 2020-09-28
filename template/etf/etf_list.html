@@ -16,6 +16,13 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     </div>
 
+    <nav class="nav">
+        {% for company in company_list %}
+            <a class="nav-link" href="/stocks/etf/{{ company.id }}">{{ company.company_name }}</a>
+        {% endfor %}
+    </nav>
+    <hr>
+
     <div class="row">
         {% for etf in etf_list %}
             <div class="col-sm-2">

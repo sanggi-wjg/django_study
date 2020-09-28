@@ -50,6 +50,7 @@ urlpatterns = [
 
     # ETF
     path('stocks/etf', EtfList.as_view()),
+    path('stocks/etf/<str:company_id>', EtfList.as_view()),
 
     # Investor trend
     path('stocks/trend/<str:market>', InvestorTrend.as_view()),
