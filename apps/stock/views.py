@@ -55,7 +55,7 @@ class SearchStockNSectorList(HttpViews):
         stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
         sector_list = Sectors.objects.values('id', 'sector_name').filter(sector_name__icontains = term)
 
-        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'], 'category': '' } for stock in stock_list]
+        result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'], 'category': 'company' } for stock in stock_list]
         [result.append({ 'code': str(sector['id']), 'name': sector['sector_name'], 'category': 'sector' }) for sector in sector_list]
 
         print_yellow(result)
