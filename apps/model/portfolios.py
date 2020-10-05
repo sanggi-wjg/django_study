@@ -21,6 +21,9 @@ class PortfoliosQuerySet(models.QuerySet):
         )
         return result
 
+    def update_date(self):
+        pass
+
 
 class Portfolios(models.Model):
     objects = PortfoliosQuerySet.as_manager()

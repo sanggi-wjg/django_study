@@ -29,7 +29,7 @@
 
     <div class="row">
         {% for portfolio in portfolio_list %}
-            <div class="col-sm-6" onclick="location.replace('/portfolios/{{ portfolio.id }}')" style="cursor: pointer">
+            <div class="col-sm-4" onclick="location.replace('/portfolios/{{ portfolio.id }}')" style="cursor: pointer">
                 <div class="card">
                     <div class="card-header"><h6>{{ portfolio.portfolio_name }}</h6></div>
                     <div class="card-body">
@@ -44,7 +44,7 @@
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">
-                            수정일: {{ portfolio.update_date }} / 등록일: {{ portfolio.register_date }}
+                            수정일: {{ portfolio.update_date }} | 등록일: {{ portfolio.register_date }}
                         </small>
                     </div>
                 </div>
