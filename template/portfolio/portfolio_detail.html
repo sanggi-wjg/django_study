@@ -96,12 +96,30 @@
                 <th scope="col">수익률</th>
                 <th scope="col">매입금액</th>
                 <th scope="col">수량</th>
-                <th scope="col">매도</th>
                 <th scope="col">매입일</th>
+                <th scope="col">매도일</th>
             </tr>
             </thead>
             <tbody>
-
+            {% if portfolio_stock_list is None %}
+                <tr>
+                    <td colspan="9">매수 종목이 없습니다.</td>
+                </tr>
+            {% else %}
+                {% for stock in portfolio_stock_list %}
+                    <tr>
+                        <td>{{ stock.stocks_id__stock_name }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ stock.total_stock_count }}</td>
+                        <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
+                        <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
             </tbody>
             <tfoot>
             </tfoot>

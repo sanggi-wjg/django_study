@@ -1,4 +1,6 @@
 import json
+
+from django.db.models import Count, F
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -29,6 +31,12 @@ class PortfolioDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].portfolio_name + ' 포트폴리오'
+        context['portfolio_stock_list'] = PortfoliosDetail.objects.values(
+            'sell_date', 'stocks_id__stock_name'
+        ).annotate(
+            total_stock_count = Count('stock_count'),
+            purchase_date = F('purchase_date')
+        ).filter(portfolio_id = self.kwargs['portfolio_id'])
         return context
 
 
