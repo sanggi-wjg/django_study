@@ -20,12 +20,12 @@ from django.urls import path, include
 
 from apps.etf.views import EtfList
 from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
+from apps.trend.views import InvestorTrend, InvestorTrendData
 # from apps.in_queue.views import InQueue, InQueueOne
-from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail
+from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail, StockSearchAutocomplete, PortfolioStockBuyNSell
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList
-from apps.trend.views import InvestorTrend, InvestorTrendData
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -58,18 +58,23 @@ urlpatterns = [
     path('stocks/trend/<str:market>/<str:from_date>/<str:to_date>', InvestorTrendData.as_view()),
 
     # Portfolio
-    path('portfolios', PortfolioList.as_view()),
-    path('portfolios/<str:portfolio_id>', PortfolioDetail.as_view()),
-    path('portfolios/create', CreatePortfolio.as_view()),
+    path('portfolios', PortfolioList.as_view(), name = '포트폴리오 리스트'),
+    path('portfolios/create', CreatePortfolio.as_view(), name = '포트폴리오 생성'),
+    path('portfolios/stock/search', StockSearchAutocomplete.as_view(), name = '포트폴리오 매수시 종목 검색'),
+
+    path('portfolios/<str:portfolio_id>', PortfolioDetail.as_view(), name = '포트폴리오 상세'),
+    path('portfolios/<str:portfolio_id>/stock/purchase', PortfolioStockBuyNSell.as_view(), name = '포트폴리오 상세 종목 매수, 매도'),
 
     # 부가기능
-    path('func/financial-metrics', FinancialMetrics.as_view()),
-    path('func/indexs', IndexSites.as_view()),
-    path('func/indexs/<str:fd_type>/<str:term>/financial/image', IndexFinancialDataImage.as_view()),
+    path('func/financial-metrics', FinancialMetrics.as_view(), name = '재무지표'),
+    path('func/indexs', IndexSites.as_view(), name = '인덱스 지표 리스트'),
+    path('func/indexs/<str:fd_type>/<str:term>/financial/image', IndexFinancialDataImage.as_view(), name = '인덱스 지표 plot 이미지'),
 
     # path('data/in-queue/', InQueue.as_view()),
     # path('data/in-queue/<str:productCd>', InQueueOne.as_view()),
 ]
+from apps.trend.views import InvestorTrend, InvestorTrendData
+
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 

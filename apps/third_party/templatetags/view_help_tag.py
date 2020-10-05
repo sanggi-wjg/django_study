@@ -1,6 +1,6 @@
 from django import template
 
-from apps.third_party.util.utils import current_year_subtract, current_month_subtract, current_day_subtract
+from apps.third_party.util.utils import current_year_subtract, current_month_subtract, current_day_subtract, today_dateformat
 
 register = template.Library()
 
@@ -42,3 +42,8 @@ def _term_list() -> list:
 @register.simple_tag
 def day_subtract(delta: int):
     return current_day_subtract(delta)
+
+
+@register.simple_tag
+def current_date():
+    return today_dateformat(time_format = '%Y-%m-%d')

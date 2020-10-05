@@ -2,37 +2,72 @@
 {% block view_title %}{{ view_title }} {% endblock %}
 
 {% load static %}
+{% load view_help_tag %}
 
 {% block script_list %}
     {% csrf_token %}
+
     <script>
-        function purchase_stock()
+        var CSRF_TOKEN;
+
+        function sell_stock()
         {
-            $.ajax({
-                type: 'POST',
-                url: '{{ request.path }}',
-                accept: 'application/json',
-                dataType: 'json',
-                processData: false,
-                data: JSON.stringify({'year': $(this).attr('year')}),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
-                    xhr.setRequestHeader('Content-Type', 'application/json')
-                },
-                success: function (result) {
-                    console.log(result);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown);
-                }
-            })
+
         }
 
+        function search_stock_autocomplete()
+        {
+            var stock_name_obj = $("#stock_name"),
+                stock_code_obj = $("#stock_code");
 
-        var CSRF_TOKEN;
+            stock_name_obj.autocomplete({
+                appendTo: "#purchase_stock_modal",
+                source: function (request, response) {
+                    $.ajax({
+                        type: 'get'
+                        , url: '/portfolios/stock/search'
+                        , dataType: "json"
+                        , data: {
+                            term: request.term,
+                        }
+                        , success: function (result) {
+                            response(
+                                $.map(result, function (item) {
+                                    return {
+                                        'code': item.code,
+                                        'label': item.name,
+                                        'value': item.name,
+                                    }
+                                })
+                            );
+                        }
+                        , error: function (jqXHR, textStatus, errorThrown) {
+                            alert("Search error : " + errorThrown);
+                        }
+                    });
+                },
+                minLength: 2,
+                autoFocus: true,
+                delay: 800,
+                classes: {
+                    'ui-autocomplete': 'highlight'
+                },
+                select: function (event, ui) {
+                    stock_code_obj.val(ui.item.code);
+                    stock_name_obj.val(ui.item.value);
+                },
+                focus: function (event, ui) {
+                    return false;
+                },
+                close: function (event) {
+                }
+            });
+
+        }
 
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
+            search_stock_autocomplete();
 
 
         });
@@ -71,40 +106,49 @@
             <tfoot>
             </tfoot>
         </table>
-        <input class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#purchase_stock"
+        <input class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#purchase_stock_modal"
                value="종목 추가">
     </div>
 
-    <div class="modal fade" id="purchase_stock" data-backdrop="static" tabindex="-1"
+    <div class="modal fade" id="purchase_stock_modal" data-backdrop="static" tabindex="-1"
          aria-labelledby="purchase_stock_label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">종목 추가</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="stock_name" class="col-form-label">종목</label>
-                            <input type="text" class="form-control" id="stock_name" name="stock_name">
+                <form method="post" action="{{ request.path }}/stock/purchase">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">종목 추가</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <label for="stock_name" class="col-form-label">종목</label>
+                                <input type="text" class="form-control" id="stock_name" name="stock_name" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="stock_code" class="col-form-label">코드</label>
+                                <input type="text" class="form-control" id="stock_code" name="stock_code" readonly
+                                       required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="purchase_count" class="col-form-label">수량</label>
-                            <input type="text" class="form-control" id="purchase_count" name="purchase_count">
+                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" required>
                         </div>
                         <div class="form-group">
                             <label for="purchase_date" class="col-form-label">매수일</label>
-                            <input type="text" class="form-control" id="purchase_date">
+                            <input type="text" class="form-control" id="purchase_date" name="purchase_date"
+                                   value="{% current_date %}" required>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary">매수</button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary" onclick="purchase_stock()">매수</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -14,30 +14,7 @@
     <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'comm/bootstrap-4.5.0-dist/css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'comm/css/jquery-ui.css' %}">
-
-    <style>
-        #GlobalLoadingBox {
-            position: fixed;
-            z-index: 100;
-            top: 0px;
-            left: 0px;
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
-            opacity: 0.30;
-            filter: alpha(opacity=30); /* this is for IE */
-            background-image: url("{% static 'comm/images/Loading.gif' %}");
-            background-repeat: no-repeat;
-            background-position: center center;
-        }
-
-        .ui-autocomplete-category {
-            font-weight: bold;
-            padding: .2em .4em;
-            margin: .8em 0 .2em;
-            line-height: 1.5;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'comm/css/default.css' %}">
 
     <script src={% static 'comm/js/jquery_3.4.1.js' %}></script>
     <script src={% static 'comm/js/jquery-ui.js' %}></script>
