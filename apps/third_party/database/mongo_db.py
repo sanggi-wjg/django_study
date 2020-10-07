@@ -44,7 +44,7 @@ class MongoDB:
         if projection is None:
             projection = { '_id': False }
 
-        return self.db[collection_name].find_one(query, projection = projection)
+        return self.db[collection_name].find_one(query, projection = projection, sort = sort)
 
     def find_list(self, collection_name: str, query, limit = None, sort = None, projection = None):
         if projection is None:
