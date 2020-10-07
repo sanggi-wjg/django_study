@@ -1,5 +1,7 @@
 from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stock_price import StockPrice
+from apps.model.stocks import Stocks
+from apps.third_party.fdr.finance_data_stock_price import FinanceDataStockPrice
 from apps.third_party.util.colorful import print_yellow
 
 
@@ -30,3 +32,14 @@ def portfolio_detail_stock_list(portfolio_stock_list: PortfoliosDetail) -> list:
         })
 
     return result
+
+
+def validate_portfolio_stock_price(stock_code: str, stock_name: str):
+    stocks_id = Stocks.objects.get(stock_code = stock_code).id
+
+    try:
+        StockPrice.objects.get(stocks_id = stocks_id)
+
+    except StockPrice.DoesNotExist:
+        fd = FinanceDataStockPrice()
+        fd.register(stocks_id, stock_code, stock_name = stock_name)

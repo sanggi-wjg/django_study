@@ -113,8 +113,19 @@
                         <td>{{ stock.stock_name }}</td>
                         <td></td>
                         <td>{{ stock.current_price|intcomma }}</td>
-                        <td>{{ stock.income_price|intcomma }}</td>
-                        <td>{{ stock.income_rate }}%</td>
+
+                        {% if stock.income_price >= 0 %}
+                            <td style="color: red;">{{ stock.income_price|intcomma }}</td>
+                        {% else %}
+                            <td style="color: blue;">{{ stock.income_price|intcomma }}</td>
+                        {% endif %}
+
+                        {% if stock.income_rate >= 0 %}
+                            <td style="color: red;">{{ stock.income_rate }}%</td>
+                        {% else %}
+                            <td style="color: blue;">{{ stock.income_rate }}%</td>
+                        {% endif %}
+
                         <td>{{ stock.purchase_price|intcomma }}</td>
                         <td>{{ stock.total_stock_count }}</td>
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
@@ -166,7 +177,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary" onclick="purchase_stock()">매수</button>
+                        <button type="submit" class="btn btn-primary">매수</button>
                     </div>
                 </form>
             </div>

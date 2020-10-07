@@ -20,7 +20,7 @@ class PortfoliosDetail(models.Model):
 
     id = models.AutoField(primary_key = True, db_column = 'id')
 
-    purchase_date = models.DateField(auto_now_add = True, db_column = 'purchase_date')
+    purchase_date = models.DateField(blank = False, null = False, db_column = 'purchase_date')
     sell_date = models.DateField(default = None, null = True, db_column = 'sell_date')
     stock_count = models.IntegerField(blank = False, null = False, default = 0, db_column = 'stock_count')
 
