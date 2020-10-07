@@ -7,8 +7,8 @@ from django.shortcuts import render
 from apps.model.portfolios import Portfolios
 from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stocks import Stocks
+from apps.portfolio.view_helpers import portfolio_detail_stock_list
 from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
-from apps.third_party.util.colorful import print_yellow
 from apps.third_party.util.helpers import alert
 
 
@@ -31,12 +31,9 @@ class PortfolioDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].portfolio_name + ' 포트폴리오'
-        context['portfolio_stock_list'] = PortfoliosDetail.objects.values(
-            'sell_date', 'stocks_id__stock_name'
-        ).annotate(
-            total_stock_count = Count('stock_count'),
-            purchase_date = F('purchase_date')
-        ).filter(portfolio_id = self.kwargs['portfolio_id'])
+        context['portfolio_stock_list'] = portfolio_detail_stock_list(PortfoliosDetail.objects.values('sell_date', 'stocks_id__stock_name', 'stocks_id').annotate(
+            total_stock_count = Count('stock_count'), purchase_date = F('purchase_date')
+        ).filter(portfolio_id = self.kwargs['portfolio_id']))
         return context
 
 

@@ -1,7 +1,5 @@
 from django.db import models
 
-from apps.model.industries import Industries
-from apps.model.sectors import Sectors
 from apps.model.stocks import Stocks
 from apps.third_party.util.utils import today_dateformat
 
@@ -55,3 +53,6 @@ class StockPrice(models.Model):
     class Meta:
         managed = False
         db_table = 'stock_price'
+
+    def __str__(self):
+        return '{} {} {}'.format(self.date, self.stocks_id.stock_name, self.close_price)

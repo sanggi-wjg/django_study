@@ -108,12 +108,12 @@
             {% else %}
                 {% for stock in portfolio_stock_list %}
                     <tr>
-                        <td>{{ stock.stocks_id__stock_name }}</td>
+                        <td>{{ stock.stock_name }}</td>
+                        <td></td>
+                        <td>{{ stock.current_price }}</td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ stock.purchase_price }}</td>
                         <td>{{ stock.total_stock_count }}</td>
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
                         <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
