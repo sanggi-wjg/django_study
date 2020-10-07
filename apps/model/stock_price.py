@@ -11,8 +11,8 @@ class StockPriceQuerySet(models.QuerySet):
         if result:
             return result['date']
 
-        return '2020-10-01'
-        # return '1990-01-01'
+        # return '2020-10-01'
+        return '1990-01-01'
 
     def register(self, stocks_id: int, date: str, open_price: int, high_price: int, low_price: int, close_price: int):
         try:

@@ -11,14 +11,22 @@ def portfolio_detail_stock_list(portfolio_stock_list: PortfoliosDetail) -> list:
     """
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
+
+        current_price = StockPrice.objects.values('close_price').filter(stocks_id = stocks_id).last()['close_price']
+        purchase_price = StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = stock['purchase_date'])['close_price']
+        income_price = int((current_price - purchase_price) * stock['total_stock_count'])
+        income_rate = round(float(income_price / current_price) * 100, 2)
+
         result.append({
             'sell_date'        : stock['sell_date'],
             'stock_name'       : stock['stocks_id__stock_name'],
             'stocks_id'        : stock['stocks_id'],
             'total_stock_count': stock['total_stock_count'],
             'purchase_date'    : stock['purchase_date'],
-            'current_price'    : StockPrice.objects.values('close_price').filter(stocks_id = stocks_id).last()['close_price'],
-            'purchase_price'   : StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = stock['purchase_date'])['close_price'],
+            'current_price'    : current_price,
+            'purchase_price'   : purchase_price,
+            'income_price'     : income_price,
+            'income_rate'      : income_rate,
         })
 
     return result
