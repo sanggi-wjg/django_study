@@ -7,7 +7,7 @@ from django.shortcuts import render
 from apps.model.portfolios import Portfolios
 from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stocks import Stocks
-from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price
+from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price, portfolio_summary
 from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
 from apps.third_party.util.helpers import alert
 
@@ -21,6 +21,11 @@ class PortfolioList(ListViews):
         'view_title': '포트폴리오 리스트'
     }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[self.context_object_name] = portfolio_summary(context[self.context_object_name])
+        return context
+
 
 class PortfolioDetail(DetailViews):
     model = Portfolios
@@ -31,9 +36,7 @@ class PortfolioDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].portfolio_name + ' 포트폴리오'
-        context['portfolio_stock_list'] = portfolio_detail_stock_list(PortfoliosDetail.objects.values('sell_date', 'stocks_id__stock_name', 'stocks_id').annotate(
-            total_stock_count = Count('stock_count'), purchase_date = F('purchase_date')
-        ).filter(portfolio_id = self.kwargs['portfolio_id']))
+        context['portfolio_stock_list'] = portfolio_detail_stock_list(PortfoliosDetail.objects.get_groups(self.kwargs['portfolio_id']))
         return context
 
 
@@ -68,6 +71,9 @@ class CreatePortfolio(HttpViews):
 class StockSearchAutocomplete(HttpViews):
 
     def get(self, request, *args, **kwargs):
+        """
+        포르폴리오 종목 검색
+        """
         term = request.GET.get('term')
         stock_list = Stocks.objects.values('stock_code', 'stock_name').filter(stock_name__icontains = term)
         result = [{ 'code': stock['stock_code'], 'name': stock['stock_name'] } for stock in stock_list]
@@ -78,6 +84,9 @@ class StockSearchAutocomplete(HttpViews):
 class PortfolioStockBuyNSell(HttpViews):
 
     def post(self, request, *args, **kwargs):
+        """
+        포트폴리오 종목 매입
+        """
         portfolio_id = int(kwargs.get('portfolio_id'))
         stock_code = request.POST.get('stock_code')
         stock_name = request.POST.get('stock_name')
@@ -98,4 +107,7 @@ class PortfolioStockBuyNSell(HttpViews):
         return HttpResponseRedirect('/portfolios/{}'.format(portfolio_id))
 
     def delete(self, request, *args, **kwargs):
+        """
+        포트폴리오 종목 매도
+        """
         pass

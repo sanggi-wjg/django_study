@@ -129,7 +129,11 @@
                         <td>{{ stock.purchase_price|intcomma }}</td>
                         <td>{{ stock.total_stock_count }}</td>
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
-                        <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
+                        {% if stock.sell_date %}
+                            <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
+                        {% else %}
+                            <td><input type="button" class="btn btn-outline-danger" value="매도"></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             {% endif %}

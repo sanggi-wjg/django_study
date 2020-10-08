@@ -1,10 +1,21 @@
 from django.db import models
+from django.db.models import Count, F
 
 from apps.model.portfolios import Portfolios
 from apps.model.stocks import Stocks
 
 
 class PortfoliosDetailQuerySet(models.QuerySet):
+
+    def get_groups(self, portfolio_id: int):
+        return self.values(
+            'sell_date', 'stocks_id__stock_name', 'stocks_id'
+        ).annotate(
+            total_stock_count = Count('stock_count'),
+            purchase_date = F('purchase_date')
+        ).filter(
+            portfolio_id = portfolio_id
+        )
 
     def purchase(self, purchase_date: str, stock_count: int, portfolio_id: int, stock_code: int):
         self.create(
