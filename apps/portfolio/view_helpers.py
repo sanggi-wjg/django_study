@@ -46,7 +46,7 @@ def get_stock_prices(stocks_id: int, purchase_date: str, total_stock_count) -> t
     current_price = StockPrice.objects.values('close_price').filter(stocks_id = stocks_id).last()['close_price']
     purchase_price = StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = purchase_date)['close_price']
     income_price = int((current_price - purchase_price) * total_stock_count)
-    income_rate = round(float(income_price / current_price) * 100, 2)
+    income_rate = round(income_price / (current_price * total_stock_count) * 100, 2)
 
     return current_price, purchase_price, income_price, income_rate
 

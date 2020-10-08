@@ -26,8 +26,8 @@ class SignUpView(View):
 
         if user_form.is_valid():
             user = user_form.save()
-            print('USER_FORM:', user_form)
-            print('USER:', user)
+            # print('USER_FORM:', user_form)
+            # print('USER:', user)
             authenticate(username = user.username, passowrd = user.password)
 
             return HttpResponseRedirect('/')

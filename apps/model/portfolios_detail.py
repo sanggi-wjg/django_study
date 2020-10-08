@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Count, F
+from django.db.models import Count, F, Sum
 
 from apps.model.portfolios import Portfolios
 from apps.model.stocks import Stocks
@@ -11,19 +11,32 @@ class PortfoliosDetailQuerySet(models.QuerySet):
         return self.values(
             'sell_date', 'stocks_id__stock_name', 'stocks_id'
         ).annotate(
-            total_stock_count = Count('stock_count'),
+            total_stock_count = Sum('stock_count'),
             purchase_date = F('purchase_date')
         ).filter(
             portfolio_id = portfolio_id
         )
 
     def purchase(self, purchase_date: str, stock_count: int, portfolio_id: int, stock_code: int):
-        self.create(
-            purchase_date = purchase_date,
-            stock_count = stock_count,
-            portfolio_id = Portfolios.objects.get(id = portfolio_id),
-            stocks_id = Stocks.objects.get(stock_code = stock_code),
-        )
+        try:
+            # 해당 날짜로 해당 종목이 있으면 Update
+            stocks_id = Stocks.objects.get(stock_code = stock_code).id
+            portfolio = self.get(portfolio_id = portfolio_id, stocks_id = stocks_id)
+
+            self.filter(
+                portfolio_id = portfolio_id,
+                stocks_id = stocks_id
+            ).update(
+                stock_count = stock_count + portfolio.stock_count
+            )
+        except PortfoliosDetail.DoesNotExist:
+            # 없으면 Insert
+            self.create(
+                purchase_date = purchase_date,
+                stock_count = stock_count,
+                portfolio_id = Portfolios.objects.get(id = portfolio_id),
+                stocks_id = Stocks.objects.get(stock_code = stock_code),
+            )
 
 
 class PortfoliosDetail(models.Model):

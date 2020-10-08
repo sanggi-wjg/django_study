@@ -1,14 +1,15 @@
 import json
 
-from django.db.models import Count, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 from apps.model.portfolios import Portfolios
 from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stocks import Stocks
+from apps.model.transaction import transaction_purchase_stock
 from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price, portfolio_summary
 from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
+from apps.third_party.util.exceptions import print_exception
 from apps.third_party.util.helpers import alert
 
 
@@ -94,14 +95,12 @@ class PortfolioStockBuyNSell(HttpViews):
         purchase_date = request.POST.get('purchase_date')
 
         try:
-            # TODO: 남은 예수금으로 구매할 수 있는지 체크
-
             # 주식 가격정보가 없다면 생성
             validate_portfolio_stock_price(stock_code, stock_name)
+            transaction_purchase_stock(portfolio_id, purchase_count, purchase_date, stock_code)
 
-            # 구매 정보 입력
-            PortfoliosDetail.objects.purchase(purchase_date, purchase_count, portfolio_id, stock_code)
         except Exception as e:
+            print_exception()
             return alert(e.__str__())
 
         return HttpResponseRedirect('/portfolios/{}'.format(portfolio_id))
