@@ -92,15 +92,18 @@
                 <th scope="col">종목명</th>
                 <th scope="col">미니 차트</th>
                 <th scope="col">현재가</th>
+                <th scope="col">매입가</th>
+                <th scope="col">수량</th>
+                <th scope="col">평가금액</th>
+                <th scope="col">매입금액</th>
                 <th scope="col">손익</th>
                 <th scope="col">수익률</th>
-                <th scope="col">매입금액</th>
-                <th scope="col">수량</th>
                 <th scope="col">매입일</th>
                 <th scope="col">매도일</th>
             </tr>
             </thead>
             <tbody>
+            {% load mathfilters %}
             {% load humanize %}
 
             {% if portfolio_stock_list is None %}
@@ -113,6 +116,10 @@
                         <td>{{ stock.stock_name }}</td>
                         <td></td>
                         <td>{{ stock.current_price|intcomma }}</td>
+                        <td>{{ stock.purchase_price|intcomma }}</td>
+                        <td>{{ stock.total_stock_count }}</td>
+                        <td>{{ stock.current_price|mul:stock.total_stock_count|intcomma }}</td>
+                        <td>{{ stock.purchase_price|mul:stock.total_stock_count|intcomma }}</td>
 
                         {% if stock.income_price >= 0 %}
                             <td style="color: red;">{{ stock.income_price|intcomma }}</td>
@@ -126,8 +133,6 @@
                             <td style="color: blue;">{{ stock.income_rate }}%</td>
                         {% endif %}
 
-                        <td>{{ stock.purchase_price|intcomma }}</td>
-                        <td>{{ stock.total_stock_count }}</td>
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
                         {% if stock.sell_date %}
                             <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
