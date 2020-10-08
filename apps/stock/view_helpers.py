@@ -1,5 +1,7 @@
 import pymongo
 
+from apps.model.stock_price import StockPrice
+from apps.model.stocks import Stocks
 from apps.third_party.database.mongo_db import MongoDB
 from apps.third_party.util.colorful import print_yellow
 
@@ -31,4 +33,22 @@ def stock_detail_get_context(stock_code: str) -> dict:
         'finance_info'       : finance_info,
         'demand_info'        : demand_info,
         'summary_demand_info': summary_demand_info,
+    }
+
+
+def get_stock_price(stock_code: str, from_date: str, to_date: str) -> dict:
+    stock_price = StockPrice.objects.values('date', 'close_price').filter(
+        stocks_id = Stocks.objects.get(stock_code = stock_code).id,
+        date__gte = from_date,
+        date__lte = to_date,
+    )
+    labels, datasets = [], []
+
+    for price in stock_price:
+        labels.append(price['date'])
+        datasets.append(price['close_price'])
+
+    return {
+        'labels'  : labels,
+        'datasets': datasets
     }

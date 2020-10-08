@@ -25,7 +25,7 @@ from apps.trend.views import InvestorTrend, InvestorTrendData
 from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail, StockSearchAutocomplete, PortfolioStockBuyNSell
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
-from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList
+from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList, StockPriceChartData
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +39,7 @@ urlpatterns = [
     path('stocks/company', StockList.as_view()),
     path('stocks/company/list', SearchStockNSectorList.as_view()),
     path('stocks/company/<str:stock_code>', StockDetail.as_view()),
+    path('stocks/company/<str:stock_code>/chart/<str:from_date>/<str:to_date>', StockPriceChartData.as_view()),
     path('stocks/company/<str:stock_code>/pivot', CreatePivotProc.as_view()),
     # path('stocks/<str:code>/finance-info', FinanceInfo.as_view()),
     path('stocks/company/<str:stock_code>/scrap-financial', ScrapFinancialInfo.as_view()),

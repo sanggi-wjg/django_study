@@ -5,14 +5,14 @@ from django.shortcuts import get_object_or_404, render
 
 from apps.model.pivot import Pivot
 from apps.model.sectors import Sectors
+from apps.model.stock_price import StockPrice
 from apps.model.stocks import Stocks
 from apps.stock.forms import PivotForm
-from apps.stock.view_helpers import stock_detail_get_context
+from apps.stock.view_helpers import stock_detail_get_context, get_stock_price
 from apps.third_party.database.collections.demand import demand_info_register
 from apps.third_party.database.collections.financial_info import financial_info_register
 from apps.third_party.scrap.module.scrap_consensus import Scrap_Consensus
 from apps.third_party.scrap.module.scrap_demand import Scrap_Demand
-from apps.third_party.util.colorful import print_yellow
 from apps.third_party.util.helpers import popup_close
 from apps.third_party.util.exceptions import print_exception
 from apps.third_party.core.viewmixins import ListViews, DetailViews, HttpViews
@@ -41,8 +41,19 @@ class StockDetail(DetailViews):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].get('stock_name')
         context['pivot'] = Pivot.objects.filter(stocks_id = context[self.context_object_name].get('id')).order_by('-date')
+        context['has_stock_price'] = StockPrice.objects.filter(stocks_id = Stocks.objects.get(stock_code = self.kwargs['stock_code']).id).exists()
         context.update(stock_detail_get_context(self.kwargs['stock_code']))
         return context
+
+
+class StockPriceChartData(HttpViews):
+
+    def get(self, request, *args, **kwargs):
+        stock_code = self.kwargs['stock_code']
+        from_date = self.kwargs['from_date']
+        to_date = self.kwargs['to_date']
+
+        return JsonResponse(get_stock_price(stock_code, from_date, to_date))
 
 
 class SearchStockNSectorList(HttpViews):

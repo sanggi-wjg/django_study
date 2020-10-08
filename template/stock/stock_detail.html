@@ -1,12 +1,21 @@
 {% extends "comm/header.html" %}
 {% block view_title %}{{ view_title }} {% endblock %}
 
-{% block script_list %}
-    {% load static %}
+{% load static %}
+{% load view_help_tag %}
 
+{% block script_list %}
+    {% comment %}
+    https://www.chartjs.org/docs/latest/charts/line.html
+    https://www.chartjs.org/docs/latest/general/responsive.html
+    {% endcomment %}
+    <link rel="stylesheet" href="{% static 'comm/Chart.js-2.9.3/Chart.min.css' %}">
+    <script src={% static 'comm/Chart.js-2.9.3/Chart.min.js' %}></script>
     {% csrf_token %}
+
     <script>
         var CSRF_TOKEN;
+        var PRICE_CHART;
 
         function delete_finance_info()
         {
@@ -39,10 +48,69 @@
             });
         }
 
+        function set_stock_price_chart_datasets()
+        {
+            $.ajax({
+                type: 'GET',
+                url: '{{ request.path }}/chart/1990-01-01/{% current_date %}',
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                },
+                success: function (result) {
+                    PRICE_CHART.data.datasets[0].data = result.datasets;
+                    PRICE_CHART.data.labels = result.labels;
+                    PRICE_CHART.update();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            })
+        }
+
+        function set_stock_price_chart()
+        {
+            var ctx = $("#price_chart");
+            PRICE_CHART = new Chart(ctx, {
+                type: 'line',
+                // The data for our dataset
+                data: {
+                    datasets: [
+                        {
+                            label: '주가',
+                            borderColor: "rgba(255,0,0, 0.8)",
+                            backgroundColor: "rgba(255,0,0, 0.3)",
+                            pointRadius: 0,
+                            fill: true,
+                        },
+                    ]
+                },
+                // Configuration options go here
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    {#return value.toLocaleString("ko-KR", {style: "currency", currency: "WON"});#}
+                                    return '￦' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
         $(document).ready(function () {
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
-
             delete_finance_info();
+
+            set_stock_price_chart();
+            set_stock_price_chart_datasets();
         });
     </script>
 {% endblock %}
@@ -50,11 +118,17 @@
 {% block content %}
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2>{{ stock.stock_name }} ({{ stock.stock_code }})</h2>
+        <h3>
+            {{ stock.stock_name }} ({{ stock.stock_code }})
+            {% if has_stock_price %}
+                <span class="badge badge-primary">주가 추적중</span>
+            {% endif %}
+        </h3>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="request_ajax_n_reload('/stocks/company/{{ stock.stock_code }}/scrap-financial')">재무정보 갱신
+                        onclick="request_ajax_n_reload('/stocks/company/{{ stock.stock_code }}/scrap-financial')">재무정보
+                    갱신
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary"
                         onclick="request_ajax_n_reload('/stocks/company/{{ stock.stock_code }}/scrap-demand')">수급 갱신
@@ -73,6 +147,13 @@
             </button>
         </div>
     </div>
+
+    {% if has_stock_price %}
+        <div style="position: relative;">
+            <canvas id="price_chart" width="500" height="250" role="img" aria-label="Stock Price Chart"></canvas>
+        </div>
+        <hr>
+    {% endif %}
 
     <h4>Pivot Table</h4>
     <table class="table table-hover">
