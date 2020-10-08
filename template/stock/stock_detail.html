@@ -17,6 +17,14 @@
         var CSRF_TOKEN;
         var PRICE_CHART;
 
+        function set_dates_and_search(delta)
+        {
+            var date = new Date();
+            date.setMonth(date.getMonth() - delta);
+            $("#from_date").val(date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2));
+            set_stock_price_chart_datasets();
+        }
+
         function delete_finance_info()
         {
             $(".delete_finance_info").click(function () {
@@ -52,7 +60,7 @@
         {
             $.ajax({
                 type: 'GET',
-                url: '{{ request.path }}/chart/1990-01-01/{% current_date %}',
+                url: '{{ request.path }}/chart/' + $("#from_date").val() + '/' + $("#to_date").val(),
                 accept: 'application/json',
                 dataType: 'json',
                 processData: false,
@@ -149,8 +157,28 @@
     </div>
 
     {% if has_stock_price %}
+        <div class="form-row align-items-center">
+            <div class="col-sm-2">
+                <label for="from_date"></label>
+                <input type="text" class="form-control" id="from_date" value="{% day_subtract 30 %}">
+            </div>
+            <div class="col-sm-2">
+                <label for="to_date"></label>
+                <input type="text" class="form-control" id="to_date" value="{% current_date %}">
+            </div>
+            <div class="col-sm-auto">
+                <input type="button" class="btn btn-outline-dark" value="1개월" onclick="set_dates_and_search(1)">
+                <input type="button" class="btn btn-outline-dark" value="3개월" onclick="set_dates_and_search(3)">
+                <input type="button" class="btn btn-outline-dark" value="6개월" onclick="set_dates_and_search(6)">
+                <input type="button" class="btn btn-outline-dark" value="1년" onclick="set_dates_and_search(12)">
+                <input type="button" class="btn btn-outline-dark" value="3년" onclick="set_dates_and_search(36)">
+                <input type="button" class="btn btn-outline-dark" value="5년" onclick="set_dates_and_search(60)">
+                <input type="button" class="btn btn-outline-dark" value="10년" onclick="set_dates_and_search(120)">
+                <input type="button" class="btn btn-outline-dark" value="전체" onclick="set_dates_and_search(999)">
+            </div>
+        </div>
         <div style="position: relative;">
-            <canvas id="price_chart" width="500" height="250" role="img" aria-label="Stock Price Chart"></canvas>
+            <canvas id="price_chart" width="400" height="150" role="img" aria-label="Stock Price Chart"></canvas>
         </div>
         <hr>
     {% endif %}
