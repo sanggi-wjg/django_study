@@ -23,5 +23,9 @@ Django 3.0
 #### Trend
 ![result](project/4-1.investor_trend.PNG)
 
+#### Portfolio
+![result](project/5-1.portfolio.PNG)
+![result](project/5-2.portfolio_detail.PNG)
+
 #### Index
 ![result](project/10.index.PNG)
