@@ -51,7 +51,13 @@ def get_stock_prices(stocks_id: int, purchase_date: str, total_stock_count) -> t
     return current_price, purchase_price, income_price, income_rate
 
 
-def portfolio_detail_stock_list(portfolio_stock_list: PortfoliosDetail) -> list:
+def portfolio_detail_summary(portfolios: Portfolios):
+    return portfolio_summary(portfolios)[0]
+
+
+def portfolio_detail_stock_list(portfolio_id: int) -> list:
+    portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
+
     result = []
     """
     <PortfoliosDetailQuerySet [{'sell_date': None, 'stocks_id__stock_name': '삼성전자', 'stocks_id': 860, 'total_stock_count': 2, 'purchase_date': datetime.date(2020, 10, 5)}, {'sell_date': None, 'stocks_id__stock_name': 'KT&G', 'stocks_id': 101, 'total_stock_count': 1, 'purchase_date': datetime.date(2020, 10, 7)}]>

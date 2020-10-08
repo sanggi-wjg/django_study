@@ -29,7 +29,8 @@
 
     <div class="row">
         {% for portfolio in portfolio_list %}
-            <div class="col-sm-4" onclick="location.replace('/portfolios/{{ portfolio.portfolio_id }}')" style="cursor: pointer">
+            <div class="col-sm-4" onclick="location.replace('/portfolios/{{ portfolio.portfolio_id }}')"
+                 style="cursor: pointer">
                 <div class="card">
                     <div class="card-header"><h6>{{ portfolio.portfolio_name }}</h6></div>
                     <div class="card-body">
@@ -40,7 +41,7 @@
                                 <span class="badge badge-warning">{{ portfolio.total_income_rate }}%</span>
                             {% else %}
                                 <span class="badge badge-primary">- {{ portfolio.total_income_price|intcomma }}</span>
-                                <span class="badge badge-warning">{{ portfolio.total_income_rate }}%</span>
+                                <span class="badge badge-info">{{ portfolio.total_income_rate }}%</span>
                             {% endif %}
                         </h5>
                         <p class="card-text">

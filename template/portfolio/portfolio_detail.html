@@ -77,10 +77,52 @@
 {% block content %}
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h5>{{ portfolio.portfolio_name }}</h5>
     </div>
+    {% load mathfilters %}
+    {% load humanize %}
 
     <div>
         <h5>종합</h5>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">평가금액</th>
+                <th scope="col">사용금액</th>
+                <th scope="col">예수금</th>
+                <th scope="col">설정 예수금</th>
+                <th scope="col">일자</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="table-warning">
+                <td>
+                    <h5>
+                        {{ portfolio_summary.total_price|intcomma }}
+                        {% if portfolio_summary.total_income_price >= 0 %}
+                            <span class="badge badge-danger">+ {{ portfolio_summary.total_income_price|intcomma }}</span>
+                            <span class="badge badge-warning">{{ portfolio_summary.total_income_rate }}%</span>
+                        {% else %}
+                            <span class="badge badge-primary">- {{ portfolio_summary.total_income_price|intcomma }}</span>
+                            <span class="badge badge-info">{{ portfolio_summary.total_income_rate }}%</span>
+                        {% endif %}
+                    </h5>
+                </td>
+                <td>
+                    <h6>{{ portfolio_summary.portfolio_purchase_price|intcomma }}</h6>
+                </td>
+                <td>
+                    <h6>{{ portfolio_summary.portfolio_deposit|sub:portfolio_summary.portfolio_purchase_price| intcomma }}</h6>
+                </td>
+                <td>
+                    <h6>{{ portfolio_summary.portfolio_deposit|intcomma }}</h6>
+                </td>
+                <td>{{ portfolio_summary.update_date|date:"Y-m-d" }},
+                    {{ portfolio_summary.register_date|date:"Y-m-d" }}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <hr>
 
@@ -103,9 +145,6 @@
             </tr>
             </thead>
             <tbody>
-            {% load mathfilters %}
-            {% load humanize %}
-
             {% if portfolio_stock_list is None %}
                 <tr>
                     <td colspan="9">매수 종목이 없습니다.</td>
