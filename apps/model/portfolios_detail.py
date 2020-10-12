@@ -9,7 +9,7 @@ class PortfoliosDetailQuerySet(models.QuerySet):
 
     def get_groups(self, portfolio_id: int):
         return self.values(
-            'sell_date', 'stocks_id__stock_name', 'stocks_id'
+            'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code',
         ).annotate(
             total_stock_count = Sum('stock_count'),
             purchase_date = F('purchase_date')

@@ -68,11 +68,12 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
         prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['total_stock_count'])
 
         result.append({
-            'sell_date'        : stock['sell_date'],
+            'stock_code'       : stock['stocks_id__stock_code'],
             'stock_name'       : stock['stocks_id__stock_name'],
             'stocks_id'        : stock['stocks_id'],
             'total_stock_count': stock['total_stock_count'],
             'purchase_date'    : stock['purchase_date'],
+            'sell_date'        : stock['sell_date'],
             'current_price'    : prices[0],
             'purchase_price'   : prices[1],
             'income_price'     : prices[2],

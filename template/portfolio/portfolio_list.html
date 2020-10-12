@@ -37,10 +37,10 @@
                         <h5 class="card-title">
                             평가금액 : {{ portfolio.total_price|intcomma }}
                             {% if portfolio.total_income_price >= 0 %}
-                                <span class="badge badge-danger">+ {{ portfolio.total_income_price|intcomma }}</span>
+                                <span class="badge badge-danger">+{{ portfolio.total_income_price|intcomma }}</span>
                                 <span class="badge badge-warning">{{ portfolio.total_income_rate }}%</span>
                             {% else %}
-                                <span class="badge badge-primary">- {{ portfolio.total_income_price|intcomma }}</span>
+                                <span class="badge badge-primary">{{ portfolio.total_income_price|intcomma }}</span>
                                 <span class="badge badge-info">{{ portfolio.total_income_rate }}%</span>
                             {% endif %}
                         </h5>

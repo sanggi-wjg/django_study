@@ -142,17 +142,16 @@
                         onclick="request_ajax_n_reload('/stocks/company/{{ stock.stock_code }}/scrap-demand')">수급 갱신
                 </button>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="feather feather-calendar">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                Nothing
-            </button>
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="window.open('https://finance.naver.com/item/main.nhn?code={{ stock.stock_code }}', '_blank')">
+                    NAVER 종목 보기
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="window.open('http://consensus.hankyung.com/apps.analysis/analysis.list?sdate=2020-09-08&edate=2020-10-08&now_page=1&search_value=&report_type=&pagenum=20&search_text={{ stock.stock_name }}', '_blank')">
+                    기업 리포트 보기
+                </button>
+            </div>
         </div>
     </div>
 
@@ -160,7 +159,7 @@
         <div class="form-row align-items-center">
             <div class="col-sm-2">
                 <label for="from_date"></label>
-                <input type="text" class="form-control" id="from_date" value="{% day_subtract 30 %}">
+                <input type="text" class="form-control" id="from_date" value="{% day_subtract 90 %}">
             </div>
             <div class="col-sm-2">
                 <label for="to_date"></label>

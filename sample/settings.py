@@ -122,10 +122,13 @@ LOGGING = {
     },
     'handlers'                : {
         'file': {
-            'level'    : 'DEBUG',
-            'class'    : 'logging.FileHandler',
-            'formatter': 'basic',
-            'filename' : os.path.join(os.path.dirname(BASE_DIR), "database.log")
+            'level'      : 'DEBUG',
+            # 'class'    : 'logging.FileHandler',
+            'class'      : 'logging.handlers.RotatingFileHandler',
+            'backupCount': 50,
+            'maxBytes'   : 1024 * 1024 * 10,  # about 10MB
+            'formatter'  : 'basic',
+            'filename'   : os.path.join(os.path.dirname(BASE_DIR), "database.log")
         },
     },
     'loggers'                 : {

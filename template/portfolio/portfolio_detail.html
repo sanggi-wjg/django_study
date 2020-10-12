@@ -101,10 +101,10 @@
                     <h5>
                         {{ portfolio_summary.total_price|intcomma }}
                         {% if portfolio_summary.total_income_price >= 0 %}
-                            <span class="badge badge-danger">+ {{ portfolio_summary.total_income_price|intcomma }}</span>
+                            <span class="badge badge-danger">+{{ portfolio_summary.total_income_price|intcomma }}</span>
                             <span class="badge badge-warning">{{ portfolio_summary.total_income_rate }}%</span>
                         {% else %}
-                            <span class="badge badge-primary">- {{ portfolio_summary.total_income_price|intcomma }}</span>
+                            <span class="badge badge-primary">{{ portfolio_summary.total_income_price|intcomma }}</span>
                             <span class="badge badge-info">{{ portfolio_summary.total_income_rate }}%</span>
                         {% endif %}
                     </h5>
@@ -152,7 +152,7 @@
             {% else %}
                 {% for stock in portfolio_stock_list %}
                     <tr>
-                        <td>{{ stock.stock_name }}</td>
+                        <td><h6><a href="/stocks/company/{{ stock.stock_code }}" target="_blank" style="color: black;">{{ stock.stock_name }}</a></h6></td>
                         <td></td>
                         <td>{{ stock.current_price|intcomma }}</td>
                         <td>{{ stock.purchase_price|intcomma }}</td>
@@ -161,15 +161,15 @@
                         <td>{{ stock.purchase_price|mul:stock.total_stock_count|intcomma }}</td>
 
                         {% if stock.income_price >= 0 %}
-                            <td style="color: red;">{{ stock.income_price|intcomma }}</td>
+                            <td style="color: red;"><h6>{{ stock.income_price|intcomma }}</h6></td>
                         {% else %}
-                            <td style="color: blue;">{{ stock.income_price|intcomma }}</td>
+                            <td style="color: blue;"><h6>{{ stock.income_price|intcomma }}</h6></td>
                         {% endif %}
 
                         {% if stock.income_rate >= 0 %}
-                            <td style="color: red;">{{ stock.income_rate }}%</td>
+                            <td style="color: red;"><h6>{{ stock.income_rate }}%</h6></td>
                         {% else %}
-                            <td style="color: blue;">{{ stock.income_rate }}%</td>
+                            <td style="color: blue;"><h6>{{ stock.income_rate }}%</h6></td>
                         {% endif %}
 
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
