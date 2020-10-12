@@ -146,13 +146,16 @@
             </thead>
             <tbody>
             {% if portfolio_stock_list is None %}
-                <tr>
+                <tr class="table-warning">
                     <td colspan="9">매수 종목이 없습니다.</td>
                 </tr>
             {% else %}
                 {% for stock in portfolio_stock_list %}
                     <tr>
-                        <td><h6><a href="/stocks/company/{{ stock.stock_code }}" target="_blank" style="color: black;">{{ stock.stock_name }}</a></h6></td>
+                        <td>
+                            <h6><a href="/stocks/company/{{ stock.stock_code }}" target="_blank"
+                                   style="color: black;">{{ stock.stock_name }}</a></h6>
+                        </td>
                         <td></td>
                         <td>{{ stock.current_price|intcomma }}</td>
                         <td>{{ stock.purchase_price|intcomma }}</td>

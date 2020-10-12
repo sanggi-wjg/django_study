@@ -17,17 +17,17 @@ class Command(BaseCommand):
 
         for stock in _get_stock_list():
             try:
-                # fd.register(stock['stocks_id'], stock['stocks_id__stock_code'], stock_name = stock['stocks_id__stock_name'])
-                fd.register(stock['id'], stock['stock_code'], stock_name = stock['stock_name'])
+                fd.register(stock['stocks_id'], stock['stocks_id__stock_code'], stock_name = stock['stocks_id__stock_name'])
+                # fd.register(stock['id'], stock['stock_code'], stock_name = stock['stock_name'])
             except:
                 continue
 
 
 def _get_stock_list():
-    # return PortfoliosDetail.objects.values(
-    #     'stocks_id__stock_code', 'stocks_id__stock_name'
-    # ).annotate(
-    #     stock_count = Count('stocks_id'),
-    #     stocks_id = F('stocks_id'),
-    # )
-    return Stocks.objects.values('stock_code', 'stock_name', 'id')
+    return PortfoliosDetail.objects.values(
+        'stocks_id__stock_code', 'stocks_id__stock_name'
+    ).annotate(
+        stock_count = Count('stocks_id'),
+        stocks_id = F('stocks_id'),
+    )
+    # return Stocks.objects.values('stock_code', 'stock_name', 'id').all()

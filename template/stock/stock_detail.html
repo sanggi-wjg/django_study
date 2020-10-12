@@ -69,7 +69,12 @@
                     xhr.setRequestHeader('Content-Type', 'application/json')
                 },
                 success: function (result) {
-                    PRICE_CHART.data.datasets[0].data = result.datasets;
+                    var index = 0;
+                    $.each(result.datasets, function (key, data) {
+                        PRICE_CHART.data
+                        PRICE_CHART.data.datasets[index++].data = data
+                    });
+                    {#PRICE_CHART.data.datasets[0].data = result.datasets;#}
                     PRICE_CHART.data.labels = result.labels;
                     PRICE_CHART.update();
                 },
@@ -88,11 +93,23 @@
                 data: {
                     datasets: [
                         {
-                            label: '주가',
-                            borderColor: "rgba(255,0,0, 0.8)",
-                            backgroundColor: "rgba(255,0,0, 0.3)",
+                            label: '종가',
+                            borderColor: "rgba(0,0,0,0.8)",
+                            backgroundColor: "rgba(0,0,0, 0.5)",
                             pointRadius: 0,
                             fill: true,
+                        },
+                        {
+                            label: '고가',
+                            borderColor: "rgba(255,0,0, 0.8)",
+                            pointRadius: 0,
+                            fill: false,
+                        },
+                        {
+                            label: '저가',
+                            borderColor: "rgba(0,0,255, 0.8)",
+                            pointRadius: 0,
+                            fill: false,
                         },
                     ]
                 },

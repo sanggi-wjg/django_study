@@ -37,16 +37,18 @@ def stock_detail_get_context(stock_code: str) -> dict:
 
 
 def get_stock_price(stock_code: str, from_date: str, to_date: str) -> dict:
-    stock_price = StockPrice.objects.values('date', 'close_price').filter(
+    stock_price = StockPrice.objects.values('date', 'close_price', 'high_price', 'low_price').filter(
         stocks_id = Stocks.objects.get(stock_code = stock_code).id,
         date__gte = from_date,
         date__lte = to_date,
     )
-    labels, datasets = [], []
+    labels, datasets = [], { 'close': [], 'high': [], 'low': [] }
 
     for price in stock_price:
         labels.append(price['date'])
-        datasets.append(price['close_price'])
+        datasets['close'].append(price['close_price'])
+        datasets['high'].append(price['high_price'])
+        datasets['low'].append(price['low_price'])
 
     return {
         'labels'  : labels,
