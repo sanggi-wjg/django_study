@@ -42,13 +42,15 @@ def get_stock_price(stock_code: str, from_date: str, to_date: str) -> dict:
         date__gte = from_date,
         date__lte = to_date,
     )
-    labels, datasets = [], { 'close': [], 'high': [], 'low': [] }
+    # labels, datasets = [], { 'close': [], 'high': [], 'low': [] }
+    labels, datasets = [], []
 
     for price in stock_price:
         labels.append(price['date'])
-        datasets['close'].append(price['close_price'])
-        datasets['high'].append(price['high_price'])
-        datasets['low'].append(price['low_price'])
+        # datasets['close'].append(price['close_price'])
+        # datasets['high'].append(price['high_price'])
+        # datasets['low'].append(price['low_price'])
+        datasets.append(price['close_price'])
 
     return {
         'labels'  : labels,

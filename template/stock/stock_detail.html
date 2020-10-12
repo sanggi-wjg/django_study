@@ -69,12 +69,12 @@
                     xhr.setRequestHeader('Content-Type', 'application/json')
                 },
                 success: function (result) {
-                    var index = 0;
+                    {% comment %}var index = 0;
                     $.each(result.datasets, function (key, data) {
                         PRICE_CHART.data
                         PRICE_CHART.data.datasets[index++].data = data
-                    });
-                    {#PRICE_CHART.data.datasets[0].data = result.datasets;#}
+                    });{% endcomment %}
+                    PRICE_CHART.data.datasets[0].data = result.datasets;
                     PRICE_CHART.data.labels = result.labels;
                     PRICE_CHART.update();
                 },
@@ -94,12 +94,12 @@
                     datasets: [
                         {
                             label: '종가',
-                            borderColor: "rgba(0,0,0,0.8)",
-                            backgroundColor: "rgba(0,0,0, 0.5)",
+                            borderColor: "rgba(255,0,0,0.8)",
+                            backgroundColor: "rgba(255,0,0, 0.4)",
                             pointRadius: 0,
                             fill: true,
                         },
-                        {
+                        {% comment %}{
                             label: '고가',
                             borderColor: "rgba(255,0,0, 0.8)",
                             pointRadius: 0,
@@ -110,7 +110,7 @@
                             borderColor: "rgba(0,0,255, 0.8)",
                             pointRadius: 0,
                             fill: false,
-                        },
+                        },{% endcomment %}
                     ]
                 },
                 // Configuration options go here
