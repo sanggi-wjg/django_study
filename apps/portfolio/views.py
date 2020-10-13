@@ -1,16 +1,14 @@
 import json
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from apps.model.portfolios import Portfolios
-from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stocks import Stocks
-from apps.model.transaction import transaction_purchase_stock
+from apps.model.transaction import transaction_purchase_stock, transaction_sell_stock
 from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price, portfolio_summary, portfolio_detail_summary
 from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
 from apps.third_party.util.exceptions import print_exception
-from apps.third_party.util.helpers import alert
 
 
 class PortfolioList(ListViews):
@@ -83,7 +81,7 @@ class StockSearchAutocomplete(HttpViews):
         return HttpResponse(json.dumps(result))
 
 
-class PortfolioStockBuyNSell(HttpViews):
+class PortfolioStockPurchase(HttpViews):
 
     def post(self, request, *args, **kwargs):
         """
@@ -102,12 +100,32 @@ class PortfolioStockBuyNSell(HttpViews):
 
         except Exception as e:
             print_exception()
-            return alert(e.__str__())
+            return JsonResponse({ 'msg': e.__str__() }, status = 400)
 
         return HttpResponseRedirect('/portfolios/{}'.format(portfolio_id))
+
+
+class PortfolioStockSell(HttpViews):
 
     def delete(self, request, *args, **kwargs):
         """
         포트폴리오 종목 매도
         """
-        pass
+        portfolio_id = int(kwargs.get('portfolio_id'))
+
+        request_body = json.loads(request.body)
+        purchase_date = request_body['purchase_date']
+        sell_count = int(request_body['sell_count'])
+        sell_date = request_body['sell_date']
+        stock_code = request_body['stock_code']
+        stock_name = request_body['stock_name']
+
+        try:
+            transaction_sell_stock(portfolio_id, sell_count, sell_date, purchase_date, stock_code)
+
+        except Exception as e:
+            print_exception()
+            # return JsonResponse({ 'code': '1000', 'msg': e.__str__() }, status = 400)
+            return JsonResponse({ 'code': '1000', 'msg': e.__str__() })
+
+        return JsonResponse({ 'code': '0000', 'msg': 'success' })

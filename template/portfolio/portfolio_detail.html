@@ -12,7 +12,35 @@
 
         function sell_stock()
         {
-
+            $.ajax({
+                type: 'DELETE',
+                url: '{{ request.path }}/stock/sell',
+                accept: 'application/json',
+                dataType: 'json',
+                processData: false,
+                data: JSON.stringify({
+                    'sell_date': $("#sell_date").val(),
+                    'purchase_date': $("#sell_purchase_date").val(),
+                    'stock_code': $("#sell_stock_code").val(),
+                    'stock_name': $("#sell_stock_name").val(),
+                    'sell_count': $("#sell_count").val(),
+                }),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN)
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                },
+                success: function (result, textStatus, xhr) {
+                    if (result.code === '0000') {
+                        location.reload();
+                    }
+                    else {
+                        alert(result.msg);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            })
         }
 
         function search_stock_autocomplete()
@@ -69,7 +97,11 @@
             CSRF_TOKEN = $("input[name=csrfmiddlewaretoken]").val();
             search_stock_autocomplete();
 
-
+            $("#sell_stock_modal").on('show.bs.modal', function (e) {
+                $("#sell_stock_name").val(e.relatedTarget.dataset.stockName);
+                $("#sell_stock_code").val(e.relatedTarget.dataset.stockCode);
+                $("#sell_purchase_date").val(e.relatedTarget.dataset.purchaseDate);
+            });
         });
     </script>
 {% endblock %}
@@ -89,6 +121,7 @@
             <tr>
                 <th scope="col">평가금액</th>
                 <th scope="col">사용금액</th>
+                <th scope="col">판매액</th>
                 <th scope="col">예수금</th>
                 <th scope="col">설정 예수금</th>
                 <th scope="col">일자</th>
@@ -111,6 +144,9 @@
                 </td>
                 <td>
                     <h6>{{ portfolio_summary.portfolio_purchase_price|intcomma }}</h6>
+                </td>
+                <td>
+                    <h6>{{ portfolio_summary.portfolio_sales|intcomma }}</h6>
                 </td>
                 <td>
                     <h6>{{ portfolio_summary.portfolio_deposit|sub:portfolio_summary.portfolio_purchase_price| intcomma }}</h6>
@@ -159,9 +195,9 @@
                         <td></td>
                         <td>{{ stock.current_price|intcomma }}</td>
                         <td>{{ stock.purchase_price|intcomma }}</td>
-                        <td>{{ stock.total_stock_count }}</td>
-                        <td>{{ stock.current_price|mul:stock.total_stock_count|intcomma }}</td>
-                        <td>{{ stock.purchase_price|mul:stock.total_stock_count|intcomma }}</td>
+                        <td>{{ stock.stock_count }}</td>
+                        <td>{{ stock.current_price|mul:stock.stock_count|intcomma }}</td>
+                        <td>{{ stock.purchase_price|mul:stock.stock_count|intcomma }}</td>
 
                         {% if stock.income_price >= 0 %}
                             <td style="color: red;"><h6>{{ stock.income_price|intcomma }}</h6></td>
@@ -176,10 +212,18 @@
                         {% endif %}
 
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
-                        {% if stock.sell_date %}
-                            <td>{{ stock.sell_date| date:"Y-m-d" }}</td>
+                        {% if stock.stock_count == 0 %}
+                            <td>{{ stock.sell_date }}</td>
                         {% else %}
-                            <td><input type="button" class="btn btn-outline-danger" value="매도"></td>
+                            <td>
+                                <input type="button" class="btn btn-outline-danger" value="매도" data-toggle="modal"
+                                       data-target="#sell_stock_modal"
+                                       data-stock-code="{{ stock.stock_code }}"
+                                       data-stock-name="{{ stock.stock_name }}"
+                                       data-stock-count="{{ stock.total_stock_count }}"
+                                       data-purchase-date="{{ stock.purchase_date| date:"Y-m-d" }}">
+                                {{ stock.sell_date|default_if_none:'' }}
+                            </td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -192,6 +236,7 @@
                value="종목 추가">
     </div>
 
+    {# 매수   #}
     <div class="modal fade" id="purchase_stock_modal" data-backdrop="static" tabindex="-1"
          aria-labelledby="purchase_stock_label" aria-hidden="true">
         <div class="modal-dialog">
@@ -218,7 +263,8 @@
                         </div>
                         <div class="form-group">
                             <label for="purchase_count" class="col-form-label">수량</label>
-                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" required>
+                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" value="1"
+                                   required>
                         </div>
                         <div class="form-group">
                             <label for="purchase_date" class="col-form-label">매수일</label>
@@ -231,6 +277,49 @@
                         <button type="submit" class="btn btn-primary">매수</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    {# 매도   #}
+    <div class="modal fade" id="sell_stock_modal" data-backdrop="static" tabindex="-1"
+         aria-labelledby="sell_stock_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">종목 매도</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="sell_purchase_date" name="sell_purchase_date">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="sell_stock_name" class="col-form-label">종목</label>
+                            <input type="text" class="form-control" id="sell_stock_name" name="sell_stock_name" readonly
+                                   required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="sell_stock_code" class="col-form-label">코드</label>
+                            <input type="text" class="form-control" id="sell_stock_code" name="sell_stock_code" readonly
+                                   required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sell_count" class="col-form-label">매도 수량</label>
+                        <input type="text" class="form-control" id="sell_count" name="sell_count" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sell_date" class="col-form-label">매도일</label>
+                        <input type="text" class="form-control" id="sell_date" name="sell_date"
+                               value="{% current_date %}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" onclick="sell_stock()">매도</button>
+                </div>
             </div>
         </div>
     </div>

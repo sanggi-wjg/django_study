@@ -19,11 +19,19 @@ def print_exception():
     # }, traceback.format_exc()))
 
 
-class CustomException(Exception):
+class HttpException(Exception):
     pass
 
 
-class DBError(CustomException):
+class AlertError(HttpException):
+    pass
+
+
+class DBError(Exception):
+    pass
+
+
+class TransactionError(DBError):
     pass
 
 

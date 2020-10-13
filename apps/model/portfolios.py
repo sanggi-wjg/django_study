@@ -33,6 +33,7 @@ class Portfolios(models.Model):
     portfolio_name = models.CharField(max_length = 50, null = False, db_column = 'portfolio_name')
     portfolio_deposit = models.IntegerField(blank = False, null = False, db_column = 'portfolio_deposit')
     portfolio_purchase_price = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_purchase_price')
+    portfolio_sales = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_sales')
 
     register_date = models.DateField(auto_now_add = True, db_column = 'register_date')
     update_date = models.DateField(auto_now = True, db_column = 'update_date')
@@ -44,4 +45,4 @@ class Portfolios(models.Model):
         db_table = 'portfolios'
 
     def __str__(self):
-        return '{} : {} {}'.format(self.user_id, self.portfolio_name, self.portfolio_deposit)
+        return '{} : {} / {} / {}'.format(self.user_id, self.portfolio_name, self.portfolio_deposit, self.portfolio_sales)

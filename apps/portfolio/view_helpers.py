@@ -15,6 +15,7 @@ def portfolio_summary(portfolios: Portfolios) -> list:
         result.append({
             'portfolio_id'            : port.id,
             'portfolio_name'          : port.portfolio_name,
+            'portfolio_sales'         : port.portfolio_sales,
             'portfolio_purchase_price': port.portfolio_purchase_price,
             'portfolio_deposit'       : port.portfolio_deposit,
             'register_date'           : port.register_date,
@@ -33,7 +34,7 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_deposit: int = None) 
     portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
 
     for stock in portfolio_stock_list:
-        prices = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['total_stock_count'])
+        prices = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'])
         total_income_price += prices[2]
 
     if len(portfolio_stock_list) > 0 and portfolio_deposit is not None:
@@ -56,28 +57,30 @@ def portfolio_detail_summary(portfolios: Portfolios):
 
 
 def portfolio_detail_stock_list(portfolio_id: int) -> list:
-    portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
+    # portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
+    portfolio_stock_list = PortfoliosDetail.objects.values('sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count').filter(portfolio_id = portfolio_id)
 
     result = []
     """
-    <PortfoliosDetailQuerySet [{'sell_date': None, 'stocks_id__stock_name': '삼성전자', 'stocks_id': 860, 'total_stock_count': 2, 'purchase_date': datetime.date(2020, 10, 5)}, {'sell_date': None, 'stocks_id__stock_name': 'KT&G', 'stocks_id': 101, 'total_stock_count': 1, 'purchase_date': datetime.date(2020, 10, 7)}]>
+    <PortfoliosDetailQuerySet [{'sell_date': None, 'stocks_id__stock_name': '신한지주', 'stocks_id': 1084, 'stocks_id__stock_code': '055550', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 18}, {'sell_date': None, 'stocks_id__stock_name': 'KB금융', 'stocks_id': 74, 'stocks_id__stock_code': '105560', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '우리금융지주', 'stocks_id': 1455, 'stocks_id__stock_code': '316140', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '하나금융지주', 'stocks_id': 2131, 'stocks_id__stock_code': '086790', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '신한지주', 'stocks_id': 1084, 'stocks_id__stock_code': '055550', 'purchase_date': datetime.date(2020, 1, 3), 'stock_count': 5}]>
     {'current': 59300, 'purchase': 58700}
     """
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
-        prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['total_stock_count'])
+        print_yellow(stock)
+        prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'])
 
         result.append({
-            'stock_code'       : stock['stocks_id__stock_code'],
-            'stock_name'       : stock['stocks_id__stock_name'],
-            'stocks_id'        : stock['stocks_id'],
-            'total_stock_count': stock['total_stock_count'],
-            'purchase_date'    : stock['purchase_date'],
-            'sell_date'        : stock['sell_date'],
-            'current_price'    : prices[0],
-            'purchase_price'   : prices[1],
-            'income_price'     : prices[2],
-            'income_rate'      : prices[3],
+            'stock_code'    : stock['stocks_id__stock_code'],
+            'stock_name'    : stock['stocks_id__stock_name'],
+            'stocks_id'     : stock['stocks_id'],
+            'stock_count'   : stock['stock_count'],
+            'purchase_date' : stock['purchase_date'],
+            'sell_date'     : stock['sell_date'],
+            'current_price' : prices[0],
+            'purchase_price': prices[1],
+            'income_price'  : prices[2],
+            'income_rate'   : prices[3],
         })
 
     return result

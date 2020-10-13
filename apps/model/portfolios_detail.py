@@ -11,7 +11,7 @@ class PortfoliosDetailQuerySet(models.QuerySet):
         return self.values(
             'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code',
         ).annotate(
-            total_stock_count = Sum('stock_count'),
+            stock_count = Sum('stock_count'),
             purchase_date = F('purchase_date')
         ).filter(
             portfolio_id = portfolio_id
@@ -21,7 +21,7 @@ class PortfoliosDetailQuerySet(models.QuerySet):
         try:
             # 해당 날짜로 해당 종목이 있으면 Update
             stocks_id = Stocks.objects.get(stock_code = stock_code).id
-            portfolio = self.get(portfolio_id = portfolio_id, stocks_id = stocks_id)
+            portfolio = self.get(purchase_date = purchase_date, portfolio_id = portfolio_id, stocks_id = stocks_id)
 
             self.filter(
                 portfolio_id = portfolio_id,
@@ -45,7 +45,7 @@ class PortfoliosDetail(models.Model):
     id = models.AutoField(primary_key = True, db_column = 'id')
 
     purchase_date = models.DateField(blank = False, null = False, db_column = 'purchase_date')
-    sell_date = models.DateField(default = None, null = True, db_column = 'sell_date')
+    sell_date = models.CharField(max_length = 100, default = None, null = True, db_column = 'sell_date')
     stock_count = models.IntegerField(blank = False, null = False, default = 0, db_column = 'stock_count')
 
     portfolio_id = models.ForeignKey(Portfolios, on_delete = models.DO_NOTHING, db_column = 'portfolio_id')
