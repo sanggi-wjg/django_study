@@ -171,7 +171,8 @@
                 <th scope="col">미니 차트</th>
                 <th scope="col">현재가</th>
                 <th scope="col">매입가</th>
-                <th scope="col">수량</th>
+                <th scope="col">보유수량</th>
+                <th scope="col">매도수량</th>
                 <th scope="col">평가금액</th>
                 <th scope="col">매입금액</th>
                 <th scope="col">손익</th>
@@ -196,6 +197,7 @@
                         <td>{{ stock.current_price|intcomma }}</td>
                         <td>{{ stock.purchase_price|intcomma }}</td>
                         <td>{{ stock.stock_count }}</td>
+                        <td>{{ stock.sell_count }}</td>
                         <td>{{ stock.current_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.stock_count|intcomma }}</td>
 

@@ -6,9 +6,10 @@ from django.shortcuts import render
 from apps.model.portfolios import Portfolios
 from apps.model.stocks import Stocks
 from apps.model.transaction import transaction_purchase_stock, transaction_sell_stock
-from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price, portfolio_summary, portfolio_detail_summary
+from apps.portfolio.view_helpers import portfolio_detail_stock_list, validate_portfolio_stock_price, portfolio_summary
 from apps.third_party.core.viewmixins import ListViews, HttpViews, DetailViews
 from apps.third_party.util.exceptions import print_exception
+from apps.third_party.util.helpers import alert
 
 
 class PortfolioList(ListViews):
@@ -35,7 +36,7 @@ class PortfolioDetail(DetailViews):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['view_title'] = context[self.context_object_name].portfolio_name + ' 포트폴리오'
-        context['portfolio_summary'] = portfolio_detail_summary(Portfolios.objects.filter(id = self.kwargs['portfolio_id']))
+        context['portfolio_summary'] = portfolio_summary(Portfolios.objects.filter(id = self.kwargs['portfolio_id']))[0]
         context['portfolio_stock_list'] = portfolio_detail_stock_list(self.kwargs['portfolio_id'])
         return context
 
@@ -100,7 +101,7 @@ class PortfolioStockPurchase(HttpViews):
 
         except Exception as e:
             print_exception()
-            return JsonResponse({ 'msg': e.__str__() }, status = 400)
+            return alert(e.__str__())
 
         return HttpResponseRedirect('/portfolios/{}'.format(portfolio_id))
 

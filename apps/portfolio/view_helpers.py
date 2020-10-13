@@ -31,10 +31,12 @@ def portfolio_summary(portfolios: Portfolios) -> list:
 
 def _portfolio_summary_prices(portfolio_id: int, portfolio_deposit: int = None) -> tuple:
     total_income_price, total_income_rate = 0, 0.0
-    portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
+    portfolio_stock_list = PortfoliosDetail.objects.values(
+        'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count', 'sell_count'
+    ).filter(portfolio_id = portfolio_id)
 
     for stock in portfolio_stock_list:
-        prices = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'])
+        prices = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
         total_income_price += prices[2]
 
     if len(portfolio_stock_list) > 0 and portfolio_deposit is not None:
@@ -52,13 +54,11 @@ def get_stock_prices(stocks_id: int, purchase_date: str, total_stock_count) -> t
     return current_price, purchase_price, income_price, income_rate
 
 
-def portfolio_detail_summary(portfolios: Portfolios):
-    return portfolio_summary(portfolios)[0]
-
-
 def portfolio_detail_stock_list(portfolio_id: int) -> list:
     # portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
-    portfolio_stock_list = PortfoliosDetail.objects.values('sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count').filter(portfolio_id = portfolio_id)
+    portfolio_stock_list = PortfoliosDetail.objects.values(
+        'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count', 'sell_count'
+    ).filter(portfolio_id = portfolio_id)
 
     result = []
     """
@@ -67,14 +67,14 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
     """
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
-        print_yellow(stock)
-        prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'])
+        prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
 
         result.append({
             'stock_code'    : stock['stocks_id__stock_code'],
             'stock_name'    : stock['stocks_id__stock_name'],
             'stocks_id'     : stock['stocks_id'],
             'stock_count'   : stock['stock_count'],
+            'sell_count'    : stock['sell_count'],
             'purchase_date' : stock['purchase_date'],
             'sell_date'     : stock['sell_date'],
             'current_price' : prices[0],

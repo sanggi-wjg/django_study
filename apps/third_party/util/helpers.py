@@ -6,4 +6,4 @@ def popup_close():
 
 
 def alert(msg: str):
-    return HttpResponse('<script type="text/javascript">alert("{}")</script>'.format(msg))
+    return HttpResponse('<script type="text/javascript">alert("{}"); history.back(); </script>'.format(msg))
