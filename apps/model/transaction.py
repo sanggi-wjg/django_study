@@ -69,6 +69,7 @@ def transaction_sell_stock(portfolio_id: int, sell_count: int, sell_date: str, p
         # 포트폴리오 종목 매도일을 추가한 row 추가
         portfolio_detail = PortfoliosDetail.objects.get(portfolio_id = portfolio_id, purchase_date = purchase_date, stocks_id = stocks_id)
         PortfoliosDetail.objects.filter(portfolio_id = portfolio_id, purchase_date = purchase_date, stocks_id = stocks_id).update(
+            stock_count = portfolio_detail.stock_count - sell_count,
             sell_count = portfolio_detail.sell_count + sell_count,
             sell_date = '{} {}({})'.format('{}\n'.format(portfolio_detail.sell_date) if portfolio_detail.sell_date is not None else '', sell_date, sell_count)
         )

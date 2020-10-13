@@ -1,4 +1,5 @@
 from django import template
+from django.template.defaultfilters import stringfilter
 
 from apps.third_party.util.utils import current_year_subtract, current_month_subtract, current_day_subtract, today_dateformat
 
@@ -47,3 +48,8 @@ def day_subtract(delta: int):
 @register.simple_tag
 def current_date():
     return today_dateformat(time_format = '%Y-%m-%d')
+
+
+@register.filter(name = 'replace_separator')
+def replace_separator(text: str):
+    return text.replace('\n', '<br>')

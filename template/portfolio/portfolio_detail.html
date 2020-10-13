@@ -214,7 +214,7 @@
                         {% endif %}
 
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
-                        {% if stock.stock_count == 0 %}
+                        {% if stock.sell_count == 0 %}
                             <td>{{ stock.sell_date }}</td>
                         {% else %}
                             <td>
@@ -224,7 +224,9 @@
                                        data-stock-name="{{ stock.stock_name }}"
                                        data-stock-count="{{ stock.total_stock_count }}"
                                        data-purchase-date="{{ stock.purchase_date| date:"Y-m-d" }}">
-                                {{ stock.sell_date|default_if_none:'' }}
+                                {% autoescape off %}
+                                    <p>{{ stock.sell_date|default_if_none:''| replace_separator }}</p>
+                                {% endautoescape %}
                             </td>
                         {% endif %}
                     </tr>

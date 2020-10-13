@@ -3,14 +3,13 @@ from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stock_price import StockPrice
 from apps.model.stocks import Stocks
 from apps.third_party.fdr.finance_data_stock_price import FinanceDataStockPrice
-from apps.third_party.util.colorful import print_yellow, print_green
 
 
 def portfolio_summary(portfolios: Portfolios) -> list:
     result = []
 
     for port in portfolios:
-        summary_price = _portfolio_summary_prices(port.id, port.portfolio_deposit)
+        total_income_price, total_income_rate = _portfolio_summary_prices(port.id, port.portfolio_deposit)
 
         result.append({
             'portfolio_id'            : port.id,
@@ -21,9 +20,9 @@ def portfolio_summary(portfolios: Portfolios) -> list:
             'register_date'           : port.register_date,
             'update_date'             : port.update_date,
 
-            'total_price'             : port.portfolio_deposit + summary_price[0],
-            'total_income_price'      : summary_price[0],
-            'total_income_rate'       : summary_price[1],
+            'total_price'             : port.portfolio_deposit - port.portfolio_purchase_price + port.portfolio_sales,
+            'total_income_price'      : total_income_price,
+            'total_income_rate'       : total_income_rate,
         })
 
     return result
