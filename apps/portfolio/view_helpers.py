@@ -3,70 +3,71 @@ from apps.model.portfolios_detail import PortfoliosDetail
 from apps.model.stock_price import StockPrice
 from apps.model.stocks import Stocks
 from apps.third_party.fdr.finance_data_stock_price import FinanceDataStockPrice
+from apps.third_party.util.colorful import print_yellow
 
 
 def portfolio_summary(portfolios: Portfolios) -> list:
     result = []
 
     for port in portfolios:
-        total_income_price, total_income_rate = _portfolio_summary_prices(port.id, port.portfolio_deposit)
+        total_current_price, *_ = _portfolio_summary_prices(port.id, port.portfolio_setup_deposit)
+        total_portfolio_price = port.portfolio_deposit + total_current_price
+        total_income_price = total_portfolio_price - port.portfolio_setup_deposit
+        total_income_rate = round(total_income_price / port.portfolio_setup_deposit, 4) * 100
 
         result.append({
-            'portfolio_id'            : port.id,
-            'portfolio_name'          : port.portfolio_name,
-            'portfolio_sales'         : port.portfolio_sales,
-            'portfolio_purchase_price': port.portfolio_purchase_price,
-            'portfolio_deposit'       : port.portfolio_deposit,
-            'register_date'           : port.register_date,
-            'update_date'             : port.update_date,
+            'portfolio_id'           : port.id,
+            'portfolio_name'         : port.portfolio_name,
+            'portfolio_deposit'      : port.portfolio_deposit,
+            'portfolio_setup_deposit': port.portfolio_setup_deposit,
+            'register_date'          : port.register_date,
+            'update_date'            : port.update_date,
 
-            'total_price'             : port.portfolio_deposit - port.portfolio_purchase_price + port.portfolio_sales,
-            'total_income_price'      : total_income_price,
-            'total_income_rate'       : total_income_rate,
+            'total_price'            : total_portfolio_price,
+            'total_income_price'     : total_income_price,
+            'total_income_rate'      : total_income_rate,
         })
+        # print_yellow(result)
 
     return result
 
 
-def _portfolio_summary_prices(portfolio_id: int, portfolio_deposit: int = None) -> tuple:
-    total_income_price, total_income_rate = 0, 0.0
+def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = None) -> tuple:
+    total_current_price, total_income_price, total_income_rate = 0, 0, 0.0
     portfolio_stock_list = PortfoliosDetail.objects.values(
-        'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count', 'sell_count'
+        'stocks_id', 'sell_date', 'purchase_date', 'stock_count', 'sell_count', 'stocks_id__stock_name', 'stocks_id__stock_code'
     ).filter(portfolio_id = portfolio_id)
 
     for stock in portfolio_stock_list:
-        prices = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
-        total_income_price += prices[2]
+        current_stock_count = stock['stock_count'] - stock['sell_count']
+        current_price, purchase_price, income_price, income_rate = get_stock_prices(stock['stocks_id'], stock['purchase_date'], current_stock_count)
+        total_current_price += current_price * current_stock_count
+        total_income_price += income_price
 
-    if len(portfolio_stock_list) > 0 and portfolio_deposit is not None:
-        total_income_rate = round(float(total_income_price / portfolio_deposit) * 100, 2)
+    if len(portfolio_stock_list) > 0 and portfolio_setup_deposit is not None:
+        total_income_rate = round(float(total_income_price / portfolio_setup_deposit) * 100, 2)
 
-    return total_income_price, total_income_rate
+    return total_current_price, total_income_price, total_income_rate
 
 
-def get_stock_prices(stocks_id: int, purchase_date: str, total_stock_count) -> tuple:
-    current_price = StockPrice.objects.values('close_price').filter(stocks_id = stocks_id).last()['close_price']
+def get_stock_prices(stocks_id: int, purchase_date: str, current_stock_count) -> tuple:
+    current_price = StockPrice.objects.values('close_price').order_by('-date').filter(stocks_id = stocks_id).first()['close_price']
     purchase_price = StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = purchase_date)['close_price']
-    income_price = int((current_price - purchase_price) * total_stock_count)
+    income_price = int((current_price - purchase_price) * current_stock_count)
     income_rate = round(((current_price / purchase_price) - 1) * 100, 2)
 
     return current_price, purchase_price, income_price, income_rate
 
 
 def portfolio_detail_stock_list(portfolio_id: int) -> list:
-    # portfolio_stock_list = PortfoliosDetail.objects.get_groups(portfolio_id)
     portfolio_stock_list = PortfoliosDetail.objects.values(
-        'sell_date', 'stocks_id__stock_name', 'stocks_id', 'stocks_id__stock_code', 'purchase_date', 'stock_count', 'sell_count'
+        'stocks_id', 'sell_date', 'purchase_date', 'stock_count', 'sell_count', 'stocks_id__stock_name', 'stocks_id__stock_code'
     ).filter(portfolio_id = portfolio_id)
 
     result = []
-    """
-    <PortfoliosDetailQuerySet [{'sell_date': None, 'stocks_id__stock_name': '신한지주', 'stocks_id': 1084, 'stocks_id__stock_code': '055550', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 18}, {'sell_date': None, 'stocks_id__stock_name': 'KB금융', 'stocks_id': 74, 'stocks_id__stock_code': '105560', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '우리금융지주', 'stocks_id': 1455, 'stocks_id__stock_code': '316140', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '하나금융지주', 'stocks_id': 2131, 'stocks_id__stock_code': '086790', 'purchase_date': datetime.date(2020, 1, 2), 'stock_count': 10}, {'sell_date': None, 'stocks_id__stock_name': '신한지주', 'stocks_id': 1084, 'stocks_id__stock_code': '055550', 'purchase_date': datetime.date(2020, 1, 3), 'stock_count': 5}]>
-    {'current': 59300, 'purchase': 58700}
-    """
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
-        prices = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
+        current_price, purchase_price, income_price, income_rate = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
 
         result.append({
             'stock_code'    : stock['stocks_id__stock_code'],
@@ -74,12 +75,14 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
             'stocks_id'     : stock['stocks_id'],
             'stock_count'   : stock['stock_count'],
             'sell_count'    : stock['sell_count'],
+            'total_count'   : stock['stock_count'] + stock['sell_count'],
             'purchase_date' : stock['purchase_date'],
             'sell_date'     : stock['sell_date'],
-            'current_price' : prices[0],
-            'purchase_price': prices[1],
-            'income_price'  : prices[2],
-            'income_rate'   : prices[3],
+
+            'current_price' : current_price,
+            'purchase_price': purchase_price,
+            'income_price'  : income_price,
+            'income_rate'   : income_rate,
         })
 
     return result

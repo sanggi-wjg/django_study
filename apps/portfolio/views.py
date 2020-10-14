@@ -119,7 +119,6 @@ class PortfolioStockSell(HttpViews):
         sell_count = int(request_body['sell_count'])
         sell_date = request_body['sell_date']
         stock_code = request_body['stock_code']
-        stock_name = request_body['stock_name']
 
         try:
             transaction_sell_stock(portfolio_id, sell_count, sell_date, purchase_date, stock_code)

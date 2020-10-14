@@ -16,7 +16,8 @@ class PortfoliosQuerySet(models.QuerySet):
     def register(self, portfolio_name: str, portfolio_deposit: int, user_id: int):
         result = self.create(
             portfolio_name = portfolio_name,
-            portfolio_deposit = int(portfolio_deposit),
+            portfolio_deposit = portfolio_deposit,
+            portfolio_setup_deposit = portfolio_deposit,
             user_id = User.objects.get(id = user_id)
         )
         return result
@@ -32,8 +33,9 @@ class Portfolios(models.Model):
 
     portfolio_name = models.CharField(max_length = 50, null = False, db_column = 'portfolio_name')
     portfolio_deposit = models.IntegerField(blank = False, null = False, db_column = 'portfolio_deposit')
-    portfolio_purchase_price = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_purchase_price')
-    portfolio_sales = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_sales')
+    portfolio_setup_deposit = models.IntegerField(blank = False, null = False, db_column = 'portfolio_setup_deposit')
+    # portfolio_purchase_price = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_purchase_price')
+    # portfolio_sell_price = models.IntegerField(blank = False, null = False, default = 0, db_column = 'portfolio_sell_price')
 
     register_date = models.DateField(auto_now_add = True, db_column = 'register_date')
     update_date = models.DateField(auto_now = True, db_column = 'update_date')
@@ -45,4 +47,4 @@ class Portfolios(models.Model):
         db_table = 'portfolios'
 
     def __str__(self):
-        return '{} : {} / {} / {}'.format(self.user_id, self.portfolio_name, self.portfolio_deposit, self.portfolio_sales)
+        return '{}/{}'.format(self.user_id, self.portfolio_name)

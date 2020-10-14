@@ -40,9 +40,7 @@
                             {% endif %}
                         </h5>
                         <p class="card-text">
-                            사용금액: ￦ {{ portfolio.portfolio_purchase_price|intcomma }}<br>
-                            판매액: ￦ {{ portfolio.portfolio_sales|intcomma }}<br>
-                            설정 예수금: ￦ {{ portfolio.portfolio_deposit|intcomma }}
+                            설정 예수금: ￦ {{ portfolio.portfolio_setup_deposit|intcomma }}
                         </p>
                     </div>
                     <div class="card-footer">

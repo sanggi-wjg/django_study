@@ -120,14 +120,11 @@
             <thead>
             <tr>
                 <th scope="col">평가금액</th>
-                <th scope="col">사용금액</th>
-                <th scope="col">판매액</th>
+                {% comment %}<th scope="col">사용금액</th>{% endcomment %}
                 <th scope="col">예수금</th>
                 <th scope="col">설정 예수금</th>
-                <th scope="col">일자</th>
             </tr>
             </thead>
-
             <tbody>
             <tr class="table-warning">
                 <td>
@@ -142,20 +139,16 @@
                         {% endif %}
                     </h5>
                 </td>
+                {% comment %}<td>
+                    <h6>{{ portfolio_summary.portfolio_setup_deposit|sub:portfolio_summary.portfolio_deposit|intcomma }}</h6>
+                </td>{% endcomment %}
                 <td>
-                    <h6>{{ portfolio_summary.portfolio_purchase_price|intcomma }}</h6>
+                    {% comment %}<h6>{{ portfolio_summary.portfolio_deposit|sub:portfolio_summary.portfolio_purchase_price| intcomma }}</h6>{% endcomment %}
+                    <h6>{{ portfolio_summary.portfolio_deposit| intcomma }}</h6>
                 </td>
                 <td>
-                    <h6>{{ portfolio_summary.portfolio_sales|intcomma }}</h6>
+                    <h6>{{ portfolio_summary.portfolio_setup_deposit|intcomma }}</h6>
                 </td>
-                <td>
-                    <h6>{{ portfolio_summary.portfolio_deposit|sub:portfolio_summary.portfolio_purchase_price| intcomma }}</h6>
-                </td>
-                <td>
-                    <h6>{{ portfolio_summary.portfolio_deposit|intcomma }}</h6>
-                </td>
-                <td>{{ portfolio_summary.update_date|date:"Y-m-d" }},
-                    {{ portfolio_summary.register_date|date:"Y-m-d" }}</td>
             </tr>
             </tbody>
         </table>
@@ -175,6 +168,7 @@
                 <th scope="col">매도수량</th>
                 <th scope="col">평가금액</th>
                 <th scope="col">매입금액</th>
+                <th scope="col">최초 매입금액</th>
                 <th scope="col">손익</th>
                 <th scope="col">수익률</th>
                 <th scope="col">매입일</th>
@@ -200,6 +194,7 @@
                         <td>{{ stock.sell_count }}</td>
                         <td>{{ stock.current_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.stock_count|intcomma }}</td>
+                        <td>{{ stock.purchase_price|mul:stock.total_count|intcomma }}</td>
 
                         {% if stock.income_price >= 0 %}
                             <td style="color: red;"><h6>{{ stock.income_price|intcomma }}</h6></td>
@@ -215,7 +210,20 @@
 
                         <td>{{ stock.purchase_date| date:"Y-m-d" }}</td>
                         {% if stock.sell_count == 0 %}
-                            <td>{{ stock.sell_date }}</td>
+                            <td>
+                                <input type="button" class="btn btn-outline-danger" value="매도" data-toggle="modal"
+                                       data-target="#sell_stock_modal"
+                                       data-stock-code="{{ stock.stock_code }}"
+                                       data-stock-name="{{ stock.stock_name }}"
+                                       data-stock-count="{{ stock.total_stock_count }}"
+                                       data-purchase-date="{{ stock.purchase_date| date:"Y-m-d" }}">
+                            </td>
+                        {% elif stock.purchase_count == 0 %}
+                            <td>
+                                {% autoescape off %}
+                                    <p>{{ stock.sell_date|default_if_none:''| replace_separator }}</p>
+                                {% endautoescape %}
+                            </td>
                         {% else %}
                             <td>
                                 <input type="button" class="btn btn-outline-danger" value="매도" data-toggle="modal"
