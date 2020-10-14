@@ -13,7 +13,7 @@ def portfolio_summary(portfolios: Portfolios) -> list:
         total_current_price, *_ = _portfolio_summary_prices(port.id, port.portfolio_setup_deposit)
         total_portfolio_price = port.portfolio_deposit + total_current_price
         total_income_price = total_portfolio_price - port.portfolio_setup_deposit
-        total_income_rate = round(total_income_price / port.portfolio_setup_deposit, 4) * 100
+        total_income_rate = round((total_income_price / port.portfolio_setup_deposit) * 100, 2)
 
         result.append({
             'portfolio_id'           : port.id,
@@ -39,9 +39,8 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = 
     ).filter(portfolio_id = portfolio_id)
 
     for stock in portfolio_stock_list:
-        current_stock_count = stock['stock_count'] - stock['sell_count']
-        current_price, purchase_price, income_price, income_rate = get_stock_prices(stock['stocks_id'], stock['purchase_date'], current_stock_count)
-        total_current_price += current_price * current_stock_count
+        current_price, purchase_price, income_price, income_rate = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'])
+        total_current_price += current_price * stock['stock_count']
         total_income_price += income_price
 
     if len(portfolio_stock_list) > 0 and portfolio_setup_deposit is not None:
@@ -50,10 +49,10 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = 
     return total_current_price, total_income_price, total_income_rate
 
 
-def get_stock_prices(stocks_id: int, purchase_date: str, current_stock_count) -> tuple:
+def get_stock_prices(stocks_id: int, purchase_date: str, stock_count) -> tuple:
     current_price = StockPrice.objects.values('close_price').order_by('-date').filter(stocks_id = stocks_id).first()['close_price']
     purchase_price = StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = purchase_date)['close_price']
-    income_price = int((current_price - purchase_price) * current_stock_count)
+    income_price = int((current_price - purchase_price) * stock_count)
     income_rate = round(((current_price / purchase_price) - 1) * 100, 2)
 
     return current_price, purchase_price, income_price, income_rate
@@ -67,7 +66,7 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
     result = []
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
-        current_price, purchase_price, income_price, income_rate = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'] - stock['sell_count'])
+        current_price, purchase_price, income_price, income_rate = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'])
 
         result.append({
             'stock_code'    : stock['stocks_id__stock_code'],
