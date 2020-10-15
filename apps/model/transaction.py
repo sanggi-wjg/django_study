@@ -67,6 +67,8 @@ def transaction_sell_stock(portfolio_id: int, sell_count: int, sell_date: str, p
         raise TransactionError('Invalid portfolio_id')
     except StockPrice.DoesNotExist:
         raise TransactionError('Price of stock is not saved')
+    except PortfoliosDetail.DoesNotExist:
+        raise TransactionError('Invalid portfolio_id, purchase_date, stocks_id')
 
     with transaction.atomic():
         # 포트폴리오 예수금 = 현재 예수금 + (매도금액 * 매도량)

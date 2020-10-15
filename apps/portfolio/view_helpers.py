@@ -44,7 +44,7 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = 
         total_income_price += income_price
 
     if len(portfolio_stock_list) > 0 and portfolio_setup_deposit is not None:
-        total_income_rate = round(float(total_income_price / portfolio_setup_deposit) * 100, 2)
+        total_income_rate = round((total_income_price / portfolio_setup_deposit) * 100, 2)
 
     return total_current_price, total_income_price, total_income_rate
 
@@ -55,7 +55,9 @@ def get_stock_prices(stocks_id: int, purchase_date: str, stock_count: int, sell_
     income_price = int((current_price - purchase_price) * stock_count)
     income_rate = 0.0
     if stock_count > 0:
-        income_rate = round((current_price / purchase_price) * 10, 2)
+        income_rate = round(((current_price / purchase_price) - 1) * 100, 2)
+        # if income_price < 0:
+        #     income_rate = -income_rate
 
     sell_price = 0
     if sell_date:

@@ -189,14 +189,14 @@
                                    style="color: black;">{{ stock.stock_name }}</a></h6>
                         </td>
                         <td></td>
-                        <td>{{ stock.current_price|intcomma }}</td>
-                        <td>{{ stock.purchase_price|intcomma }}</td>
+                        <td><h6>{{ stock.current_price|intcomma }}</h6></td>
+                        <td><h6>{{ stock.purchase_price|intcomma }}</h6></td>
                         <td>{{ stock.stock_count }}</td>
                         <td>{{ stock.sell_count }}</td>
                         <td>{{ stock.current_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.total_count|intcomma }}</td>
-                        <td>{{ stock.sell_price }}</td>
+                        <td>{{ stock.sell_price|intcomma }}</td>
 
                         {% if stock.income_price >= 0 %}
                             <td style="color: red;"><h6>{{ stock.income_price|intcomma }}</h6></td>
