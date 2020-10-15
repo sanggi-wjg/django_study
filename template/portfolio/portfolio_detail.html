@@ -169,6 +169,7 @@
                 <th scope="col">평가금액</th>
                 <th scope="col">매입금액</th>
                 <th scope="col">최초 매입금액</th>
+                <th scope="col">누적 매도금액</th>
                 <th scope="col">손익</th>
                 <th scope="col">수익률</th>
                 <th scope="col">매입일</th>
@@ -195,6 +196,7 @@
                         <td>{{ stock.current_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.stock_count|intcomma }}</td>
                         <td>{{ stock.purchase_price|mul:stock.total_count|intcomma }}</td>
+                        <td>{{ stock.sell_price }}</td>
 
                         {% if stock.income_price >= 0 %}
                             <td style="color: red;"><h6>{{ stock.income_price|intcomma }}</h6></td>

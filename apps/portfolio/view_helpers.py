@@ -39,7 +39,7 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = 
     ).filter(portfolio_id = portfolio_id)
 
     for stock in portfolio_stock_list:
-        current_price, purchase_price, income_price, income_rate = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'])
+        current_price, purchase_price, income_price, income_rate, sell_price = get_stock_prices(stock['stocks_id'], stock['purchase_date'], stock['stock_count'], stock['sell_date'])
         total_current_price += current_price * stock['stock_count']
         total_income_price += income_price
 
@@ -49,13 +49,23 @@ def _portfolio_summary_prices(portfolio_id: int, portfolio_setup_deposit: int = 
     return total_current_price, total_income_price, total_income_rate
 
 
-def get_stock_prices(stocks_id: int, purchase_date: str, stock_count) -> tuple:
+def get_stock_prices(stocks_id: int, purchase_date: str, stock_count: int, sell_date: str) -> tuple:
     current_price = StockPrice.objects.values('close_price').order_by('-date').filter(stocks_id = stocks_id).first()['close_price']
     purchase_price = StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = purchase_date)['close_price']
     income_price = int((current_price - purchase_price) * stock_count)
-    income_rate = round(((current_price / purchase_price) - 1) * 100, 2)
+    income_rate = 0.0
+    if stock_count > 0:
+        income_rate = round((current_price / purchase_price) * 10, 2)
 
-    return current_price, purchase_price, income_price, income_rate
+    sell_price = 0
+    if sell_date:
+        sell_date_list = [date.strip() for date in sell_date.split('\n')]
+        for item in sell_date_list:
+            item_split = item.split('(')
+            date, count = item_split[0], int(item_split[1].replace(')', ''))
+            sell_price = sell_price + (StockPrice.objects.values('close_price').get(stocks_id = stocks_id, date = date)['close_price'] * count)
+
+    return current_price, purchase_price, income_price, income_rate, sell_price
 
 
 def portfolio_detail_stock_list(portfolio_id: int) -> list:
@@ -66,7 +76,7 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
     result = []
     for stock in portfolio_stock_list:
         stocks_id = stock['stocks_id']
-        current_price, purchase_price, income_price, income_rate = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'])
+        current_price, purchase_price, income_price, income_rate, sell_price = get_stock_prices(stocks_id, stock['purchase_date'], stock['stock_count'], stock['sell_date'])
 
         result.append({
             'stock_code'    : stock['stocks_id__stock_code'],
@@ -82,6 +92,7 @@ def portfolio_detail_stock_list(portfolio_id: int) -> list:
             'purchase_price': purchase_price,
             'income_price'  : income_price,
             'income_rate'   : income_rate,
+            'sell_price'    : sell_price,
         })
 
     return result
