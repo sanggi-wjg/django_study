@@ -49,7 +49,7 @@ class PortfoliosDetail(models.Model):
     stock_count = models.IntegerField(blank = False, null = False, default = 0, db_column = 'stock_count')
     sell_count = models.IntegerField(blank = False, null = False, default = 0, db_column = 'sell_count')
 
-    portfolio_id = models.ForeignKey(Portfolios, on_delete = models.DO_NOTHING, db_column = 'portfolio_id')
+    portfolio_id = models.ForeignKey(Portfolios, on_delete = models.CASCADE, db_column = 'portfolio_id')
     stocks_id = models.ForeignKey(Stocks, on_delete = models.DO_NOTHING, db_column = 'stocks_id')
 
     class Meta:
