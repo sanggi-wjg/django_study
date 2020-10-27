@@ -26,6 +26,7 @@ from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList, StockPriceChartData
+from apps.zzz.views import ZZZController
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -71,6 +72,8 @@ urlpatterns = [
     path('func/financial-metrics', FinancialMetrics.as_view(), name = '재무지표'),
     path('func/indexs', IndexSites.as_view(), name = '인덱스 지표 리스트'),
     path('func/indexs/<str:fd_type>/<str:term>/financial/image', IndexFinancialDataImage.as_view(), name = '인덱스 지표 plot 이미지'),
+
+    path('zzz', ZZZController.as_view(), name = 'zzz'),
 
     # path('data/in-queue/', InQueue.as_view()),
     # path('data/in-queue/<str:productCd>', InQueueOne.as_view()),

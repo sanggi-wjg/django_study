@@ -1,0 +1,35 @@
+{% extends "comm/header.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% load static %}
+
+{% block script_list %}
+    {# https://github.com/redtettemer/rtop-video-player #}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="{% static 'comm/video-player-lazy-load-rtop/rtop.videoPlayer.1.0.2.min.css' %}">
+    <script src={% static 'comm/video-player-lazy-load-rtop/rtop.videoPlayer.1.0.2.min.js' %}></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#current-ant").RTOP_VideoPlayer({
+                showTimer: true,
+                autoPlay: true,
+                showSoundControl: true,
+                showFullScreen: true,
+                loop: true,
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div>
+
+    <div id="current-ant" data-video="media/current_ant_condition.mp4" data-type="video/mp4" data-poster="media/oz.jpg"
+         style="width: 70%">
+    </div>
+
+{% endblock %}
