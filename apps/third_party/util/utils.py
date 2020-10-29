@@ -1,7 +1,9 @@
 import os
 from datetime import datetime, timedelta
 
+import json
 import psutil
+import xmltodict
 
 from sample.settings import MEDIA_ROOT
 
@@ -68,3 +70,8 @@ def escape_char(text):
 
 def get_cpu_count() -> int:
     return psutil.cpu_count()
+
+
+def xml_to_dict(xml: str) -> dict:
+    xml = xmltodict.parse(xml)
+    return json.loads(json.dumps(xml))

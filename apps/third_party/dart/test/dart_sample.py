@@ -2,7 +2,7 @@ import requests
 
 from apps.third_party.dart.dart_settings import API_KEY
 
-reprt_code = [
+report_code = [
     '11011',  # 사업보고서
     '11012',  # 반기보고서
     '11013',  # 1분기 보고서
