@@ -5,8 +5,6 @@ import json
 import psutil
 import xmltodict
 
-from sample.settings import MEDIA_ROOT
-
 
 def today_dateformat(time_format = '%Y-%m-%d %H:%M:%S'):
     return datetime.today().strftime(time_format)
@@ -30,6 +28,13 @@ def get_date_list(date_range: int, time_format: str = '%Y-%m-%d') -> list:
         date_list.append(day.strftime(time_format))
 
     return date_list
+
+
+def gmt_to_est_datetime(gmt_date: str, gmt_format: str = '%a, %d %b %Y %H:%M:%S %z', est_format: str = '%Y-%m-%d %H:%M:%S'):
+    gmt = datetime.strptime(gmt_date, gmt_format)
+    gmt = gmt.strftime(est_format)
+    est = datetime.strptime(gmt, est_format)
+    return est
 
 
 def current_year_subtract(delta: int, time_format: str = '%Y'):

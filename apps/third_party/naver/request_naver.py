@@ -3,6 +3,7 @@ import requests
 from apps.model.naver import Naver
 from apps.model.naver_news import NaverNews
 from apps.model.stocks import Stocks
+from apps.third_party.util.utils import gmt_to_est_datetime
 
 
 class RequestNaverNews:
@@ -33,14 +34,14 @@ class RequestNaverNews:
         response = self._request(stock_name, 10)
         result = ''
         for item in response:
-            result += '{} ({})\n'.format(escape_html_tag(item['title']), item['link'])
+            result += '{} ({}) ({})\n'.format(escape_html_tag(item['title']), item['link'], gmt_to_est_datetime(item['pubDate']))
 
         return result
 
     def register_news(self, stock_name: str):
         response = self._request(stock_name, 100)
         for item in response:
-            NaverNews.objects.register(stock_name, escape_html_tag(item['title']), item['link'], item['description'], item['pubDate'])
+            NaverNews.objects.register(stock_name, escape_html_tag(item['title']), item['link'], item['description'], gmt_to_est_datetime(item['pubDate']))
 
         return True
 
