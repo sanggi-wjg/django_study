@@ -4,6 +4,7 @@ from django.views import View
 from apps.model.stock_price import StockPrice
 from apps.model.stock_subs import StockSubs
 from apps.model.stocks import Stocks
+from apps.third_party.naver.request_naver import RequestNaverNews
 from apps.third_party.util.exceptions import print_exception
 from apps.third_party.util.utils import today_dateformat
 
@@ -45,13 +46,28 @@ class DiscordStockPrice(View):
             )
 
             return JsonResponse({
-                'content': '시가 : {}\n고가 : {}\n저가 : {}'.format(stock_price['close_price'], stock_price['high_price'], stock_price['low_price'])
+                'content': '[오늘 주가]\n시가 : {}\n고가 : {}\n저가 : {}'.format(stock_price['close_price'], stock_price['high_price'], stock_price['low_price'])
             }, status = 200)
 
         except Stocks.DoesNotExist:
             return JsonResponse({ 'content': '주식명을 확인해주세요.' }, status = 400)
         except StockPrice.DoesNotExist:
             return JsonResponse({ 'content': '해당 주식은 현재 주가를 추적중이지 않습니다.' }, status = 400)
+        except Exception:
+            print_exception()
+            return JsonResponse({ 'content': '띠용? 에러 발생' }, status = 400)
+
+
+class DiscordStockNews(View):
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            naver_news = RequestNaverNews()
+            news_content = naver_news.parse_string_news(kwargs.get('stock_name'))
+
+            return JsonResponse({ 'content': news_content })
+
         except Exception:
             print_exception()
             return JsonResponse({ 'content': '띠용? 에러 발생' }, status = 400)

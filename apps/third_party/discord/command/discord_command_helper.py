@@ -26,7 +26,11 @@ async def stock_subscribe(stock_name: str):
     return response['content']
 
 
-async def stock_price(stock_name: str):
+async def stock_info(stock_name: str):
     response = requests.get(url = 'http://192.168.10.6:8000/discord/stock/price/{}'.format(stock_name))
     response = response.json()
-    return response['content']
+
+    news_response = requests.get(url = 'http://192.168.10.6:8000/discord/stock/news/{}'.format(stock_name))
+    news_response = news_response.json()
+
+    return '{}\n{}'.format(response['content'], news_response['content'])

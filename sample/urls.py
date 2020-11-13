@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.discord.views import DiscordStockPrice, DiscordStockSubscribe, DiscordStockSubscribeList
+from apps.discord.views import DiscordStockPrice, DiscordStockSubscribe, DiscordStockSubscribeList, DiscordStockNews
 from apps.etf.views import EtfList
 from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
 from apps.trend.views import InvestorTrend, InvestorTrendData
@@ -80,6 +80,7 @@ urlpatterns = [
     path('discord/stock/subs/list', DiscordStockSubscribeList.as_view(), name = 'subscribe_stock_list'),
     path('discord/stock/subs/<str:stock_name>', DiscordStockSubscribe.as_view(), name = 'subscribe_stock'),
     path('discord/stock/price/<str:stock_name>', DiscordStockPrice.as_view(), name = 'search_stock_price'),
+    path('discord/stock/news/<str:stock_name>', DiscordStockNews.as_view(), name = 'search_stock_price'),
 
     # path('data/in-queue/', InQueue.as_view()),
     # path('data/in-queue/<str:productCd>', InQueueOne.as_view()),
