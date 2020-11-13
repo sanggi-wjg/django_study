@@ -6,6 +6,32 @@ from apps.third_party.util.utils import today_dateformat
 
 class StockPriceQuerySet(models.QuerySet):
 
+    def current_rsi(self, stock_name: str) -> float:
+        """
+        https://www.macroption.com/rsi-calculation/
+        """
+        N = 14
+        price_list = StockPrice.objects.values('close_price', 'date').filter(
+            stocks_id = Stocks.objects.get(stock_name = stock_name).id
+        ).order_by('-date')[0:N + 1]
+        price_list = sorted(price_list, key = lambda key: key['date'])
+
+        AU, AD = 0.0, 0.0
+
+        for i in range(1, len(price_list)):
+            change = price_list[i]['close_price'] - price_list[i - 1]['close_price']
+
+            if change > 0:
+                AU += change
+            else:
+                AD += abs(change)
+
+        AU, AD = AU / N, AD / N
+        RS = AU / AD
+        RSI = round((RS / (1 + RS)) * 100, 2)
+
+        return RSI
+
     def get_last_date(self, stocks_id: int):
         result = self.values('date').filter(stocks_id = stocks_id).last()
         if result:
