@@ -1,6 +1,7 @@
 from django.core.management import BaseCommand
 
 from apps.model.stock_price import StockPrice
+from apps.model.stock_subs import StockSubs
 from apps.third_party.discord.discord_hook import send_discord
 
 
@@ -28,6 +29,9 @@ class Command(BaseCommand):
             Calculate Relative Strength (get RS)
             Calculate the Relative Strength Index (get RSI)
         """
-        rsi = StockPrice.objects.current_rsi('삼성전자')
-        if rsi > 60:
-            send_discord('삼성전자 RSI : {}'.format(rsi))
+        stock_list = StockSubs.objects.values('stocks_id__stock_name').all()
+
+        for stock in stock_list:
+            rsi = StockPrice.objects.current_rsi(stock['stocks_id__stock_name'])
+            if rsi >= 60 or rsi <= 40:
+                send_discord('[{}] RSI : {}'.format(stock['stocks_id__stock_name'], rsi))

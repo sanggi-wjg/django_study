@@ -5,6 +5,9 @@ from apps.model.stocks import Stocks
 
 class StockSubsQuerySet(models.QuerySet):
 
+    def get_list(self):
+        return self.all()
+
     def subscribe(self, stock_name: str):
         """
         구독 하기
