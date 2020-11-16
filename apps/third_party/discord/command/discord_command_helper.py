@@ -9,9 +9,9 @@ async def is_users_order(user_message):
 
 
 async def help_text():
-    return '![주식종목명] : 가격 조회\n' \
-           '!구독리스트 : 현재 구독 중인 종목\n' \
-           '!구독 [주식종목명] : 구독하기'
+    return '- [주식종목명] : 가격 조회\n' \
+           '- 구독리스트 : 현재 구독 중인 종목\n' \
+           '- 구독 [주식종목명] : 구독하기'
 
 
 async def current_stock_subscribe_list():
