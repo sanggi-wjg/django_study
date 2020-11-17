@@ -36,9 +36,9 @@ def test_stock():
     print(mean)
     print(std)
 
-    dataframe['Samsung_Normalization'] = (dataframe['Samsung'] - mean['Samsung']) / mean['Samsung']
-    dataframe['SK_Hynix_Normalization'] = (dataframe['SK_Hynix'] - mean['SK_Hynix']) / mean['SK_Hynix']
-    dataframe['KOSPI_Normalization'] = (dataframe['KOSPI'] - mean['KOSPI']) / mean['KOSPI']
+    dataframe['Samsung_Normalization'] = (dataframe['Samsung'] - mean['Samsung']) / std['Samsung']
+    dataframe['SK_Hynix_Normalization'] = (dataframe['SK_Hynix'] - mean['SK_Hynix']) / std['SK_Hynix']
+    dataframe['KOSPI_Normalization'] = (dataframe['KOSPI'] - mean['KOSPI']) / std['KOSPI']
     print(dataframe)
 
     locator = mdates.MonthLocator()

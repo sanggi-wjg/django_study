@@ -24,7 +24,7 @@
                 success: function (result) {
                     console.log(result)
                     image_path = '/media/' + result.image_path;
-                    fd_data_content.html("<img src='" + image_path + "' alt='error'>");
+                    fd_data_content.html("<img src='" + image_path + "' alt='error' style='width: 100%;'>");
                     removeGlobalLoading()
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -70,17 +70,17 @@
 
     <h6>Companies</h6>
     {% for stock in stock_list %}
-        <a href="/stocks/company/{{ stock.stock_code }}" class="badge badge-primary">{{ stock.stock_name }}</a>
+        <span href="/stocks/company/{{ stock.stock_code }}" class="badge badge-primary">{{ stock.stock_name }}</span>
     {% endfor %}
     <hr>
 
     <h6>Compare Finance Info</h6>
-{#    <table class="table table-hover">#}
-{#        {% load humanize %}#}
-{#        {% for company_name, data in finance_info.items %}#}
-{#            {{ company_name }} {{ data }}<br>#}
-{#        {% endfor %}#}
-{#    </table>#}
+    {#    <table class="table table-hover">#}
+    {#        {% load humanize %}#}
+    {#        {% for company_name, data in finance_info.items %}#}
+    {#            {{ company_name }} {{ data }}<br>#}
+    {#        {% endfor %}#}
+    {#    </table>#}
     <hr>
 
     <h6>Compare Sector Stock Price</h6>

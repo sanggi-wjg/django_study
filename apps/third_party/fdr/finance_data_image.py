@@ -15,6 +15,7 @@ class FinanceDataImage:
     https://github.com/FinanceData/FinanceDataReader
     """
     save_path: list = []
+    normalization_text = '_정규화'
 
     def __init__(self, start_date: str, end_date: str = None):
         """
@@ -23,7 +24,8 @@ class FinanceDataImage:
         :type end_date: default None
         """
         plt.rcParams["font.family"] = 'NanumGothic'
-        plt.rcParams["figure.figsize"] = (14, 6)
+        plt.rcParams['font.size'] = 15
+        plt.rcParams["figure.figsize"] = (30, 20)
         plt.rcParams['lines.linewidth'] = 2
         plt.rcParams["axes.grid"] = True
 
@@ -54,6 +56,11 @@ class FinanceDataImage:
             df = pd.concat(df_list, axis = 1)
             df.columns = [stock_name for stock_name, stock_code in symbol]
 
+            mean = df.mean(axis = 0)
+            std = df.std(axis = 0)
+
+            for col in df.columns:
+                df[col + self.normalization_text] = (df[col] - mean[col]) / std[col]
         else:
             raise TypeError('Data type of symbol is not allowed.')
 
@@ -92,7 +99,19 @@ class FinanceDataImage:
             return False, self._get_save_image_path()
 
         data_frame = self.finance_data_frame(symbol)
-        data_frame.plot()
+
+        plt.subplot(211)
+        for col in data_frame.columns:
+            if self.normalization_text not in col:
+                plt.plot(data_frame[col], label = col)
+        plt.legend(loc = 'right', bbox_to_anchor = (1.1, 0.5))
+
+        plt.subplot(212)
+        for col in data_frame.columns:
+            if self.normalization_text in col:
+                plt.plot(data_frame[col], label = col.replace(self.normalization_text, ''))
+        plt.legend(loc = 'right', bbox_to_anchor = (1.1, 0.5))
+
         plt.savefig(full_path)
         plt.close('all')
 

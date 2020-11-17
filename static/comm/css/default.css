@@ -8,7 +8,7 @@
     background-color: #000000;
     opacity: 0.30;
     filter: alpha(opacity=30); /* this is for IE */
-    background-image: url("{% static 'comm/images/Loading.gif' %}");
+    background-image: url("Loading.gif");
     background-repeat: no-repeat;
     background-position: center center;
 }
