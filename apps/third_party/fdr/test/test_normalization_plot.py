@@ -46,6 +46,7 @@ def test_stock():
     plt.rcParams["font.family"] = 'NanumGothic'
     plt.rcParams["figure.figsize"] = (30, 20)
     plt.rcParams["axes.grid"] = True
+    plt.rcParams['font.size'] = 20
 
     plt.subplot(211)
     plt.plot(dataframe['Samsung'], label = 'Samsung')
