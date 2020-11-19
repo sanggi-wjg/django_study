@@ -20,7 +20,7 @@ from django.urls import path, include
 
 from apps.discord.views import DiscordStockPrice, DiscordStockSubscribe, DiscordStockSubscribeList, DiscordStockNews
 from apps.etf.views import EtfList
-from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage
+from apps.func.views import FinancialMetrics, IndexSites, IndexFinancialDataImage, InterestCalculator
 from apps.trend.views import InvestorTrend, InvestorTrendData
 # from apps.in_queue.views import InQueue, InQueueOne
 from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail, StockSearchAutocomplete, PortfolioStockPurchase, PortfolioStockSell
@@ -71,6 +71,7 @@ urlpatterns = [
 
     # 부가기능
     path('func/financial-metrics', FinancialMetrics.as_view(), name = '재무지표'),
+    path('func/interest-calculator', InterestCalculator.as_view(), name = 'InterestCalculator'),
     path('func/indexs', IndexSites.as_view(), name = '인덱스 지표 리스트'),
     path('func/indexs/<str:fd_type>/<str:term>/financial/image', IndexFinancialDataImage.as_view(), name = '인덱스 지표 plot 이미지'),
 

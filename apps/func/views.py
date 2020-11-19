@@ -29,3 +29,8 @@ class IndexFinancialDataImage(HttpViews):
         result_flag, image_path = fd.save_image(symbol = fd_type, media_path = fd_type)
 
         return JsonResponse({ 'msg': 'create' if result_flag else 'exist', 'image_path': image_path })
+
+
+class InterestCalculator(FuncViews):
+    view_title = '복리 계산기'
+    template_name = 'func/interest_calc_popup.html'

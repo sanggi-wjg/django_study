@@ -145,3 +145,21 @@ function set_spinner_invisible()
 {
     $(".spinner-border").css('visibility', 'hidden');
 }
+
+function add_comma(number)
+{
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+function remove_comma(number)
+{
+    return number.replace(/,/g, "")
+}
+
+function add_comma_object(obj)
+{
+    obj.value = obj.value.replace(/[^0-9]/g, '');   // 입력값이 숫자가 아니면 공백
+    obj.value = obj.value.replace(/,/g, '');    // ,값 공백처리
+    obj.value = obj.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");    // 정규식을 이용해서 3자리 마다, 추가
+}
+

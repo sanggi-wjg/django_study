@@ -1,0 +1,73 @@
+{% extends "comm/header_popup.html" %}
+{% block view_title %}{{ view_title }} {% endblock %}
+
+{% block script_list %}
+    {% load static %}
+
+    <script>
+        $(document).ready(function () {
+            var price = $("#price"),
+                interest = $("#interest"),
+                exp = $("#exp"),
+                applied_price = $("#applied_price"),
+                applied_interest = $("#applied_interest");
+
+            $("#price, #interest, #exp").on('propertychange change keyup paste input', function () {
+                if (price.val() !== '' && interest.val() !== '' && exp.val() !== '') {
+                    var base = 1 + (interest.val() / 100),
+                        compound_interest = Math.pow(base, exp.val()).toFixed(3);
+
+                    applied_interest.val(compound_interest);
+                    applied_price.val(add_comma(remove_comma(price.val()) * compound_interest));
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="form-row">
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">금액</span>
+                <span class="input-group-text" id="basic-addon1">￦</span>
+            </div>
+            <input type="text" class="form-control" onkeyup="add_comma_object(this)" id="price" aria-label="price">
+        </div>
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">이율</span>
+                <span class="input-group-text" id="basic-addon1">%</span>
+            </div>
+            <input type="number" class="form-control" id="interest" aria-label="interest">
+            <div class="input-group-append">
+            </div>
+        </div>
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">기간</span>
+                <span class="input-group-text" id="basic-addon1">월</span>
+            </div>
+            <input type="number" class="form-control" id="exp" aria-label="exp">
+        </div>
+    </div>
+
+    <hr>
+    <div class="form-row">
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">적용 금액</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" id="applied_price" aria-label="applied_price"
+                   readonly>
+        </div>
+        <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">적용 복리</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" id="applied_interest" aria-label="applied_interest"
+                   readonly>
+        </div>
+    </div>
+
+{% endblock %}
