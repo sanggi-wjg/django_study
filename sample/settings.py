@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.etf',
     'apps.func',
     'apps.portfolio',
+    'apps.reports',
     'apps.sector',
     'apps.sign',
     'apps.stock',
@@ -186,6 +187,8 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+INDEX_FILE_ROOT = os.path.join(BASE_DIR, "apps", 'reports', 'index_files')
 
 APPEND_SLASH = False
 CHROME_DRIVER_PATH = '/home/django_sample/apps/third_party/scrap/assets/chromedriver'
