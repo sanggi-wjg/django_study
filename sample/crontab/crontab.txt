@@ -25,3 +25,8 @@
 # rsi
 */15 9-15 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py rsi_alram
 
+# 인덱스
+30 3 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index KS11
+35 3 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index IXIC
+40 3 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index DJI
+45 3 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index US500
