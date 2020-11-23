@@ -1,7 +1,7 @@
 import csv
 
 from apps.model.reports import Reports
-from apps.third_party.reports.reports_reader import ReportReader
+from apps.third_party.reports.reader.reports_reader import ReportReader
 
 
 class ReportsReader_ICSA(ReportReader):

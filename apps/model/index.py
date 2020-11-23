@@ -11,3 +11,6 @@ class Index(models.Model):
     class Meta:
         managed = False
         db_table = 'index'
+
+    def __str__(self):
+        return '[{} - {}] {}'.format(self.index_name, self.date, self.number)
