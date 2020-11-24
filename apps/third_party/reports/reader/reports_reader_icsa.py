@@ -19,18 +19,3 @@ class ReportsReader_ICSA(ReportReader):
             file.close()
 
         return read_list
-
-    def save(self, read_list: list) -> bool:
-
-        for read in read_list:
-            try:
-                Reports.objects.get(date = read['date'], report_id = self.ReportsName)
-
-            except Reports.DoesNotExist:
-                Reports.objects.create(
-                    report_id = self.ReportsName,
-                    date = read['date'],
-                    number = read['number'],
-                )
-
-        return True
