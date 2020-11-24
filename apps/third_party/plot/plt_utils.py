@@ -1,32 +1,67 @@
-import os
-
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+
 from pandas import DataFrame
+from typing import List
 
-from apps.third_party.util.utils import validate_path
-from sample.settings import MEDIA_ROOT
+from apps.third_party.plot.plt_helpers import plt_path, plt_colors
 
-
-def plt_year_format():
-    return mdates.YearLocator(), mdates.DateFormatter('%Y')
-
-
-def plt_year_month_format():
-    return mdates.MonthLocator(), mdates.DateFormatter('%Y-%M')
+plt.rcParams["font.family"] = 'NanumGothic'
+plt.rcParams["figure.figsize"] = (60, 20)
+plt.rcParams['font.size'] = 20
 
 
-def plt_path(filename: str):
-    path = os.path.join(MEDIA_ROOT, 'plt')
-    validate_path(path)
-
-    return os.path.join(path, filename)
+# plt.rcParams['axes.grid'] = True
+# plt.rcParams['axes.grid.axis'] = 'both'
+# plt.rcParams['axes.grid.which'] = 'major'
 
 
-def show_twinx_plot(df_1: DataFrame, df_1_label: str, df_2: DataFrame, df_2_label: str, plot_format = None, if_filename: str = None):
-    plt.rcParams["figure.figsize"] = (60, 20)
-    plt.rcParams['font.size'] = 20
+def show_plot_twinx_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: str,
+                         df_2: List[DataFrame] = None, df_2_label: List[str] = None, df_2_y_label: str = None,
+                         plot_format = None, if_filename: str = None
+                         ):
+    assert len(df_1) == len(df_1_label), 'DataFrame 1 Length Is Not Matched'
+    assert len(df_2) == len(df_2_label), 'DataFrame 2 Length Is Not Matched'
 
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+
+    if plot_format:
+        locator, formatter = plot_format()
+        ax1.xaxis.set_major_locator(locator)
+        ax1.xaxis.set_major_formatter(formatter)
+
+    line_list = []
+    no = 0
+
+    ax1.set_ylabel(df_1_y_label)
+    for df, label in zip(df_1, df_1_label):
+        line = ax1.plot(df, color = plt_colors(no), label = df)
+        line_list.append(line)
+        no += 1
+
+    if df_2 is not None:
+        ax2 = ax1.twinx()
+        ax2.set_ylabel(df_2_y_label)
+
+        for df, label in zip(df_2, df_2_label):
+            line = ax2.plot(df, color = plt_colors(no), label = label)
+            line_list.append(line)
+            no += 1
+
+    lines = [x[0] for x in line_list]
+    labels = df_1_label + df_2_label if df_2_label else df_1_label
+    ax1.legend(lines, labels, loc = 'upper left')
+
+    if if_filename is None:
+        plt.show()
+    else:
+        plt.savefig(plt_path(if_filename), bbox_inches = 'tight', pad_inches = 0.5)
+
+    plt.grid(True, which = 'both', axis = 'x', color = 'gray', alpha = 0.5, linestyle = '--')
+    plt.close(fig)
+
+
+def show_plot_twinx(df_1: DataFrame, df_1_label: str, df_2: DataFrame, df_2_label: str, plot_format = None, filedir: str = None, filename: str = None):
     # fig, ax1 = plt.subplots()
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
@@ -44,13 +79,16 @@ def show_twinx_plot(df_1: DataFrame, df_1_label: str, df_2: DataFrame, df_2_labe
     line2 = ax2.plot(df_2, color = 'red', label = df_2_label)
 
     # ax1.legend(handles = (line1, line2), labels = (df_1_label, df_2_label), loc = 'upper right')
+    # [<matplotlib.lines.Line2D object at 0x7f85e6c6cdf0>, <matplotlib.lines.Line2D object at 0x7f85e6c33400>]
     lns = line1 + line2
+    print(lns)
     labs = [x.get_label() for x in lns]
     ax1.legend(lns, labs, loc = 'upper left')
 
-    if if_filename is None:
+    if filename is None or filedir is None:
         plt.show()
     else:
-        plt.savefig(plt_path(if_filename), bbox_inches = 'tight', pad_inches = 0.5)
+        filepath = plt_path(filedir, filename)
+        plt.savefig(filepath, bbox_inches = 'tight', pad_inches = 0.5)
 
     plt.close(fig)

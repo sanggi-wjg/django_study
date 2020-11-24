@@ -4,16 +4,20 @@ import pytest
 from apps.model.index import Index
 from apps.model.reports import Reports
 from apps.model.reports_name import ReportsName
-from apps.third_party.plot.plt_utils import show_twinx_plot, plt_year_format
+from apps.third_party.plot.plt_helpers import plt_year_format
+from apps.third_party.plot.plt_utils import show_plot_twinx
+from apps.third_party.reports.reader.reports_reader import ReportReaderData
 
 
 @pytest.mark.django_db
 def test_report():
-    for year in range(1980, 2021):
-        START_DATE, FINISH_DATE = '{}-01-01'.format(year), '{}-12-31'.format(year)
+    TERM = 5
+
+    for year in range(1980, 2021, TERM):
+        START_DATE, FINISH_DATE = '{}-01-01'.format(year), '{}-12-31'.format(year + (TERM - 1))
 
         unempl_request = Reports.objects.values('number', 'date').filter(
-            report_id = ReportsName.objects.get(reports_name = '미국 주간 실업수당 청구건수'),
+            report_id = ReportsName.objects.get(reports_name = ReportReaderData().data['ICSA'][0]),
             date__gte = START_DATE, date__lte = FINISH_DATE
         ).order_by('date')
 
@@ -25,7 +29,8 @@ def test_report():
         kospi_df = pd.DataFrame([x['number'] for x in kopsi], index = [x['date'] for x in kopsi], columns = ['KOSPI'])
         nasdaq_df = pd.DataFrame([x['number'] for x in nasdaq], index = [x['date'] for x in nasdaq], columns = ['NASDAQ'])
 
-        show_twinx_plot(
+        show_plot_twinx(
             unempl_df, 'UnEmployee_Request', nasdaq_df, 'NASDAQ', plot_format = plt_year_format,
-            if_filename = '[{}_{}]_UnEmployee_Request_NASDAQ.png'.format(START_DATE, FINISH_DATE)
+            filedir = 'UnEmployee_Request_NASDAQ',
+            filename = '[{}_{}]_UnEmployee_Request_NASDAQ.png'.format(START_DATE, FINISH_DATE),
         )
