@@ -37,6 +37,8 @@ def convert_index_name(index_name):
         'IXIC' : 'NASDAQ',
         'DJI'  : 'DowJones',
         'US500': 'S&P500',
+        'CL'   : 'WTI',
+        'ZG'   : 'GOLD',
     }[index_name]
 
 

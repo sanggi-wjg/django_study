@@ -17,7 +17,7 @@ plt.rcParams['font.size'] = 20
 
 def show_plot_twinx_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: str,
                          df_2: List[DataFrame] = None, df_2_label: List[str] = None, df_2_y_label: str = None,
-                         plot_format = None, if_filename: str = None
+                         plot_format = None, filedir: str = None, filename: str = None
                          ):
     assert len(df_1) == len(df_1_label), 'DataFrame 1 Length Is Not Matched'
     assert len(df_2) == len(df_2_label), 'DataFrame 2 Length Is Not Matched'
@@ -52,10 +52,10 @@ def show_plot_twinx_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_la
     labels = df_1_label + df_2_label if df_2_label else df_1_label
     ax1.legend(lines, labels, loc = 'upper left')
 
-    if if_filename is None:
+    if filename is None or filedir is None:
         plt.show()
     else:
-        plt.savefig(plt_path(if_filename), bbox_inches = 'tight', pad_inches = 0.5)
+        plt.savefig(plt_path(filedir, filename), bbox_inches = 'tight', pad_inches = 0.5)
 
     plt.grid(True, which = 'both', axis = 'x', color = 'gray', alpha = 0.5, linestyle = '--')
     plt.close(fig)
@@ -81,7 +81,6 @@ def show_plot_twinx(df_1: DataFrame, df_1_label: str, df_2: DataFrame, df_2_labe
     # ax1.legend(handles = (line1, line2), labels = (df_1_label, df_2_label), loc = 'upper right')
     # [<matplotlib.lines.Line2D object at 0x7f85e6c6cdf0>, <matplotlib.lines.Line2D object at 0x7f85e6c33400>]
     lns = line1 + line2
-    print(lns)
     labs = [x.get_label() for x in lns]
     ax1.legend(lns, labs, loc = 'upper left')
 
@@ -91,4 +90,15 @@ def show_plot_twinx(df_1: DataFrame, df_1_label: str, df_2: DataFrame, df_2_labe
         filepath = plt_path(filedir, filename)
         plt.savefig(filepath, bbox_inches = 'tight', pad_inches = 0.5)
 
+    plt.close(fig)
+
+
+def show_plot(df: DataFrame, df_label: str):
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+
+    ax1.set_ylabel(df_label)
+    line1 = ax1.plot(df, color = 'blue', label = df_label)
+
+    plt.show()
     plt.close(fig)
