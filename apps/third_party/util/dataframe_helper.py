@@ -40,7 +40,4 @@ def set_dataframe(start_date: str, end_date: str, model_type: str, df_name: str,
     else:
         raise ValueError('Invalid model_type')
 
-    if not dataframe:
-        raise ValueError('Nothing Has Set dataframe')
-
     return dataframe

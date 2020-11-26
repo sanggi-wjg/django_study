@@ -33,12 +33,13 @@ class Command(BaseCommand):
 
 def convert_index_name(index_name):
     return {
-        'KS11' : 'KOSPI',
-        'IXIC' : 'NASDAQ',
-        'DJI'  : 'DowJones',
-        'US500': 'S&P500',
-        'CL'   : 'WTI',
-        'ZG'   : 'GOLD',
+        'KS11'   : 'KOSPI',
+        'IXIC'   : 'NASDAQ',
+        'DJI'    : 'DowJones',
+        'US500'  : 'S&P500',
+        'CL'     : 'WTI',
+        'ZG'     : 'GOLD',
+        'USD/KRW': 'USDKRW',
     }[index_name]
 
 

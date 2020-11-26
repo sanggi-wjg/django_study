@@ -10,10 +10,20 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        reports = ReportsCreator()
-
-        reports.make([
+        type_1 = [
             ('INDEX', 'KOSPI', 'KOSPI'),
             ('INDEX', 'NASDAQ', 'NASDAQ'),
             ('REPORT', 'CI_ACCOMPANY', '경기종합지수'),
-        ], standard_normalization = True)
+        ]
+        type_2 = [
+            ('INDEX', 'KOSPI', 'KOSPI'),
+            ('INDEX', 'NASDAQ', 'NASDAQ'),
+            ('INDEX', 'USDKRW', '환율'),
+        ]
+
+        reports = ReportsCreator()
+        reports.make(
+            type_2,
+            filedir = 'Currency',
+            standard_normalization = True
+        )
