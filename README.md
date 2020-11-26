@@ -29,3 +29,18 @@ Django 3.0
 
 #### Index
 ![result](project/10.index.PNG)
+
+### Analyze 1
+![result](project/11.1.png)
+
+### Analyze 2
+![result](project/11.2.png)
+
+### Analyze 3
+![result](project/11.3.png)
+
+### Analyze 4
+![result](project/11.4.png)
+
+### Analyze 5
+![result](project/11.5.png)
