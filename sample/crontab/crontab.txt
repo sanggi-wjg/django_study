@@ -30,3 +30,6 @@
 35 15 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index IXIC
 40 15 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index DJI
 45 15 * * 2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index US500
+
+50 15 * * 1,2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index CL
+50 15 * * 1,2,3,4,5,6 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index GOLD

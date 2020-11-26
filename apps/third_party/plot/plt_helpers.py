@@ -20,7 +20,7 @@ def plt_path(filedir: str, filename: str):
     path = os.path.join(path, filedir)
     validate_path(path)
 
-    return os.path.join(path, filename)
+    return os.path.join(path, (filename + '.png'))
 
 
 def plt_colors(no):

@@ -15,12 +15,14 @@ plt.rcParams['font.size'] = 20
 # plt.rcParams['axes.grid.which'] = 'major'
 
 
-def show_plot_twinx_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: str,
-                         df_2: List[DataFrame] = None, df_2_label: List[str] = None, df_2_y_label: str = None,
-                         plot_format = None, filedir: str = None, filename: str = None
-                         ):
-    assert len(df_1) == len(df_1_label), 'DataFrame 1 Length Is Not Matched'
-    assert len(df_2) == len(df_2_label), 'DataFrame 2 Length Is Not Matched'
+def show_plot_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: str,
+                   df_2: List[DataFrame] = None, df_2_label: List[str] = None, df_2_y_label: str = None,
+                   plot_format = None, filedir: str = None, filename: str = None
+                   ):
+    if len(df_1) != len(df_1_label):
+        raise ValueError('DataFrame 1 Length Is Not Matched')
+    if df_2 and df_2_label and len(df_2) != len(df_2_label):
+        raise ValueError('DataFrame 2 Length Is Not Matched')
 
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
@@ -55,7 +57,8 @@ def show_plot_twinx_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_la
     if filename is None or filedir is None:
         plt.show()
     else:
-        plt.savefig(plt_path(filedir, filename), bbox_inches = 'tight', pad_inches = 0.5)
+        path = plt_path(filedir, filename)
+        plt.savefig(path, bbox_inches = 'tight', pad_inches = 0.5)
 
     plt.grid(True, which = 'both', axis = 'x', color = 'gray', alpha = 0.5, linestyle = '--')
     plt.close(fig)
