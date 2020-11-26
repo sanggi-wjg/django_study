@@ -7,10 +7,13 @@ from apps.third_party.plot.plt_helpers import plt_path, plt_colors
 
 plt.rcParams["font.family"] = 'NanumGothic'
 plt.rcParams["figure.figsize"] = (60, 20)
-plt.rcParams['font.size'] = 20
+plt.rcParams['lines.linewidth'] = 3
+plt.rcParams['font.size'] = 30
+plt.rcParams['axes.grid'] = True
+plt.rcParams['grid.linestyle'] = '--'
+plt.rcParams['grid.linewidth'] = 2
 
 
-# plt.rcParams['axes.grid'] = True
 # plt.rcParams['axes.grid.axis'] = 'both'
 # plt.rcParams['axes.grid.which'] = 'major'
 

@@ -9,7 +9,7 @@ class ReportsCreator:
         self.end_year = 2020
         self.term = 5
 
-    def make(self, target_list: list, filedir: str, standard_normalization: bool = False):
+    def make(self, target_list: list, filedir: str, standard: bool, normalization: bool):
         for year in range(self.start_year, self.end_year + 1, self.term):
             start_date, end_date = '{}-01-01'.format(year), '{}-12-31'.format(year + (self.term - 1))
             dataframe, dataframe_label = [], []
@@ -17,7 +17,11 @@ class ReportsCreator:
             for target in target_list:
                 dataframe_label.append(target[2])
                 dataframe.append(
-                    set_dataframe(start_date, end_date, target[0], target[1], standard_normalization)
+                    set_dataframe(
+                        start_date, end_date, target[0], target[1],
+                        standard = standard,
+                        normalization = normalization
+                    )
                 )
 
             show_plot_list(

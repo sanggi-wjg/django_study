@@ -24,6 +24,7 @@ class Command(BaseCommand):
         reports = ReportsCreator()
         reports.make(
             type_2,
-            filedir = 'Currency',
-            standard_normalization = True
+            filedir = 'Currency_NOPE',
+            standard = False,
+            normalization = False
         )
