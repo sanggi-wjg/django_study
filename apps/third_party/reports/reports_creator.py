@@ -7,7 +7,7 @@ class ReportsCreator:
     def __init__(self):
         self.start_year = 1980
         self.end_year = 2020
-        self.term = 5
+        self.term = 10
 
     def make(self, target_list: list, filedir: str, standard: bool, normalization: bool):
         for year in range(self.start_year, self.end_year + 1, self.term):

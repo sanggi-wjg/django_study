@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
         type_1 = [
             ('INDEX', 'KOSPI', 'KOSPI'),
-            ('INDEX', 'NASDAQ', 'NASDAQ'),
+            # ('INDEX', 'NASDAQ', 'NASDAQ'),
             ('REPORT', 'CI_ACCOMPANY', '경기종합지수'),
         ]
         type_2 = [
@@ -36,8 +36,8 @@ class Command(BaseCommand):
 
         reports = ReportsCreator()
         reports.make(
-            type_3,
-            filedir = 'Currency_Gold_Nope',
+            type_1,
+            filedir = 'KOSPI_CI_STANDARD',
             standard = False,
             normalization = True
         )

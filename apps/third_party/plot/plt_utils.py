@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pandas import DataFrame
 from typing import List
 
-from apps.third_party.plot.plt_helpers import plt_path, plt_colors
+from apps.third_party.plot.plt_helpers import plt_path, plt_colors, financial_crisis_list
 
 plt.rcParams["font.family"] = 'NanumGothic'
 plt.rcParams["figure.figsize"] = (60, 20)
@@ -35,6 +35,7 @@ def show_plot_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: s
         ax1.xaxis.set_major_locator(locator)
         ax1.xaxis.set_major_formatter(formatter)
 
+    fc_list = financial_crisis_list()
     line_list = []
     no = 0
 
@@ -43,6 +44,12 @@ def show_plot_list(df_1: List[DataFrame], df_1_label: List[str], df_1_y_label: s
         line = ax1.plot(df, color = plt_colors(no), label = df)
         line_list.append(line)
         no += 1
+
+        index = df.index
+        first, last = str(index[0]), str(index[-1])
+        for fc in fc_list:
+            if first <= fc[0] and fc[1] <= last:
+                ax1.axvspan(fc[0], fc[1], color = 'gray', alpha = 0.2)
 
     if df_2 is not None:
         ax2 = ax1.twinx()

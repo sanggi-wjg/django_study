@@ -6,24 +6,24 @@ from apps.model.reports import Reports
 from apps.third_party.reports.reader.reports_reader import ReportReaderData
 
 
-def convert_dataframe(data, key: str):
+def convert_dataframe(data, key: str) -> DataFrame:
     df = pd.DataFrame([x[key] for x in data], index = [x['date'] for x in data], columns = ['Number'])
     return df
 
 
-def standardize(dataframe: DataFrame, column: str):
+def standardize(dataframe: DataFrame, column: str) -> DataFrame:
     mean = dataframe.mean(axis = 0)
     std = dataframe.std(axis = 0)
     return (dataframe[column] - mean[column]) / std[column]
 
 
-def normalize(dataframe: DataFrame, column: str):
+def normalize(dataframe: DataFrame, column: str) -> DataFrame:
     maxd = dataframe.max(axis = 0)
     mind = dataframe.min(axis = 0)
     return (dataframe[column] - mind[column]) / (maxd[column] - mind[column])
 
 
-def set_dataframe(start_date: str, end_date: str, model_type: str, df_name: str, standard: bool = False, normalization = True):
+def set_dataframe(start_date: str, end_date: str, model_type: str, df_name: str, standard: bool = False, normalization = True) -> DataFrame:
     if standard and normalization:
         raise ValueError('standard and normalization are True.')
     model_type = model_type.upper()

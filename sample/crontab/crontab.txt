@@ -12,8 +12,7 @@
 1 1 * * 1 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py scrap_consensus_regular
 
 # 수급현황
-#1 2 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py scrap_demand_regular
-1 2 * * 1 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py scrap_demand_regular
+1 2 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py scrap_demand_regular
 
 ## 투자자 동향
 1 3 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py scrap_investor_trend_regular 1
