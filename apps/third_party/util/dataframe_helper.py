@@ -3,11 +3,13 @@ from pandas import DataFrame
 
 from apps.model.index import Index
 from apps.model.reports import Reports
+from apps.model.stock_price import StockPrice
+from apps.model.stocks import Stocks
 from apps.third_party.reports.reader.reports_reader import ReportReaderData
 
 
-def convert_dataframe(data, key: str) -> DataFrame:
-    df = pd.DataFrame([x[key] for x in data], index = [x['date'] for x in data], columns = ['Number'])
+def convert_dataframe(data, column_key: str) -> DataFrame:
+    df = pd.DataFrame([x[column_key] for x in data], index = [x['date'] for x in data], columns = ['Number'])
     return df
 
 
@@ -29,7 +31,10 @@ def set_dataframe(start_date: str, end_date: str, model_type: str, df_name: str,
     model_type = model_type.upper()
 
     if model_type == 'INDEX':
-        dataframe = convert_dataframe(Index.objects.get_index_df(df_name, start_date, end_date), 'number')
+        dataframe = convert_dataframe(
+            Index.objects.get_index_df(df_name, start_date, end_date),
+            column_key = 'number'
+        )
 
         if standard:
             dataframe = standardize(dataframe, 'Number')
@@ -38,7 +43,22 @@ def set_dataframe(start_date: str, end_date: str, model_type: str, df_name: str,
 
     elif model_type == 'REPORT':
         name = ReportReaderData().data[df_name][0]
-        dataframe = convert_dataframe(Reports.objects.get_report_df(name, start_date, end_date), 'number')
+        dataframe = convert_dataframe(
+            Reports.objects.get_report_df(name, start_date, end_date),
+            column_key = 'number'
+        )
+
+        if standard:
+            dataframe = standardize(dataframe, 'Number')
+        if normalization:
+            dataframe = normalize(dataframe, 'Number')
+
+    elif model_type == 'STOCK':
+        stocks_id = Stocks.objects.get(stock_name = df_name).id
+        dataframe = convert_dataframe(
+            StockPrice.objects.get_stock_price_for_df(stocks_id, start_date, end_date),
+            column_key = 'close_price'
+        )
 
         if standard:
             dataframe = standardize(dataframe, 'Number')
