@@ -17,30 +17,35 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['debug']:
             show_list()
-            exit()
 
-        type_1 = [
-            ('INDEX', 'KOSPI', 'KOSPI'),
-            # ('INDEX', 'NASDAQ', 'NASDAQ'),
-            ('REPORT', 'CI_ACCOMPANY', '경기종합지수'),
-        ]
-        type_2 = [
-            ('INDEX', 'KOSPI', 'KOSPI'),
-            ('INDEX', 'NASDAQ', 'NASDAQ'),
-            ('INDEX', 'USDKRW', '환율'),
-        ]
-        type_3 = [
-            ('INDEX', 'USDKRW', '환율'),
-            ('INDEX', 'GOLD', '금'),
+        targets = [
+            ['INDEX', 'KOSPI', 'KOSPI'],
+            # ['INDEX', 'NASDAQ', 'NASDAQ'],
+            # ['REPORT', 'CI_ACCOMPANY', '경기종합지수'],
+            ['INDEX', 'GOLD', '금'],
+            # ['INDEX', 'USDKRW', '환율'],
         ]
 
         reports = ReportsCreator()
         reports.make(
-            type_1,
-            filedir = 'KOSPI_CI_STANDARD',
+            targets,
+            filedir = get_filedir(targets),
             standard = False,
-            normalization = True
+            normalization = False
         )
+
+
+def get_filedir(targets):
+    try:
+        result = ['_'.join(x) for x in targets]
+        result = '_'.join(result).replace('INDEX_', '').replace('REPORT_', '').replace('STOCK_', '')
+    except Exception:
+        raise ValueError('targets Is Invalid')
+
+    if not result:
+        raise ValueError('filedir Is Not Set')
+
+    return result
 
 
 def show_list():
@@ -55,3 +60,4 @@ def show_list():
         print_yellow(report['report_id__reports_name'])
 
     print_red('----------------------')
+    exit()
