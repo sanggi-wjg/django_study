@@ -27,7 +27,7 @@ from apps.portfolio.views import PortfolioList, CreatePortfolio, PortfolioDetail
 from apps.sector.views import SectorDetail, SectorList, SectorFinancialDataComparedPriceImage
 from apps.sign.views import HomeView, SignUpView, LoginView, LogoutView
 from apps.stock.views import StockDetail, CreatePivotProc, ScrapFinancialInfo, ScrapDemandInfo, SearchStockNSectorList, StockList, StockPriceChartData
-from apps.zzz.views import ZZZController
+from apps.zzz.views import ZZZController, SleepController
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -75,7 +75,9 @@ urlpatterns = [
     path('func/indexs', IndexSites.as_view(), name = '인덱스 지표 리스트'),
     path('func/indexs/<str:fd_type>/<str:term>/financial/image', IndexFinancialDataImage.as_view(), name = '인덱스 지표 plot 이미지'),
 
+    # zzz
     path('zzz', ZZZController.as_view(), name = 'zzz'),
+    path('zzz/sleep/<int:sleep_time>', SleepController.as_view(), name = 'zzz_sleep'),
 
     # 디스코드 API
     path('discord/stock/subs/list', DiscordStockSubscribeList.as_view(), name = 'subscribe_stock_list'),
