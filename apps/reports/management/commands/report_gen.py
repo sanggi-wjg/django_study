@@ -22,23 +22,28 @@ class Command(BaseCommand):
             ['INDEX', 'KOSPI', 'KOSPI'],
             # ['INDEX', 'NASDAQ', 'NASDAQ'],
             # ['REPORT', 'CI_ACCOMPANY', '경기종합지수'],
-            ['INDEX', 'GOLD', '금'],
-            # ['INDEX', 'USDKRW', '환율'],
+            # ['INDEX', 'GOLD', '금'],
+            ['INDEX', 'USDKRW', '환율'],
         ]
+        STANDARD, NORMALIZATION = False, True
 
         reports = ReportsCreator()
         reports.make(
             targets,
-            filedir = get_filedir(targets),
-            standard = False,
-            normalization = False
+            filedir = get_filedir(targets, STANDARD, NORMALIZATION),
+            standard = STANDARD,
+            normalization = NORMALIZATION
         )
 
 
-def get_filedir(targets):
+def get_filedir(targets, st, no):
     try:
         result = ['_'.join(x) for x in targets]
         result = '_'.join(result).replace('INDEX_', '').replace('REPORT_', '').replace('STOCK_', '')
+        if st:
+            result += '_STANDARD'
+        if no:
+            result += '_NORMAL'
     except Exception:
         raise ValueError('targets Is Invalid')
 

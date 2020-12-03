@@ -11,8 +11,10 @@ class ReportsCreator:
         self.term = term
 
     def make(self, target_list: list, filedir: str, standard: bool, normalization: bool):
+        print_green('[{}~{}] {} will be created.\nSTANDARD : {} | NORMALIZATION :{}'.format(self.start_year, self.end_year, filedir, standard, normalization))
+
         for year in range(self.start_year, self.end_year + 1, self.term):
-            print_green('[{}~{}] '.format(year, year + self.term))
+            print_green('[{}~{}] create success'.format(year, year + self.term))
             start_date, end_date = '{}-01-01'.format(year), '{}-12-31'.format(year + (self.term - 1))
             dataframe, dataframe_label = [], []
 
