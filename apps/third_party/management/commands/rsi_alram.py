@@ -1,8 +1,12 @@
+import pandas as pd
+
 from django.core.management import BaseCommand
 
 from apps.model.stock_price import StockPrice
 from apps.model.stock_subs import StockSubs
+from apps.model.stocks import Stocks
 from apps.third_party.discord.discord_hook import send_discord
+from apps.third_party.util.utils import today_dateformat
 
 
 class Command(BaseCommand):
@@ -29,9 +33,22 @@ class Command(BaseCommand):
             Calculate Relative Strength (get RS)
             Calculate the Relative Strength Index (get RSI)
         """
+        message = ''
         stock_list = StockSubs.objects.values('stocks_id__stock_name').all()
 
         for stock in stock_list:
-            rsi = StockPrice.objects.current_rsi(stock['stocks_id__stock_name'])
-            if rsi >= 60 or rsi <= 40:
-                send_discord('[{}] RSI : {}'.format(stock['stocks_id__stock_name'], rsi))
+            stock_name = stock['stocks_id__stock_name']
+            RSI = StockPrice.objects.current_rsi(stock_name)
+
+            if RSI >= 60 or RSI <= 40:
+                try:
+                    price = StockPrice.objects.values('open_price', 'close_price', 'low_price', 'high_price').get(
+                        stocks_id = Stocks.objects.get(stock_name = stock_name).id,
+                        date = today_dateformat(time_format = '%Y-%m-%d')
+                    )
+                    message += '[{}] 시가: {} / 고가: {} / 저가: {} / 현재: {} /  RSI : {}\n'.format(stock['stocks_id__stock_name'], price['open_price'], price['high_price'], price['low_price'], price['close_price'], RSI)
+
+                except StockPrice.DoesNotExist:
+                    pass
+
+        send_discord(message)

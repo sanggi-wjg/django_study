@@ -20,9 +20,8 @@
 
 # 포트폴리오 종목 price 저장
 */10 9-15 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py insert_stock_price
-
 # rsi
-*/15 9-15 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py rsi_alram
+*/20 9-15 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py rsi_alram
 
 # 인덱스
 30 15 * * 1,2,3,4,5 /home/django_sample/dm_venv/bin/python /home/django_sample/manage.py register_index KS11
