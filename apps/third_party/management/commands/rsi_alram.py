@@ -33,22 +33,42 @@ class Command(BaseCommand):
             Calculate Relative Strength (get RS)
             Calculate the Relative Strength Index (get RSI)
         """
-        message = ''
+        rsi_message, price_message = '', ''
         stock_list = StockSubs.objects.values('stocks_id__stock_name').all()
 
         for stock in stock_list:
-            stock_name = stock['stocks_id__stock_name']
+            try:
+                stock_name = stock['stocks_id__stock_name']
+                price = StockPrice.objects.values('open_price', 'close_price', 'low_price', 'high_price').get(
+                    stocks_id = Stocks.objects.get(stock_name = stock_name).id,
+                    date = today_dateformat(time_format = '%Y-%m-%d')
+                )
+            except StockPrice.DoesNotExist:
+                continue
+
             RSI = StockPrice.objects.current_rsi(stock_name)
-
             if RSI >= 60 or RSI <= 40:
-                try:
-                    price = StockPrice.objects.values('open_price', 'close_price', 'low_price', 'high_price').get(
-                        stocks_id = Stocks.objects.get(stock_name = stock_name).id,
-                        date = today_dateformat(time_format = '%Y-%m-%d')
-                    )
-                    message += '[{}] 시가: {} / 고가: {} / 저가: {} / 현재: {} /  RSI : {}\n'.format(stock['stocks_id__stock_name'], price['open_price'], price['high_price'], price['low_price'], price['close_price'], RSI)
+                rsi_message += '[{}]  현재: {}   |   RSI : {}\n'.format(stock_name, format(price['close_price'], ',d'), RSI)
 
-                except StockPrice.DoesNotExist:
-                    pass
+            price_condition = my_stock_price_condition(stock_name, price['close_price'])
+            if price_condition:
+                price_message += '[{}]  종목이  {}  이하로 내려왔습니다.\n'.format(stock_name, format(price_condition, ',d'))
 
-        send_discord(message)
+        send_discord(rsi_message)
+        send_discord(price_message)
+
+
+def my_stock_price_condition(stock_name: str, stock_price: int):
+    if stock_name == '쎄트렉아이' and stock_price <= 27000:
+        return 27000
+
+    elif stock_name == 'KT&G' and stock_price <= 83000:
+        return 83000
+
+    elif stock_name == '카카오' and stock_price <= 380000:
+        return 380000
+
+    elif stock_name == 'NAVER' and stock_price <= 280000:
+        return 280000
+
+    return False
