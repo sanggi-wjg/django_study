@@ -13,6 +13,7 @@ class ReportReaderData(object):
             'ICSA'        : ('미국 주간 실업수당 청구건수', os.path.join(INDEX_FILE_ROOT, '20201123_ICSA.csv')),
             'CI_PRECEDE'  : ('경기종합지수_선행', os.path.join(INDEX_FILE_ROOT, '20201124_경기종합지수.xlsx')),
             'CI_ACCOMPANY': ('경기종합지수_동행', os.path.join(INDEX_FILE_ROOT, '20201124_경기종합지수.xlsx')),
+            'INTEREST_RATE': ('금리지수', os.path.join(INDEX_FILE_ROOT, '20201211_금리.xlsx')),
         }
 
 
