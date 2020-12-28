@@ -33,7 +33,7 @@ class StockPriceQuerySet(models.QuerySet):
         return RSI
 
     def get_stock_price_for_df(self, stocks_id: int, start_date: str, end_date: str):
-        self.values('close_price', 'date').filter(
+        return self.values('close_price', 'date').filter(
             stocks_id = stocks_id,
             date__gte = start_date, date__lte = end_date
         )

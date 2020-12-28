@@ -14,5 +14,9 @@ def create_reader(report_reader: str) -> ReportReader:
         from apps.third_party.reports.reader.reports_reader_composite_index import ReportsReader_CompositeIndex_Accompany
         return ReportsReader_CompositeIndex_Accompany()
 
+    elif report_reader == 'INTEREST_RATE':
+        from apps.third_party.reports.reader.reports_reader_interest_rate import ReportsReader_InterestRate
+        return ReportsReader_InterestRate()
+
     else:
         raise ValueError('report_reader Not Allowed')

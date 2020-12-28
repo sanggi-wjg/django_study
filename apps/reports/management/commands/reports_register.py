@@ -11,4 +11,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         reader = create_reader(options['report_type'])
+        # reader.read()
         reader.register()

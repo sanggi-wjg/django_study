@@ -19,15 +19,18 @@ class Command(BaseCommand):
             show_list()
 
         targets = [
-            ['INDEX', 'KOSPI', 'KOSPI'],
+            # ['INDEX', 'KOSPI', 'KOSPI'],
             # ['INDEX', 'NASDAQ', 'NASDAQ'],
             # ['REPORT', 'CI_ACCOMPANY', '경기종합지수'],
             # ['INDEX', 'GOLD', '금'],
-            ['INDEX', 'USDKRW', '환율'],
-        ]
-        STANDARD, NORMALIZATION = False, True
+            # ['INDEX', 'USDKRW', '환율'],
 
-        reports = ReportsCreator()
+            ['REPORT', 'INTEREST_RATE', '금리'],
+            # ['STOCK', '신한지주', '신한지주'],
+        ]
+        STANDARD, NORMALIZATION = False, False
+
+        reports = ReportsCreator(start_year = 2000)
         reports.make(
             targets,
             filedir = get_filedir(targets, STANDARD, NORMALIZATION),
