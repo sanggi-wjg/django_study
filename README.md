@@ -12,6 +12,7 @@ Django 3.0
 #### Stock
 ![result](project/1-1.stock_list.PNG)
 ![result](project/1-2.stock_detail.PNG)
+![result](project/1-3.stock_detail.PNG)
 
 #### Sector
 ![result](project/2-1.sector_list.PNG)
